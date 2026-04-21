@@ -4,3 +4,6 @@ export const SITE = {
   tagline: "Diseño, gatos y cerámica",
   instagramUrl: "https://www.instagram.com/amishi.cl/",
 } as const;
+
+/** Logo en `public/images/` (PNG con transparencia). */
+export const LOGO_PATH = "/images/logo-amishi.png" as const;

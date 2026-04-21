@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { catalogFilters, type CatalogCategoryId } from "@/data/catalog-filters";
+import { BrandLogo } from "./BrandLogo";
 import { useCatalogFilter } from "./CatalogFilterContext";
 
 type HeaderProps = {
@@ -41,9 +42,10 @@ export function Header({ siteName, instagramUrl }: HeaderProps) {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:py-4">
         <Link
           href="/"
-          className="font-display text-2xl font-semibold tracking-tight text-ink md:text-3xl"
+          className="flex shrink-0 items-center gap-2 outline-none ring-rose ring-offset-2 ring-offset-cream transition-opacity hover:opacity-90 focus-visible:rounded-full focus-visible:ring-2"
         >
-          {siteName}
+          <BrandLogo variant="header" siteName={siteName} />
+          <span className="sr-only">{siteName}</span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Principal">

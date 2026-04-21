@@ -5,7 +5,7 @@ import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { AppProviders } from "@/components/AppProviders";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { SITE } from "@/lib/site";
+import { LOGO_PATH, SITE } from "@/lib/site";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -45,6 +45,10 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "/",
+  },
+  icons: {
+    icon: LOGO_PATH,
+    apple: LOGO_PATH,
   },
 };
 
