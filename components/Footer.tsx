@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "./BrandLogo";
 
 type FooterProps = {
   siteName: string;
@@ -13,7 +14,7 @@ export function Footer({ siteName, instagramUrl }: FooterProps) {
       <div className="mx-auto max-w-6xl px-4 py-12">
         <div className="flex flex-col gap-10 md:flex-row md:justify-between">
           <div>
-            <p className="font-display text-2xl font-semibold text-ink">{siteName}</p>
+            <BrandLogo variant="footer" siteName={siteName} />
             <p className="mt-2 max-w-sm text-sm text-ink/80">
               Diseño, gatos y cerámica hecha con cariño en Chile. Consultas y pedidos por
               Instagram.
