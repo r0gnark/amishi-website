@@ -46,22 +46,21 @@ export function CatalogFilterCircles({ activeId, onSelect }: CatalogFilterCircle
                   onClick={() => handleClick(item.id)}
                   aria-pressed={isActive}
                   aria-label={`Filtrar por ${item.label}${isActive ? " (activo, pulsar para quitar filtro)" : ""}`}
-                  className="group flex w-full flex-col items-center gap-1.5 rounded-2xl p-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:gap-2"
+                  className="group flex w-full flex-col items-center gap-1.5 rounded-2xl p-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:gap-2"
                 >
                   <span
                     className={`relative aspect-square w-full overflow-hidden rounded-full border-2 bg-[#e8e8e8] shadow-sm transition ${
                       isActive
-                        ? "border-clay ring-2 ring-clay/40 ring-offset-2 ring-offset-cream"
+                        ? "border-clay ring-2 ring-clay/40 ring-offset-2 ring-offset-white"
                         : "border-white/80 group-hover:border-rose/50"
                     }`}
                   >
-                    {/* TODO: reemplazar por imagen real de la categoría */}
                     <Image
                       src={item.image}
                       alt=""
                       fill
                       sizes="(max-width: 640px) 76px, 88px"
-                      className="object-cover"
+                      className="object-cover object-center scale-[1.48]"
                     />
                   </span>
                   <span

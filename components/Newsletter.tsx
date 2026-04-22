@@ -16,7 +16,7 @@ export function Newsletter() {
   return (
     <section
       id="newsletter"
-      className="bg-blush/35 py-14 md:py-16"
+      className="border-t border-rose/10 bg-white py-14 md:py-16"
       aria-labelledby="newsletter-titulo"
     >
       <div className="mx-auto max-w-xl px-4 text-center">

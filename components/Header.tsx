@@ -38,11 +38,11 @@ export function Header({ siteName, instagramUrl }: HeaderProps) {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-rose/20 bg-cream/85 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-rose/15 bg-white/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:py-4">
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-2 outline-none ring-rose ring-offset-2 ring-offset-cream transition-opacity hover:opacity-90 focus-visible:rounded-full focus-visible:ring-2"
+          className="flex shrink-0 items-center gap-2 outline-none ring-rose ring-offset-2 ring-offset-white transition-opacity hover:opacity-90 focus-visible:rounded-full focus-visible:ring-2"
         >
           <BrandLogo variant="header" siteName={siteName} />
           <span className="sr-only">{siteName}</span>
@@ -102,7 +102,7 @@ export function Header({ siteName, instagramUrl }: HeaderProps) {
       {open ? (
         <nav
           id="menu-movil"
-          className="max-h-[min(70vh,calc(100dvh-5rem))] overflow-y-auto border-t border-rose/20 bg-cream px-4 py-4 md:hidden"
+          className="max-h-[min(70vh,calc(100dvh-5rem))] overflow-y-auto border-t border-rose/20 bg-white px-4 py-4 md:hidden"
           aria-label="Móvil"
         >
           <ul className="flex flex-col gap-1">

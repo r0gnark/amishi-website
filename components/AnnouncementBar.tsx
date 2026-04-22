@@ -20,7 +20,7 @@ export function AnnouncementBar() {
 
   return (
     <div
-      className="border-b border-rose/30 bg-blush/80 px-4 py-2 text-center text-sm text-ink backdrop-blur-sm"
+      className="border-b border-rose/15 bg-white px-4 py-2 text-center text-sm text-ink"
       role="status"
       aria-live="polite"
     >

@@ -10,7 +10,7 @@ export function Footer({ siteName, instagramUrl }: FooterProps) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-rose/25 bg-blush/40">
+    <footer className="border-t border-rose/15 bg-white">
       <div className="mx-auto max-w-6xl px-4 py-12">
         <div className="flex flex-col gap-10 md:flex-row md:justify-between">
           <div>

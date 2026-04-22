@@ -17,7 +17,7 @@ export function ProductGrid() {
   return (
     <section
       id="catalogo"
-      className="border-b border-rose/15 bg-gradient-to-b from-cream to-blush/20 py-10 md:py-14"
+      className="border-b border-rose/10 bg-white py-10 md:py-14"
       aria-labelledby="catalogo-titulo"
     >
       <div className="mx-auto max-w-6xl px-4">
@@ -32,7 +32,7 @@ export function ProductGrid() {
           referencia; disponibilidad y envíos se coordinan por Instagram.
         </p>
 
-        <div className="mt-8 border-b border-rose/15 pb-8 md:mt-10 md:pb-10">
+        <div className="mt-8 border-b border-rose/10 pb-8 md:mt-10 md:pb-10">
           <CatalogFilterCircles activeId={filter} onSelect={setFilter} />
         </div>
 

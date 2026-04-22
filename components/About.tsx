@@ -2,7 +2,7 @@ export function About() {
   return (
     <section
       id="sobre"
-      className="border-b border-rose/15 bg-cream py-14 md:py-20"
+      className="border-b border-rose/10 bg-white py-14 md:py-20"
       aria-labelledby="sobre-titulo"
     >
       <div className="mx-auto grid max-w-6xl gap-10 px-4 md:grid-cols-2 md:items-center">
