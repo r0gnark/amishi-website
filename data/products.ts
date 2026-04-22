@@ -7,7 +7,7 @@
  */
 import type { CatalogCategoryId } from "./catalog-filters";
 
-const IG = "https://www.instagram.com/amishi.cl/";
+const IG = "https://ig.me/m/amishi.cl";
 
 export type Product = {
   id: string;

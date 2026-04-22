@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ProductInstagramCta } from "@/components/ProductInstagramCta";
 import { getAllProductSlugs, getProductBySlug } from "@/data/products";
 import { formatCLP } from "@/lib/format";
 import { PRODUCT_PHOTO_ASPECT_CLASS, productImageClassName } from "@/lib/product-image";
@@ -37,6 +38,9 @@ export default async function ProductoPage({ params }: Props) {
   if (!product) {
     notFound();
   }
+
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://amishi.cl").replace(/\/$/, "");
+  const productPageUrl = `${siteUrl}/producto/${slug}`;
 
   return (
     <div className="border-b border-rose/10 bg-white">
@@ -74,17 +78,14 @@ export default async function ProductoPage({ params }: Props) {
             <p className="mt-4 font-display text-2xl font-semibold text-rose">{formatCLP(product.price)}</p>
             <p className="mt-6 leading-relaxed text-ink/90">{product.description}</p>
 
-            <a
-              href={product.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex w-full max-w-sm items-center justify-center rounded-full bg-rose px-6 py-3.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-rose/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose"
-            >
-              Consultar disponibilidad y envío
-            </a>
+            <ProductInstagramCta
+              productName={product.name}
+              productPageUrl={productPageUrl}
+              instagramUrl={product.instagramUrl}
+            />
 
-            <p className="mt-4 text-sm text-ink/65">
-              Precio de referencia. Al pulsar el botón se abre Instagram de Amishi para confirmar stock y envío.
+            <p className="mt-6 text-sm text-ink/65">
+              Precio de referencia. Stock y envío se confirman por Instagram.
             </p>
 
             <Link

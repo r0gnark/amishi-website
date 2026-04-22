@@ -5,7 +5,7 @@ import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { AppProviders } from "@/components/AppProviders";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { LOGO_PATH, SITE } from "@/lib/site";
+import { SITE } from "@/lib/site";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -21,6 +21,7 @@ const nunito = Nunito({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://amishi.cl";
 
+/** Iconos: `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico` (logo Amishi). */
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -45,10 +46,6 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "/",
-  },
-  icons: {
-    icon: LOGO_PATH,
-    apple: LOGO_PATH,
   },
 };
 

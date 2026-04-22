@@ -19,12 +19,35 @@ export function About() {
             Bienvenid@ a Amishi
           </h2>
           <p className="mt-6 leading-relaxed text-ink/85">
-            Amishi nace del amor por el diseño, los gatos y la cerámica. Cada pieza cuenta una
-            pequeña historia: un desayuno lento, un rincón ilustrado, un ronroneo de fondo.
+            Un rincón creado para quienes aman los gatos y los pequeños detalles. Aquí todo nace
+            desde el cariño por el diseño y por los michis.
           </p>
           <p className="mt-4 leading-relaxed text-ink/85">
-            Trabajo en ediciones reducidas y con mucha atención al detalle. Si te gusta lo
-            artesanal, lo tierno y un poco de caos felino, estás en el lugar correcto.
+            Cada pieza está hecha a mano, con tiempo y dedicación, por eso ninguna es igual a otra.
+            Trabajo en ediciones limitadas, cuidando cada detalle.
+          </p>
+          <p className="mt-4 leading-relaxed text-ink/85">
+            Si eres loc@ por ellos… este lugar también es para ti.
+          </p>
+          <p className="mt-4 leading-relaxed text-ink/85">
+            Puedes conocer más en mis redes{" "}
+            <a
+              href="https://www.instagram.com/amishi.cl/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-clay underline decoration-rose/40 underline-offset-2 hover:text-rose"
+            >
+              @amishi.cl
+            </a>
+            {" · "}
+            <a
+              href="https://www.instagram.com/holi.javi/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-clay underline decoration-rose/40 underline-offset-2 hover:text-rose"
+            >
+              @holi.javi
+            </a>
           </p>
         </div>
       </div>

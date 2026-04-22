@@ -2,7 +2,8 @@
 export const SITE = {
   name: "amishi",
   tagline: "Diseño, gatos y cerámica",
-  instagramUrl: "https://www.instagram.com/amishi.cl/",
+  /** Abre conversación por DM (móvil suele abrir la app). */
+  instagramUrl: "https://ig.me/m/amishi.cl",
 } as const;
 
 /** Logo en `public/images/` (PNG con transparencia). */
