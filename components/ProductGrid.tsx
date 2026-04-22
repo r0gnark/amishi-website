@@ -28,8 +28,10 @@ export function ProductGrid() {
           Catálogo
         </h1>
         <p className="mx-auto mt-3 max-w-2xl text-center text-ink/75">
-          Elige una categoría o mira todo. Toca un producto para ver el detalle. Precios de
-          referencia; disponibilidad y envíos se coordinan por Instagram.
+          Piezas únicas hechas con cariño, pensadas para acompañarte a ti y a tus mishis
+        </p>
+        <p className="mx-auto mt-2 max-w-2xl text-center font-medium text-rose">
+          Disponibilidad y envíos por Instagram
         </p>
 
         <div className="mt-8 border-b border-rose/10 pb-8 md:mt-10 md:pb-10">
@@ -37,13 +39,26 @@ export function ProductGrid() {
         </div>
 
         {visible.length === 0 ? (
-          <p className="mt-10 text-center text-sm text-ink/70" role="status">
+          <p
+            key={filter ?? "all-empty"}
+            className="catalog-empty-animate mt-10 text-center text-sm text-ink/70"
+            role="status"
+          >
             No hay productos en esta categoría por ahora.
           </p>
         ) : (
-          <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
-            {visible.map((p) => (
-              <ProductCard key={p.id} product={p} />
+          <div
+            key={filter ?? "all"}
+            className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6"
+          >
+            {visible.map((p, i) => (
+              <div
+                key={p.id}
+                className="catalog-card-animate"
+                style={{ animationDelay: `${Math.min(i, 24) * 26}ms` }}
+              >
+                <ProductCard product={p} />
+              </div>
             ))}
           </div>
         )}

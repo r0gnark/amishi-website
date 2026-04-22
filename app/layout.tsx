@@ -60,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${fraunces.variable} ${nunito.variable} h-full scroll-smooth antialiased`}
+      className={`${fraunces.variable} ${nunito.variable} h-full scroll-smooth bg-white antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-ink">
         <a

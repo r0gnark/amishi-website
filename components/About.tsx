@@ -1,3 +1,5 @@
+import { BrandLogo } from "./BrandLogo";
+
 export function About() {
   return (
     <section
@@ -6,14 +8,9 @@ export function About() {
       aria-labelledby="sobre-titulo"
     >
       <div className="mx-auto grid max-w-6xl gap-10 px-4 md:grid-cols-2 md:items-center">
-        <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[2rem] border border-rose/30 bg-gradient-to-br from-blush via-rose/30 to-cream shadow-inner">
-          {/* TODO: reemplazar por foto real del taller o de la marca */}
-          <div className="flex h-full flex-col items-center justify-center p-8 text-center">
-            <span className="text-7xl" aria-hidden>
-              💖
-            </span>
-            <p className="mt-6 font-display text-2xl text-ink">Amishi</p>
-            <p className="mt-2 text-sm text-ink/75">Placeholder visual — sube tu foto aquí</p>
+        <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[2rem] bg-amishi-disk">
+          <div className="flex h-full items-center justify-center p-8">
+            <BrandLogo variant="about" siteName="Amishi" alt="Amishi — logo" />
           </div>
         </div>
 

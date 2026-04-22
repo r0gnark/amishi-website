@@ -29,52 +29,37 @@ export function Footer({ siteName, instagramUrl }: FooterProps) {
             </a>
           </div>
 
-          <div className="flex flex-col gap-6 sm:flex-row sm:gap-16">
-            <div>
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-ink/70">
-                Navegación
-              </h2>
-              <ul className="mt-3 space-y-2 text-sm">
-                <li>
-                  <Link href="/" className="text-ink hover:text-clay">
-                    Catálogo
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/#sobre" className="text-ink hover:text-clay">
-                    Sobre Amishi
-                  </Link>
-                </li>
-                <li>
-                  <a
-                    href={instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-ink hover:text-clay"
-                  >
-                    Contacto
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-ink/70">
-                Legal
-              </h2>
-              <ul className="mt-3 space-y-2 text-sm text-ink/80">
-                <li>
-                  <span className="cursor-default">Política de privacidad (próximamente)</span>
-                </li>
-                <li>
-                  <span className="cursor-default">Términos y envíos (próximamente)</span>
-                </li>
-              </ul>
-            </div>
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-ink/70">
+              Navegación
+            </h2>
+            <ul className="mt-3 space-y-2 text-sm">
+              <li>
+                <Link href="/" className="text-ink hover:text-clay">
+                  Catálogo
+                </Link>
+              </li>
+              <li>
+                <Link href="/#sobre" className="text-ink hover:text-clay">
+                  Sobre Amishi
+                </Link>
+              </li>
+              <li>
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-ink hover:text-clay"
+                >
+                  Contacto
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
 
         <p className="mt-10 border-t border-rose/20 pt-8 text-center text-xs text-ink/60">
-          © {year} {siteName}. Hecho con amor y barro.
+          © {year} {siteName}. Hecho con amor.
         </p>
       </div>
     </footer>
