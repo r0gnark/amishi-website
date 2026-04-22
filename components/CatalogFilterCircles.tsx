@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import type { CatalogCategoryId } from "@/data/catalog-filters";
 import { catalogFilters } from "@/data/catalog-filters";
 
@@ -30,8 +29,9 @@ export function CatalogFilterCircles({ activeId, onSelect }: CatalogFilterCircle
           "
           style={{ WebkitOverflowScrolling: "touch" }}
         >
-          {catalogFilters.map((item) => {
+          {catalogFilters.map((item, index) => {
             const isActive = activeId === item.id;
+            const eager = index < 4;
             return (
               <li
                 key={item.id}
@@ -46,22 +46,26 @@ export function CatalogFilterCircles({ activeId, onSelect }: CatalogFilterCircle
                   onClick={() => handleClick(item.id)}
                   aria-pressed={isActive}
                   aria-label={`Filtrar por ${item.label}${isActive ? " (activo, pulsar para quitar filtro)" : ""}`}
-                  className="group flex w-full flex-col items-center gap-1.5 rounded-2xl p-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:gap-2"
+                  className="group flex w-full flex-col items-center gap-1.5 rounded-2xl p-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:gap-2"
                 >
                   <span
                     className={`relative aspect-square w-full overflow-hidden rounded-full border-2 bg-[#e8e8e8] shadow-sm transition ${
                       isActive
-                        ? "border-clay ring-2 ring-clay/40 ring-offset-2 ring-offset-cream"
+                        ? "border-clay ring-2 ring-clay/40 ring-offset-2 ring-offset-white"
                         : "border-white/80 group-hover:border-rose/50"
                     }`}
                   >
-                    {/* TODO: reemplazar por imagen real de la categoría */}
-                    <Image
+                    {/* img nativo: next/image a veces altera el alpha de PNG (artefactos / bloque negro). */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={item.image}
                       alt=""
-                      fill
-                      sizes="(max-width: 640px) 76px, 88px"
-                      className="object-cover"
+                      width={200}
+                      height={200}
+                      className="absolute inset-0 h-full w-full scale-[1.48] object-cover object-center"
+                      loading={eager ? "eager" : "lazy"}
+                      decoding="async"
+                      fetchPriority={index === 0 ? "high" : undefined}
                     />
                   </span>
                   <span

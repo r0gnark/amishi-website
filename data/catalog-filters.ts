@@ -1,14 +1,14 @@
 /**
  * Filtros del catálogo (menú circular).
- * Imágenes de ejemplo — TODO: reemplazar por fotos reales por categoría en /public/images/catalog-filters/
+ * Miniaturas WebP en /public/images/catalog-filters/ (ligeras; redibujar si cambias PNG fuente).
  */
 export const CATALOG_FILTER_IDS = [
   "mishi-frasco",
   "mishi-flor",
+  "mishi-kitty",
   "imanes",
   "michi-aros",
   "papeleria",
-  "otros",
 ] as const;
 
 export type CatalogCategoryId = (typeof CATALOG_FILTER_IDS)[number];
@@ -17,39 +17,40 @@ export type CatalogFilterItem = {
   id: CatalogCategoryId;
   /** Texto bajo el círculo */
   label: string;
-  /** Imagen del círculo — TODO: reemplazar por asset propio */
+  /** Imagen del círculo */
   image: string;
 };
 
+/** El zoom en círculos se aplica en `CatalogFilterCircles`. */
 export const catalogFilters: CatalogFilterItem[] = [
   {
     id: "mishi-frasco",
     label: "Mishi frasco",
-    image: "https://picsum.photos/seed/amishi-filter-frasco/240/240",
+    image: "/images/catalog-filters/mishi-frasco.webp",
   },
   {
     id: "mishi-flor",
     label: "Mishi Flor",
-    image: "https://picsum.photos/seed/amishi-filter-flor/240/240",
+    image: "/images/catalog-filters/mishi-flor.webp",
+  },
+  {
+    id: "mishi-kitty",
+    label: "Mishi Kitty",
+    image: "/images/catalog-filters/hello-kitty.webp",
   },
   {
     id: "imanes",
     label: "Imanes",
-    image: "https://picsum.photos/seed/amishi-filter-imanes/240/240",
+    image: "/images/catalog-filters/imanes.webp",
   },
   {
     id: "michi-aros",
     label: "Michi aros",
-    image: "https://picsum.photos/seed/amishi-filter-aros/240/240",
+    image: "/images/catalog-filters/aros.webp",
   },
   {
     id: "papeleria",
     label: "Papelería",
-    image: "https://picsum.photos/seed/amishi-filter-papeleria/240/240",
-  },
-  {
-    id: "otros",
-    label: "Otros",
-    image: "https://picsum.photos/seed/amishi-filter-otros/240/240",
+    image: "/images/catalog-filters/papeleria.webp",
   },
 ];

@@ -5,7 +5,7 @@ import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { AppProviders } from "@/components/AppProviders";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { LOGO_PATH, SITE } from "@/lib/site";
+import { SITE } from "@/lib/site";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -21,6 +21,7 @@ const nunito = Nunito({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://amishi.cl";
 
+/** Iconos: `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico` (logo Amishi). */
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -46,10 +47,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
-  icons: {
-    icon: LOGO_PATH,
-    apple: LOGO_PATH,
-  },
 };
 
 export default function RootLayout({
@@ -60,9 +57,9 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${fraunces.variable} ${nunito.variable} h-full scroll-smooth antialiased`}
+      className={`${fraunces.variable} ${nunito.variable} h-full scroll-smooth bg-white antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-cream text-ink">
+      <body className="min-h-full flex flex-col bg-white text-ink">
         <a
           href="#contenido-principal"
           className="fixed left-4 top-4 z-[100] -translate-y-24 rounded-lg bg-clay px-4 py-2 text-sm font-medium text-white opacity-0 shadow-md transition focus:translate-y-0 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-rose"

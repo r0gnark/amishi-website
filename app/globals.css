@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbf6f0;
+  --background: #ffffff;
   --foreground: #3c2a2a;
 }
 
 @theme inline {
   --color-cream: #fbf6f0;
   --color-blush: #f6d6d6;
+  /** Fondo del disco: mismo tono que el borde unificado del PNG retocado. */
+  --color-amishi-disk: #f39f9f;
   --color-rose: #e89aae;
   --color-clay: #c97b6a;
   --color-ink: #3c2a2a;
@@ -17,8 +19,14 @@
   --font-display: var(--font-fraunces);
 }
 
+html {
+  background-color: #ffffff;
+}
+
 body {
-  background: var(--background);
+  min-height: 100%;
+  background-color: #ffffff;
+  background: #ffffff;
   color: var(--foreground);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
@@ -29,4 +37,40 @@ button:focus-visible,
 input:focus-visible {
   outline: 2px solid var(--color-rose);
   outline-offset: 3px;
+}
+
+/* Catálogo: entrada al cambiar filtro */
+@keyframes catalog-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes catalog-empty-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.catalog-card-animate {
+  animation: catalog-card-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.catalog-empty-animate {
+  animation: catalog-empty-in 0.35s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .catalog-card-animate,
+  .catalog-empty-animate {
+    animation: none;
+  }
 }
