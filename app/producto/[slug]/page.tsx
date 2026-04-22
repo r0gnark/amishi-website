@@ -78,11 +78,7 @@ export default async function ProductoPage({ params }: Props) {
             <p className="mt-4 font-display text-2xl font-semibold text-rose">{formatCLP(product.price)}</p>
             <p className="mt-6 leading-relaxed text-ink/90">{product.description}</p>
 
-            <ProductInstagramCta
-              productName={product.name}
-              productPageUrl={productPageUrl}
-              instagramUrl={product.instagramUrl}
-            />
+            <ProductInstagramCta productPageUrl={productPageUrl} instagramUrl={product.instagramUrl} />
 
             <p className="mt-6 text-sm text-ink/65">
               Precio de referencia. Stock y envío se confirman por Instagram.

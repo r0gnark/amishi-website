@@ -3,31 +3,39 @@
 import { useCallback, useState } from "react";
 
 type ProductInstagramCtaProps = {
-  productName: string;
-  /** URL absoluta de la ficha (para identificar el producto al pegar en el DM). */
+  /** URL absoluta de la ficha (cuerpo del DM: solo el enlace). */
   productPageUrl: string;
   instagramUrl: string;
 };
 
-function buildDmMessage(productName: string, productPageUrl: string) {
-  return `Hola 🙂 Consulto por: ${productName}\n${productPageUrl}`;
+function buildDmBody(productPageUrl: string) {
+  return productPageUrl;
 }
 
-export function ProductInstagramCta({
-  productName,
-  productPageUrl,
-  instagramUrl,
-}: ProductInstagramCtaProps) {
-  const [feedback, setFeedback] = useState<"idle" | "copied" | "error">("idle");
+/** Añade `?text=` / `&text=` para prellenar el compositor de Instagram (cuando la app lo respeta). */
+function instagramUrlWithPrefilledText(baseUrl: string, message: string): string {
+  try {
+    const u = new URL(baseUrl);
+    u.searchParams.set("text", message);
+    return u.toString();
+  } catch {
+    const sep = baseUrl.includes("?") ? "&" : "?";
+    return `${baseUrl}${sep}text=${encodeURIComponent(message)}`;
+  }
+}
+
+export function ProductInstagramCta({ productPageUrl, instagramUrl }: ProductInstagramCtaProps) {
+  const [feedback, setFeedback] = useState<"idle" | "ok" | "error">("idle");
 
   const handleClick = useCallback(() => {
-    const text = buildDmMessage(productName, productPageUrl);
-    window.open(instagramUrl, "_blank", "noopener,noreferrer");
+    const body = buildDmBody(productPageUrl);
+    const dmUrl = instagramUrlWithPrefilledText(instagramUrl, body);
+    window.open(dmUrl, "_blank", "noopener,noreferrer");
 
     if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(text).then(
+      navigator.clipboard.writeText(body).then(
         () => {
-          setFeedback("copied");
+          setFeedback("ok");
           setTimeout(() => setFeedback("idle"), 5000);
         },
         () => {
@@ -36,10 +44,10 @@ export function ProductInstagramCta({
         },
       );
     } else {
-      setFeedback("error");
+      setFeedback("ok");
       setTimeout(() => setFeedback("idle"), 5000);
     }
-  }, [productName, productPageUrl, instagramUrl]);
+  }, [productPageUrl, instagramUrl]);
 
   return (
     <div className="mt-8 max-w-sm">
@@ -56,9 +64,11 @@ export function ProductInstagramCta({
         role="status"
         aria-live="polite"
       >
-        {feedback === "copied" ? "¡Listo! Mensaje copiado. Pégalo en el chat de Instagram." : null}
+        {feedback === "ok"
+          ? "Listo. En el chat debería aparecer solo el enlace de esta ficha. Si no, pégalo con Ctrl+V (o mantén pulsado → pegar): también quedó copiado."
+          : null}
         {feedback === "error"
-          ? "No pudimos copiar el texto. Indica el nombre del producto en el mensaje o vuelve a intentar."
+          ? "No pudimos copiar el respaldo. Copia la URL de esta página y pégala en el mensaje."
           : null}
       </p>
     </div>
