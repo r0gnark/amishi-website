@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import type { CatalogCategoryId } from "@/data/catalog-filters";
 import { catalogFilters } from "@/data/catalog-filters";
 
@@ -30,8 +29,9 @@ export function CatalogFilterCircles({ activeId, onSelect }: CatalogFilterCircle
           "
           style={{ WebkitOverflowScrolling: "touch" }}
         >
-          {catalogFilters.map((item) => {
+          {catalogFilters.map((item, index) => {
             const isActive = activeId === item.id;
+            const eager = index < 4;
             return (
               <li
                 key={item.id}
@@ -55,12 +55,17 @@ export function CatalogFilterCircles({ activeId, onSelect }: CatalogFilterCircle
                         : "border-white/80 group-hover:border-rose/50"
                     }`}
                   >
-                    <Image
+                    {/* img nativo: next/image a veces altera el alpha de PNG (artefactos / bloque negro). */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={item.image}
                       alt=""
-                      fill
-                      sizes="(max-width: 640px) 76px, 88px"
-                      className="object-cover object-center scale-[1.48]"
+                      width={200}
+                      height={200}
+                      className="absolute inset-0 h-full w-full scale-[1.48] object-cover object-center"
+                      loading={eager ? "eager" : "lazy"}
+                      decoding="async"
+                      fetchPriority={index === 0 ? "high" : undefined}
                     />
                   </span>
                   <span

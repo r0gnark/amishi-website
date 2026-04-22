@@ -1,6 +1,6 @@
 /**
  * Filtros del catálogo (menú circular).
- * Miniaturas en /public/images/catalog-filters/
+ * Miniaturas WebP en /public/images/catalog-filters/ (ligeras; redibujar si cambias PNG fuente).
  */
 export const CATALOG_FILTER_IDS = [
   "mishi-frasco",
@@ -26,31 +26,31 @@ export const catalogFilters: CatalogFilterItem[] = [
   {
     id: "mishi-frasco",
     label: "Mishi frasco",
-    image: "/images/catalog-filters/mishi-frasco.jpeg",
+    image: "/images/catalog-filters/mishi-frasco.webp",
   },
   {
     id: "mishi-flor",
     label: "Mishi Flor",
-    image: "/images/catalog-filters/michi-flor.jpeg",
+    image: "/images/catalog-filters/mishi-flor.webp",
   },
   {
     id: "mishi-kitty",
     label: "Mishi Kitty",
-    image: "/images/catalog-filters/hello-kitty.jpeg",
+    image: "/images/catalog-filters/hello-kitty.webp",
   },
   {
     id: "imanes",
     label: "Imanes",
-    image: "/images/catalog-filters/imanes.jpeg",
+    image: "/images/catalog-filters/imanes.webp",
   },
   {
     id: "michi-aros",
     label: "Michi aros",
-    image: "/images/catalog-filters/aros.jpeg",
+    image: "/images/catalog-filters/aros.webp",
   },
   {
     id: "papeleria",
     label: "Papelería",
-    image: "/images/catalog-filters/papeleria.jpeg",
+    image: "/images/catalog-filters/papeleria.webp",
   },
 ];

@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import { getAllProductSlugs, getProductBySlug } from "@/data/products";
 import { formatCLP } from "@/lib/format";
 import { PRODUCT_PHOTO_ASPECT_CLASS, productImageClassName } from "@/lib/product-image";
-import { SITE } from "@/lib/site";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -75,13 +74,22 @@ export default async function ProductoPage({ params }: Props) {
             <p className="mt-4 font-display text-2xl font-semibold text-rose">{formatCLP(product.price)}</p>
             <p className="mt-6 leading-relaxed text-ink/90">{product.description}</p>
 
-            <p className="mt-8 text-sm text-ink/65">
-              Precio de referencia. Disponibilidad y envíos se confirman por {SITE.name} en redes.
+            <a
+              href={product.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex w-full max-w-sm items-center justify-center rounded-full bg-rose px-6 py-3.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-rose/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose"
+            >
+              Consultar disponibilidad y envío
+            </a>
+
+            <p className="mt-4 text-sm text-ink/65">
+              Precio de referencia. Al pulsar el botón se abre Instagram de Amishi para confirmar stock y envío.
             </p>
 
             <Link
               href="/#catalogo"
-              className="mt-10 inline-flex items-center gap-2 text-sm font-medium text-clay hover:underline"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-clay hover:underline"
             >
               ← Volver al catálogo
             </Link>
