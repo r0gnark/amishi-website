@@ -45,6 +45,8 @@ export function Header({ siteName, instagramUrl, instagramProfileUrl }: HeaderPr
         <Link
           href="/"
           onClick={(e) => {
+            setFilter(null);
+            setOpen(false);
             if (pathname === "/") {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });

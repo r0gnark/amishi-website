@@ -20,7 +20,7 @@ export function About() {
           </h2>
           <p className="mt-6 leading-relaxed text-ink/85">
             Un rincón creado para quienes aman los gatos y los pequeños detalles. Aquí todo nace
-            desde el cariño por el diseño y por los michis.
+            desde el cariño por el diseño y por los mishi.
           </p>
           <p className="mt-4 leading-relaxed text-ink/85">
             Cada pieza está hecha a mano, con tiempo y dedicación, por eso ninguna es igual a otra.
