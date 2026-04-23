@@ -417,6 +417,15 @@ export const products: Product[] = [
     category: "papeleria",
   },
   {
+    id: "papeleria-croqueras-croquera",
+    name: "Croquera",
+    price: 5000,
+    image: "/images/productos/papeleria/croqueras/croquera.png",
+    instagramUrl: IG,
+    description: "Croquera con ilustración. Papelería Amishi.",
+    category: "papeleria",
+  },
+  {
     id: "papeleria-stickers-billetes-image00049",
     name: "Sticker billete decorativo 1",
     price: 400,
