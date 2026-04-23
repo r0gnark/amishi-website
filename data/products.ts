@@ -26,7 +26,10 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/miniaturas/image00005.jpeg",
     instagramUrl: IG,
-    description: "Miniatura hecha a mano",
+    description: `Miniatura hecha a mano
+Material figura: yeso cerámico
+Material frasco: cristal
+Tamaño: 2x3,5cm app`,
     category: "mishi-frasco",
   },
   {
@@ -35,7 +38,10 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/miniaturas/image00008.jpeg",
     instagramUrl: IG,
-    description: "Miniatura hecha a mano",
+    description: `Miniatura hecha a mano
+Material figura: yeso cerámico
+Material frasco: cristal
+Tamaño: 2x3,5cm app`,
     category: "mishi-frasco",
   },
   {
@@ -44,7 +50,10 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/miniaturas/image00009.jpeg",
     instagramUrl: IG,
-    description: "Miniatura hecha a mano",
+    description: `Miniatura hecha a mano
+Material figura: yeso cerámico
+Material frasco: cristal
+Tamaño: 2x3,5cm app`,
     category: "mishi-frasco",
   },
   {
@@ -53,7 +62,10 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/miniaturas/image00013.jpeg",
     instagramUrl: IG,
-    description: "Miniatura hecha a mano",
+    description: `Miniatura hecha a mano
+Material figura: yeso cerámico
+Material frasco: cristal
+Tamaño: 2x3,5cm app`,
     category: "mishi-frasco",
   },
   {
@@ -62,7 +74,10 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/miniaturas/image00018.jpeg",
     instagramUrl: IG,
-    description: "Miniatura hecha a mano",
+    description: `Miniatura hecha a mano
+Material figura: yeso cerámico
+Material frasco: cristal
+Tamaño: 2x3,5cm app`,
     category: "mishi-frasco",
   },
   {
@@ -71,7 +86,10 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/miniaturas/image00021.jpeg",
     instagramUrl: IG,
-    description: "Miniatura hecha a mano",
+    description: `Miniatura hecha a mano
+Material figura: yeso cerámico
+Material frasco: cristal
+Tamaño: 2x3,5cm app`,
     category: "mishi-frasco",
   },
   {
@@ -80,7 +98,10 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/miniaturas/image00022.jpeg",
     instagramUrl: IG,
-    description: "Miniatura hecha a mano",
+    description: `Miniatura hecha a mano
+Material figura: yeso cerámico
+Material frasco: cristal
+Tamaño: 2x3,5cm app`,
     category: "mishi-frasco",
   },
   {
@@ -89,7 +110,10 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/miniaturas/image00023.jpeg",
     instagramUrl: IG,
-    description: "Miniatura hecha a mano",
+    description: `Miniatura hecha a mano
+Material figura: yeso cerámico
+Material frasco: cristal
+Tamaño: 2x3,5cm app`,
     category: "mishi-frasco",
   },
   {
@@ -98,7 +122,10 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/miniaturas/image00024.jpeg",
     instagramUrl: IG,
-    description: "Miniatura hecha a mano",
+    description: `Miniatura hecha a mano
+Material figura: yeso cerámico
+Material frasco: cristal
+Tamaño: 2x3,5cm app`,
     category: "mishi-frasco",
   },
   {
@@ -107,7 +134,10 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/miniaturas/image00025.jpeg",
     instagramUrl: IG,
-    description: "Miniatura hecha a mano",
+    description: `Miniatura hecha a mano
+Material figura: yeso cerámico
+Material frasco: cristal
+Tamaño: 2x3,5cm app`,
     category: "mishi-frasco",
   },
   {
@@ -116,7 +146,10 @@ export const products: Product[] = [
     price: 15000,
     image: "/images/productos/michi-flor/image00006.jpeg",
     instagramUrl: IG,
-    description: "Figura Mishi Flor con detalle floral. Decoración coleccionable.",
+    description: `Figura decorativa Mishi Flor
+Material figura: yeso cerámico
+Tamaño: 5x6cm app
+Barniz: mate`,
     category: "mishi-flor",
   },
   {
@@ -125,7 +158,10 @@ export const products: Product[] = [
     price: 15000,
     image: "/images/productos/michi-flor/image00012.jpeg",
     instagramUrl: IG,
-    description: "Figura Mishi Flor con detalle floral. Decoración coleccionable.",
+    description: `Figura decorativa Mishi Flor
+Material figura: yeso cerámico
+Tamaño: 5x6cm app
+Barniz: mate`,
     category: "mishi-flor",
   },
   {
@@ -134,7 +170,10 @@ export const products: Product[] = [
     price: 15000,
     image: "/images/productos/michi-flor/image00015.jpeg",
     instagramUrl: IG,
-    description: "Figura Mishi Flor con detalle floral. Decoración coleccionable.",
+    description: `Figura decorativa Mishi Flor
+Material figura: yeso cerámico
+Tamaño: 5x6cm app
+Barniz: mate`,
     category: "mishi-flor",
   },
   {
@@ -143,7 +182,10 @@ export const products: Product[] = [
     price: 15000,
     image: "/images/productos/michi-flor/image00017.jpeg",
     instagramUrl: IG,
-    description: "Figura Mishi Flor con detalle floral. Decoración coleccionable.",
+    description: `Figura decorativa Mishi Flor
+Material figura: yeso cerámico
+Tamaño: 5x6cm app
+Barniz: mate`,
     category: "mishi-flor",
   },
   {
@@ -152,7 +194,10 @@ export const products: Product[] = [
     price: 15000,
     image: "/images/productos/michi-flor/image00019.jpeg",
     instagramUrl: IG,
-    description: "Figura Mishi Flor con detalle floral. Decoración coleccionable.",
+    description: `Figura decorativa Mishi Flor
+Material figura: yeso cerámico
+Tamaño: 5x6cm app
+Barniz: mate`,
     category: "mishi-flor",
   },
   {
@@ -161,7 +206,10 @@ export const products: Product[] = [
     price: 5000,
     image: "/images/productos/hello-kitty/image00001.jpeg",
     instagramUrl: IG,
-    description: "Figura estilo Kitty con lazo. Línea Mishi Kitty Amishi.",
+    description: `Descripción:
+Figura decorativa
+Material: yeso cerámico
+Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
   },
   {
@@ -170,7 +218,10 @@ export const products: Product[] = [
     price: 5000,
     image: "/images/productos/hello-kitty/image00002.jpeg",
     instagramUrl: IG,
-    description: "Figura estilo Kitty con lazo. Línea Mishi Kitty Amishi.",
+    description: `Descripción:
+Figura decorativa
+Material: yeso cerámico
+Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
   },
   {
@@ -179,7 +230,10 @@ export const products: Product[] = [
     price: 5000,
     image: "/images/productos/hello-kitty/image00003.jpeg",
     instagramUrl: IG,
-    description: "Figura estilo Kitty con lazo. Línea Mishi Kitty Amishi.",
+    description: `Descripción:
+Figura decorativa
+Material: yeso cerámico
+Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
   },
   {
@@ -188,7 +242,10 @@ export const products: Product[] = [
     price: 5000,
     image: "/images/productos/hello-kitty/image00004.jpeg",
     instagramUrl: IG,
-    description: "Figura estilo Kitty con lazo. Línea Mishi Kitty Amishi.",
+    description: `Descripción:
+Figura decorativa
+Material: yeso cerámico
+Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
   },
   {
@@ -197,7 +254,10 @@ export const products: Product[] = [
     price: 5000,
     image: "/images/productos/hello-kitty/image00010.jpeg",
     instagramUrl: IG,
-    description: "Figura estilo Kitty con lazo. Línea Mishi Kitty Amishi.",
+    description: `Descripción:
+Figura decorativa
+Material: yeso cerámico
+Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
   },
   {
@@ -206,7 +266,10 @@ export const products: Product[] = [
     price: 5000,
     image: "/images/productos/hello-kitty/image00033.jpeg",
     instagramUrl: IG,
-    description: "Figura estilo Kitty con lazo. Línea Mishi Kitty Amishi.",
+    description: `Descripción:
+Figura decorativa
+Material: yeso cerámico
+Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
   },
   {
@@ -215,7 +278,11 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/imanes/image00007.jpeg",
     instagramUrl: IG,
-    description: "Imán con cabeza de gato. Ideal para nevera u otra superficie metálica.",
+    description: `Descripción
+
+Imán decorativo
+Material: yeso cerámico
+Tamaño: 4x5 cm app`,
     category: "imanes",
   },
   {
@@ -224,7 +291,11 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/imanes/image00011.jpeg",
     instagramUrl: IG,
-    description: "Imán con cabeza de gato. Ideal para nevera u otra superficie metálica.",
+    description: `Descripción
+
+Imán decorativo
+Material: yeso cerámico
+Tamaño: 4x5 cm app`,
     category: "imanes",
   },
   {
@@ -233,7 +304,11 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/imanes/image00014.jpeg",
     instagramUrl: IG,
-    description: "Imán con cabeza de gato. Ideal para nevera u otra superficie metálica.",
+    description: `Descripción
+
+Imán decorativo
+Material: yeso cerámico
+Tamaño: 4x5 cm app`,
     category: "imanes",
   },
   {
@@ -242,7 +317,11 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/imanes/image00016.jpeg",
     instagramUrl: IG,
-    description: "Imán con cabeza de gato. Ideal para nevera u otra superficie metálica.",
+    description: `Descripción
+
+Imán decorativo
+Material: yeso cerámico
+Tamaño: 4x5 cm app`,
     category: "imanes",
   },
   {
@@ -251,98 +330,132 @@ export const products: Product[] = [
     price: 4000,
     image: "/images/productos/imanes/image00020.jpeg",
     instagramUrl: IG,
-    description: "Imán con cabeza de gato. Ideal para nevera u otra superficie metálica.",
+    description: `Descripción
+
+Imán decorativo
+Material: yeso cerámico
+Tamaño: 4x5 cm app`,
     category: "imanes",
   },
   {
     id: "aros-image00026",
-    name: "Michi aros 1",
+    name: "Mishi aros 1",
     price: 15000,
     image: "/images/productos/aros/image00026.jpeg",
     instagramUrl: IG,
-    description: "Aretes artesanales. Modelo único; consulta disponibilidad por Instagram.",
-    category: "michi-aros",
+    description: `Descripción:
+Aros Mishi
+Material figura: arcilla secado al aire
+Material pendiente: acero inoxidable`,
+    category: "mishi-aros",
   },
   {
     id: "aros-image00027",
-    name: "Michi aros 2",
+    name: "Mishi aros 2",
     price: 15000,
     image: "/images/productos/aros/image00027.jpeg",
     instagramUrl: IG,
-    description: "Aretes artesanales. Modelo único; consulta disponibilidad por Instagram.",
-    category: "michi-aros",
+    description: `Descripción:
+Aros Mishi
+Material figura: arcilla secado al aire
+Material pendiente: acero inoxidable`,
+    category: "mishi-aros",
   },
   {
     id: "aros-image00028",
-    name: "Michi aros 3",
+    name: "Mishi aros 3",
     price: 15000,
     image: "/images/productos/aros/image00028.jpeg",
     instagramUrl: IG,
-    description: "Aretes artesanales. Modelo único; consulta disponibilidad por Instagram.",
-    category: "michi-aros",
+    description: `Descripción:
+Aros Mishi
+Material figura: arcilla secado al aire
+Material pendiente: acero inoxidable`,
+    category: "mishi-aros",
   },
   {
     id: "aros-image00029",
-    name: "Michi aros 4",
+    name: "Mishi aros 4",
     price: 15000,
     image: "/images/productos/aros/image00029.jpeg",
     instagramUrl: IG,
-    description: "Aretes artesanales. Modelo único; consulta disponibilidad por Instagram.",
-    category: "michi-aros",
+    description: `Descripción:
+Aros Mishi
+Material figura: arcilla secado al aire
+Material pendiente: acero inoxidable`,
+    category: "mishi-aros",
   },
   {
     id: "aros-image00030",
-    name: "Michi aros 5",
+    name: "Mishi aros 5",
     price: 15000,
     image: "/images/productos/aros/image00030.jpeg",
     instagramUrl: IG,
-    description: "Aretes artesanales. Modelo único; consulta disponibilidad por Instagram.",
-    category: "michi-aros",
+    description: `Descripción:
+Aros Mishi
+Material figura: arcilla secado al aire
+Material pendiente: acero inoxidable`,
+    category: "mishi-aros",
   },
   {
     id: "aros-image00031",
-    name: "Michi aros 6",
+    name: "Mishi aros 6",
     price: 15000,
     image: "/images/productos/aros/image00031.jpeg",
     instagramUrl: IG,
-    description: "Aretes artesanales. Modelo único; consulta disponibilidad por Instagram.",
-    category: "michi-aros",
+    description: `Descripción:
+Aros Mishi
+Material figura: arcilla secado al aire
+Material pendiente: acero inoxidable`,
+    category: "mishi-aros",
   },
   {
     id: "aros-image00032",
-    name: "Michi aros 7",
+    name: "Mishi aros 7",
     price: 15000,
     image: "/images/productos/aros/image00032.jpeg",
     instagramUrl: IG,
-    description: "Aretes artesanales. Modelo único; consulta disponibilidad por Instagram.",
-    category: "michi-aros",
+    description: `Descripción:
+Aros Mishi
+Material figura: arcilla secado al aire
+Material pendiente: acero inoxidable`,
+    category: "mishi-aros",
   },
   {
     id: "aros-image00034",
-    name: "Michi aros 8",
+    name: "Mishi aros 8",
     price: 15000,
     image: "/images/productos/aros/image00034.jpeg",
     instagramUrl: IG,
-    description: "Aretes artesanales. Modelo único; consulta disponibilidad por Instagram.",
-    category: "michi-aros",
+    description: `Descripción:
+Aros Mishi
+Material figura: arcilla secado al aire
+Material pendiente: acero inoxidable`,
+    category: "mishi-aros",
   },
   {
     id: "aros-image00035",
-    name: "Michi aros 9",
+    name: "Mishi aros 9",
     price: 15000,
     image: "/images/productos/aros/image00035.jpeg",
     instagramUrl: IG,
-    description: "Aretes artesanales. Modelo único; consulta disponibilidad por Instagram.",
-    category: "michi-aros",
+    description: `Descripción:
+Aros Mishi
+Material figura: arcilla secado al aire
+Material pendiente: acero inoxidable`,
+    category: "mishi-aros",
   },
   {
     id: "aros-image00036",
-    name: "Michi aros 10",
+    name: "Mishi aros 10",
     price: 15000,
     image: "/images/productos/aros/image00036.jpeg",
     instagramUrl: IG,
-    description: "Aretes artesanales. Modelo único; consulta disponibilidad por Instagram.",
-    category: "michi-aros",
+    description: `Descripción:
+Aros Mishi
+Material figura: arcilla secado al aire
+Material pendiente: acero inoxidable`,
+    category: "mishi-aros",
   },
   {
     id: "papeleria-prints-image00053",
@@ -350,7 +463,14 @@ export const products: Product[] = [
     price: 2000,
     image: "/images/productos/papeleria/prints/image00053.jpeg",
     instagramUrl: IG,
-    description: "Print o postal con ilustración. Papelería Amishi.",
+    description: `Descripción:
+
+Print/postal ideal para decorar
+Impresión Láser
+Papel couche, 270 grs.
+Tamaño: 10x15cm app
+
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
     category: "papeleria",
   },
   {
@@ -359,7 +479,14 @@ export const products: Product[] = [
     price: 2000,
     image: "/images/productos/papeleria/prints/image00054.jpeg",
     instagramUrl: IG,
-    description: "Print o postal con ilustración. Papelería Amishi.",
+    description: `Descripción:
+
+Print/postal ideal para decorar
+Impresión Láser
+Papel couche, 270 grs.
+Tamaño: 10x15cm app
+
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
     category: "papeleria",
   },
   {
@@ -368,7 +495,14 @@ export const products: Product[] = [
     price: 2000,
     image: "/images/productos/papeleria/prints/image00055.jpeg",
     instagramUrl: IG,
-    description: "Print o postal con ilustración. Papelería Amishi.",
+    description: `Descripción:
+
+Print/postal ideal para decorar
+Impresión Láser
+Papel couche, 270 grs.
+Tamaño: 10x15cm app
+
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
     category: "papeleria",
   },
   {
@@ -377,7 +511,14 @@ export const products: Product[] = [
     price: 2000,
     image: "/images/productos/papeleria/prints/image00056.jpeg",
     instagramUrl: IG,
-    description: "Print o postal con ilustración. Papelería Amishi.",
+    description: `Descripción:
+
+Print/postal ideal para decorar
+Impresión Láser
+Papel couche, 270 grs.
+Tamaño: 10x15cm app
+
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
     category: "papeleria",
   },
   {
@@ -386,7 +527,14 @@ export const products: Product[] = [
     price: 2000,
     image: "/images/productos/papeleria/prints/image00057.jpeg",
     instagramUrl: IG,
-    description: "Print o postal con ilustración. Papelería Amishi.",
+    description: `Descripción:
+
+Print/postal ideal para decorar
+Impresión Láser
+Papel couche, 270 grs.
+Tamaño: 10x15cm app
+
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
     category: "papeleria",
   },
   {
@@ -395,7 +543,14 @@ export const products: Product[] = [
     price: 2000,
     image: "/images/productos/papeleria/prints/image00058.jpeg",
     instagramUrl: IG,
-    description: "Print o postal con ilustración. Papelería Amishi.",
+    description: `Descripción:
+
+Print/postal ideal para decorar
+Impresión Láser
+Papel couche, 270 grs.
+Tamaño: 10x15cm app
+
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
     category: "papeleria",
   },
   {
@@ -404,7 +559,14 @@ export const products: Product[] = [
     price: 2000,
     image: "/images/productos/papeleria/prints/image00059.jpeg",
     instagramUrl: IG,
-    description: "Print o postal con ilustración. Papelería Amishi.",
+    description: `Descripción:
+
+Print/postal ideal para decorar
+Impresión Láser
+Papel couche, 270 grs.
+Tamaño: 10x15cm app
+
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
     category: "papeleria",
   },
   {
@@ -413,7 +575,14 @@ export const products: Product[] = [
     price: 2000,
     image: "/images/productos/papeleria/prints/image00060.jpeg",
     instagramUrl: IG,
-    description: "Print o postal con ilustración. Papelería Amishi.",
+    description: `Descripción:
+
+Print/postal ideal para decorar
+Impresión Láser
+Papel couche, 270 grs.
+Tamaño: 10x15cm app
+
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
     category: "papeleria",
   },
   {
