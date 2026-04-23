@@ -4,9 +4,10 @@ import { BrandLogo } from "./BrandLogo";
 type FooterProps = {
   siteName: string;
   instagramUrl: string;
+  instagramProfileUrl: string;
 };
 
-export function Footer({ siteName, instagramUrl }: FooterProps) {
+export function Footer({ siteName, instagramUrl, instagramProfileUrl }: FooterProps) {
   const year = new Date().getFullYear();
 
   return (
@@ -20,7 +21,7 @@ export function Footer({ siteName, instagramUrl }: FooterProps) {
               Instagram.
             </p>
             <a
-              href={instagramUrl}
+              href={instagramProfileUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-flex text-sm font-medium text-clay underline-offset-4 hover:underline"

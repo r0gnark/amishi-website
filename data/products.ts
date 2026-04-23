@@ -113,7 +113,7 @@ export const products: Product[] = [
   {
     id: "michi-flor-image00006",
     name: "Mishi Flor 1",
-    price: 5000,
+    price: 15000,
     image: "/images/productos/michi-flor/image00006.jpeg",
     instagramUrl: IG,
     description: "Figura Mishi Flor con detalle floral. Decoración coleccionable.",
@@ -122,7 +122,7 @@ export const products: Product[] = [
   {
     id: "michi-flor-image00012",
     name: "Mishi Flor 2",
-    price: 5000,
+    price: 15000,
     image: "/images/productos/michi-flor/image00012.jpeg",
     instagramUrl: IG,
     description: "Figura Mishi Flor con detalle floral. Decoración coleccionable.",
@@ -131,7 +131,7 @@ export const products: Product[] = [
   {
     id: "michi-flor-image00015",
     name: "Mishi Flor 3",
-    price: 5000,
+    price: 15000,
     image: "/images/productos/michi-flor/image00015.jpeg",
     instagramUrl: IG,
     description: "Figura Mishi Flor con detalle floral. Decoración coleccionable.",
@@ -140,7 +140,7 @@ export const products: Product[] = [
   {
     id: "michi-flor-image00017",
     name: "Mishi Flor 4",
-    price: 5000,
+    price: 15000,
     image: "/images/productos/michi-flor/image00017.jpeg",
     instagramUrl: IG,
     description: "Figura Mishi Flor con detalle floral. Decoración coleccionable.",
@@ -149,7 +149,7 @@ export const products: Product[] = [
   {
     id: "michi-flor-image00019",
     name: "Mishi Flor 5",
-    price: 5000,
+    price: 15000,
     image: "/images/productos/michi-flor/image00019.jpeg",
     instagramUrl: IG,
     description: "Figura Mishi Flor con detalle floral. Decoración coleccionable.",
@@ -414,6 +414,15 @@ export const products: Product[] = [
     image: "/images/productos/papeleria/prints/image00060.jpeg",
     instagramUrl: IG,
     description: "Print o postal con ilustración. Papelería Amishi.",
+    category: "papeleria",
+  },
+  {
+    id: "papeleria-croqueras-croquera",
+    name: "Croquera",
+    price: 5000,
+    image: "/images/productos/papeleria/croqueras/croquera.png",
+    instagramUrl: IG,
+    description: "Croquera con ilustración. Papelería Amishi.",
     category: "papeleria",
   },
   {
