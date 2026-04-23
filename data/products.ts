@@ -624,7 +624,7 @@ Tamaño: 5,5x9,5cm
   },
   {
     id: "papeleria-stickers-caras-image00037",
-    name: "Sticker cara Michi 1",
+    name: "Sticker cara Mishi 1",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00037.jpeg",
     instagramUrl: IG,
@@ -637,7 +637,7 @@ Tamaño: 6x5cm app
   },
   {
     id: "papeleria-stickers-caras-image00038",
-    name: "Sticker cara Michi 2",
+    name: "Sticker cara Mishi 2",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00038.jpeg",
     instagramUrl: IG,
@@ -650,7 +650,7 @@ Tamaño: 6x5cm app
   },
   {
     id: "papeleria-stickers-caras-image00039",
-    name: "Sticker cara Michi 3",
+    name: "Sticker cara Mishi 3",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00039.jpeg",
     instagramUrl: IG,
@@ -663,7 +663,7 @@ Tamaño: 6x5cm app
   },
   {
     id: "papeleria-stickers-caras-image00040",
-    name: "Sticker cara Michi 4",
+    name: "Sticker cara Mishi 4",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00040.jpeg",
     instagramUrl: IG,
@@ -676,7 +676,7 @@ Tamaño: 6x5cm app
   },
   {
     id: "papeleria-stickers-caras-image00041",
-    name: "Sticker cara Michi 5",
+    name: "Sticker cara Mishi 5",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00041.jpeg",
     instagramUrl: IG,
@@ -689,7 +689,7 @@ Tamaño: 6x5cm app
   },
   {
     id: "papeleria-stickers-caras-image00042",
-    name: "Sticker cara Michi 6",
+    name: "Sticker cara Mishi 6",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00042.jpeg",
     instagramUrl: IG,
@@ -702,7 +702,7 @@ Tamaño: 6x5cm app
   },
   {
     id: "papeleria-stickers-caras-image00043",
-    name: "Sticker cara Michi 7",
+    name: "Sticker cara Mishi 7",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00043.jpeg",
     instagramUrl: IG,
@@ -715,7 +715,7 @@ Tamaño: 6x5cm app
   },
   {
     id: "papeleria-stickers-caras-image00044",
-    name: "Sticker cara Michi 8",
+    name: "Sticker cara Mishi 8",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00044.jpeg",
     instagramUrl: IG,
@@ -728,7 +728,7 @@ Tamaño: 6x5cm app
   },
   {
     id: "papeleria-stickers-caras-image00045",
-    name: "Sticker cara Michi 9",
+    name: "Sticker cara Mishi 9",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00045.jpeg",
     instagramUrl: IG,
@@ -741,7 +741,7 @@ Tamaño: 6x5cm app
   },
   {
     id: "papeleria-stickers-caras-image00046",
-    name: "Sticker cara Michi 10",
+    name: "Sticker cara Mishi 10",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00046.jpeg",
     instagramUrl: IG,
@@ -754,7 +754,7 @@ Tamaño: 6x5cm app
   },
   {
     id: "papeleria-stickers-caras-image00047",
-    name: "Sticker cara Michi 11",
+    name: "Sticker cara Mishi 11",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00047.jpeg",
     instagramUrl: IG,
@@ -767,7 +767,7 @@ Tamaño: 6x5cm app
   },
   {
     id: "papeleria-stickers-caras-image00048",
-    name: "Sticker cara Michi 12",
+    name: "Sticker cara Mishi 12",
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00048.jpeg",
     instagramUrl: IG,
