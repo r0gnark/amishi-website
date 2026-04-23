@@ -470,7 +470,9 @@ Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+
+* no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
   },
   {
@@ -486,7 +488,9 @@ Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+
+* no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
   },
   {
@@ -502,7 +506,9 @@ Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+
+* no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
   },
   {
@@ -518,7 +524,9 @@ Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+
+* no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
   },
   {
@@ -534,7 +542,9 @@ Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+
+* no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
   },
   {
@@ -550,7 +560,9 @@ Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+
+* no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
   },
   {
@@ -566,7 +578,9 @@ Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+
+* no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
   },
   {
@@ -582,7 +596,9 @@ Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)`,
+Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+
+* no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
   },
   {
