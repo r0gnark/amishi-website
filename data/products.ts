@@ -206,8 +206,7 @@ Barniz: mate`,
     price: 5000,
     image: "/images/productos/hello-kitty/image00001.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Figura decorativa
+    description: `Figura decorativa
 Material: yeso cerámico
 Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
@@ -218,8 +217,7 @@ Tamaño: 4,5x5,5cm app`,
     price: 5000,
     image: "/images/productos/hello-kitty/image00002.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Figura decorativa
+    description: `Figura decorativa
 Material: yeso cerámico
 Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
@@ -230,8 +228,7 @@ Tamaño: 4,5x5,5cm app`,
     price: 5000,
     image: "/images/productos/hello-kitty/image00003.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Figura decorativa
+    description: `Figura decorativa
 Material: yeso cerámico
 Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
@@ -242,8 +239,7 @@ Tamaño: 4,5x5,5cm app`,
     price: 5000,
     image: "/images/productos/hello-kitty/image00004.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Figura decorativa
+    description: `Figura decorativa
 Material: yeso cerámico
 Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
@@ -254,8 +250,7 @@ Tamaño: 4,5x5,5cm app`,
     price: 5000,
     image: "/images/productos/hello-kitty/image00010.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Figura decorativa
+    description: `Figura decorativa
 Material: yeso cerámico
 Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
@@ -266,8 +261,7 @@ Tamaño: 4,5x5,5cm app`,
     price: 5000,
     image: "/images/productos/hello-kitty/image00033.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Figura decorativa
+    description: `Figura decorativa
 Material: yeso cerámico
 Tamaño: 4,5x5,5cm app`,
     category: "mishi-kitty",
@@ -278,9 +272,7 @@ Tamaño: 4,5x5,5cm app`,
     price: 4000,
     image: "/images/productos/imanes/image00007.jpeg",
     instagramUrl: IG,
-    description: `Descripción
-
-Imán decorativo
+    description: `Imán decorativo
 Material: yeso cerámico
 Tamaño: 4x5 cm app`,
     category: "imanes",
@@ -291,9 +283,7 @@ Tamaño: 4x5 cm app`,
     price: 4000,
     image: "/images/productos/imanes/image00011.jpeg",
     instagramUrl: IG,
-    description: `Descripción
-
-Imán decorativo
+    description: `Imán decorativo
 Material: yeso cerámico
 Tamaño: 4x5 cm app`,
     category: "imanes",
@@ -304,9 +294,7 @@ Tamaño: 4x5 cm app`,
     price: 4000,
     image: "/images/productos/imanes/image00014.jpeg",
     instagramUrl: IG,
-    description: `Descripción
-
-Imán decorativo
+    description: `Imán decorativo
 Material: yeso cerámico
 Tamaño: 4x5 cm app`,
     category: "imanes",
@@ -317,9 +305,7 @@ Tamaño: 4x5 cm app`,
     price: 4000,
     image: "/images/productos/imanes/image00016.jpeg",
     instagramUrl: IG,
-    description: `Descripción
-
-Imán decorativo
+    description: `Imán decorativo
 Material: yeso cerámico
 Tamaño: 4x5 cm app`,
     category: "imanes",
@@ -330,9 +316,7 @@ Tamaño: 4x5 cm app`,
     price: 4000,
     image: "/images/productos/imanes/image00020.jpeg",
     instagramUrl: IG,
-    description: `Descripción
-
-Imán decorativo
+    description: `Imán decorativo
 Material: yeso cerámico
 Tamaño: 4x5 cm app`,
     category: "imanes",
@@ -343,8 +327,7 @@ Tamaño: 4x5 cm app`,
     price: 15000,
     image: "/images/productos/aros/image00026.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Aros Mishi
+    description: `Aros Mishi
 Material figura: arcilla secado al aire
 Material pendiente: acero inoxidable`,
     category: "mishi-aros",
@@ -355,8 +338,7 @@ Material pendiente: acero inoxidable`,
     price: 15000,
     image: "/images/productos/aros/image00027.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Aros Mishi
+    description: `Aros Mishi
 Material figura: arcilla secado al aire
 Material pendiente: acero inoxidable`,
     category: "mishi-aros",
@@ -367,8 +349,7 @@ Material pendiente: acero inoxidable`,
     price: 15000,
     image: "/images/productos/aros/image00028.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Aros Mishi
+    description: `Aros Mishi
 Material figura: arcilla secado al aire
 Material pendiente: acero inoxidable`,
     category: "mishi-aros",
@@ -379,8 +360,7 @@ Material pendiente: acero inoxidable`,
     price: 15000,
     image: "/images/productos/aros/image00029.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Aros Mishi
+    description: `Aros Mishi
 Material figura: arcilla secado al aire
 Material pendiente: acero inoxidable`,
     category: "mishi-aros",
@@ -391,8 +371,7 @@ Material pendiente: acero inoxidable`,
     price: 15000,
     image: "/images/productos/aros/image00030.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Aros Mishi
+    description: `Aros Mishi
 Material figura: arcilla secado al aire
 Material pendiente: acero inoxidable`,
     category: "mishi-aros",
@@ -403,8 +382,7 @@ Material pendiente: acero inoxidable`,
     price: 15000,
     image: "/images/productos/aros/image00031.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Aros Mishi
+    description: `Aros Mishi
 Material figura: arcilla secado al aire
 Material pendiente: acero inoxidable`,
     category: "mishi-aros",
@@ -415,8 +393,7 @@ Material pendiente: acero inoxidable`,
     price: 15000,
     image: "/images/productos/aros/image00032.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Aros Mishi
+    description: `Aros Mishi
 Material figura: arcilla secado al aire
 Material pendiente: acero inoxidable`,
     category: "mishi-aros",
@@ -427,8 +404,7 @@ Material pendiente: acero inoxidable`,
     price: 15000,
     image: "/images/productos/aros/image00034.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Aros Mishi
+    description: `Aros Mishi
 Material figura: arcilla secado al aire
 Material pendiente: acero inoxidable`,
     category: "mishi-aros",
@@ -439,8 +415,7 @@ Material pendiente: acero inoxidable`,
     price: 15000,
     image: "/images/productos/aros/image00035.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Aros Mishi
+    description: `Aros Mishi
 Material figura: arcilla secado al aire
 Material pendiente: acero inoxidable`,
     category: "mishi-aros",
@@ -451,8 +426,7 @@ Material pendiente: acero inoxidable`,
     price: 15000,
     image: "/images/productos/aros/image00036.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Aros Mishi
+    description: `Aros Mishi
 Material figura: arcilla secado al aire
 Material pendiente: acero inoxidable`,
     category: "mishi-aros",
@@ -463,9 +437,7 @@ Material pendiente: acero inoxidable`,
     price: 2000,
     image: "/images/productos/papeleria/prints/image00053.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Print/postal ideal para decorar
+    description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
@@ -481,9 +453,7 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
     price: 2000,
     image: "/images/productos/papeleria/prints/image00054.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Print/postal ideal para decorar
+    description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
@@ -499,9 +469,7 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
     price: 2000,
     image: "/images/productos/papeleria/prints/image00055.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Print/postal ideal para decorar
+    description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
@@ -517,9 +485,7 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
     price: 2000,
     image: "/images/productos/papeleria/prints/image00056.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Print/postal ideal para decorar
+    description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
@@ -535,9 +501,7 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
     price: 2000,
     image: "/images/productos/papeleria/prints/image00057.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Print/postal ideal para decorar
+    description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
@@ -553,9 +517,7 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
     price: 2000,
     image: "/images/productos/papeleria/prints/image00058.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Print/postal ideal para decorar
+    description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
@@ -571,9 +533,7 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
     price: 2000,
     image: "/images/productos/papeleria/prints/image00059.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Print/postal ideal para decorar
+    description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
@@ -589,9 +549,7 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
     price: 2000,
     image: "/images/productos/papeleria/prints/image00060.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Print/postal ideal para decorar
+    description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
@@ -607,9 +565,7 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
     price: 5000,
     image: "/images/productos/papeleria/croqueras/croquera.png",
     instagramUrl: IG,
-    description: `Descripción
-
-Croquera tapa dura
+    description: `Croquera tapa dura
 100 hojas blancas
 Tamaño: 11x17cm app`,
     category: "papeleria",
@@ -620,9 +576,7 @@ Tamaño: 11x17cm app`,
     price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00049.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Mishi billete
+    description: `Mishi billete
 Papel adhesivo
 Tamaño: 5,5x9,5cm
 
@@ -635,9 +589,7 @@ Tamaño: 5,5x9,5cm
     price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00050.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Mishi billete
+    description: `Mishi billete
 Papel adhesivo
 Tamaño: 5,5x9,5cm
 
@@ -650,9 +602,7 @@ Tamaño: 5,5x9,5cm
     price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00051.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Mishi billete
+    description: `Mishi billete
 Papel adhesivo
 Tamaño: 5,5x9,5cm
 
@@ -665,9 +615,7 @@ Tamaño: 5,5x9,5cm
     price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00052.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-
-Mishi billete
+    description: `Mishi billete
 Papel adhesivo
 Tamaño: 5,5x9,5cm
 
@@ -680,8 +628,7 @@ Tamaño: 5,5x9,5cm
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00037.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
@@ -694,8 +641,7 @@ Tamaño: 6x5cm app
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00038.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
@@ -708,8 +654,7 @@ Tamaño: 6x5cm app
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00039.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
@@ -722,8 +667,7 @@ Tamaño: 6x5cm app
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00040.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
@@ -736,8 +680,7 @@ Tamaño: 6x5cm app
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00041.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
@@ -750,8 +693,7 @@ Tamaño: 6x5cm app
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00042.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
@@ -764,8 +706,7 @@ Tamaño: 6x5cm app
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00043.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
@@ -778,8 +719,7 @@ Tamaño: 6x5cm app
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00044.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
@@ -792,8 +732,7 @@ Tamaño: 6x5cm app
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00045.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
@@ -806,8 +745,7 @@ Tamaño: 6x5cm app
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00046.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
@@ -820,8 +758,7 @@ Tamaño: 6x5cm app
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00047.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
@@ -834,8 +771,7 @@ Tamaño: 6x5cm app
     price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00048.jpeg",
     instagramUrl: IG,
-    description: `Descripción:
-Sticker Mishi troquelado
+    description: `Sticker Mishi troquelado
 Papel adhesivo
 Tamaño: 6x5cm app
 
