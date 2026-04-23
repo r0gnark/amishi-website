@@ -617,7 +617,7 @@ Tamaño: 11x17cm app`,
   {
     id: "papeleria-stickers-billetes-image00049",
     name: "Sticker billete decorativo 1",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00049.jpeg",
     instagramUrl: IG,
     description: `Descripción:
@@ -626,15 +626,13 @@ Mishi billete
 Papel adhesivo
 Tamaño: 5,5x9,5cm
 
-500 c/u
-3x 1.000
-Se puede mezclar con stickers disponibles en el catálogo web`,
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-billetes-image00050",
     name: "Sticker billete decorativo 2",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00050.jpeg",
     instagramUrl: IG,
     description: `Descripción:
@@ -643,15 +641,13 @@ Mishi billete
 Papel adhesivo
 Tamaño: 5,5x9,5cm
 
-500 c/u
-3x 1.000
-Se puede mezclar con stickers disponibles en el catálogo web`,
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-billetes-image00051",
     name: "Sticker billete decorativo 3",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00051.jpeg",
     instagramUrl: IG,
     description: `Descripción:
@@ -660,15 +656,13 @@ Mishi billete
 Papel adhesivo
 Tamaño: 5,5x9,5cm
 
-500 c/u
-3x 1.000
-Se puede mezclar con stickers disponibles en el catálogo web`,
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-billetes-image00052",
     name: "Sticker billete decorativo 4",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00052.jpeg",
     instagramUrl: IG,
     description: `Descripción:
@@ -677,153 +671,175 @@ Mishi billete
 Papel adhesivo
 Tamaño: 5,5x9,5cm
 
-500 c/u
-3x 1.000
-Se puede mezclar con stickers disponibles en el catálogo web`,
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00037",
     name: "Sticker cara Michi 1",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00037.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00038",
     name: "Sticker cara Michi 2",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00038.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00039",
     name: "Sticker cara Michi 3",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00039.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00040",
     name: "Sticker cara Michi 4",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00040.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00041",
     name: "Sticker cara Michi 5",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00041.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00042",
     name: "Sticker cara Michi 6",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00042.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00043",
     name: "Sticker cara Michi 7",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00043.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00044",
     name: "Sticker cara Michi 8",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00044.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00045",
     name: "Sticker cara Michi 9",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00045.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00046",
     name: "Sticker cara Michi 10",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00046.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00047",
     name: "Sticker cara Michi 11",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00047.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
     id: "papeleria-stickers-caras-image00048",
     name: "Sticker cara Michi 12",
-    price: 400,
+    price: 500,
     image: "/images/productos/papeleria/stickers-caras/image00048.jpeg",
     instagramUrl: IG,
     description: `Descripción:
 Sticker Mishi troquelado
 Papel adhesivo
-Tamaño: 6x5cm app`,
+Tamaño: 6x5cm app
+
+500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
 ];
