@@ -10,6 +10,8 @@ import { useCatalogFilter } from "./CatalogFilterContext";
 type HeaderProps = {
   siteName: string;
   instagramUrl: string;
+  /** Perfil público (ícono IG en cabecera). */
+  instagramProfileUrl: string;
 };
 
 function scrollToCatalogSmooth() {
@@ -18,7 +20,7 @@ function scrollToCatalogSmooth() {
   });
 }
 
-export function Header({ siteName, instagramUrl }: HeaderProps) {
+export function Header({ siteName, instagramUrl, instagramProfileUrl }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -42,6 +44,12 @@ export function Header({ siteName, instagramUrl }: HeaderProps) {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:py-4">
         <Link
           href="/"
+          onClick={(e) => {
+            if (pathname === "/") {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
           className="flex shrink-0 items-center gap-2 outline-none ring-rose ring-offset-2 ring-offset-white transition-opacity hover:opacity-90 focus-visible:rounded-full focus-visible:ring-2"
         >
           <BrandLogo variant="header" siteName={siteName} />
@@ -73,7 +81,7 @@ export function Header({ siteName, instagramUrl }: HeaderProps) {
 
         <div className="flex items-center gap-2">
           <a
-            href={instagramUrl}
+            href={instagramProfileUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-full p-2 text-ink transition hover:bg-blush/60"

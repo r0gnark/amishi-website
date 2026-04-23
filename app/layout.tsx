@@ -68,7 +68,11 @@ export default function RootLayout({
         </a>
         <AnnouncementBar />
         <AppProviders>
-          <Header siteName={SITE.name} instagramUrl={SITE.instagramUrl} />
+          <Header
+            siteName={SITE.name}
+            instagramUrl={SITE.instagramUrl}
+            instagramProfileUrl={SITE.instagramProfileUrl}
+          />
           <main id="contenido-principal" className="flex-1">
             {children}
           </main>
