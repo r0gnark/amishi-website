@@ -5,8 +5,8 @@ import type { CatalogCategoryId } from "@/data/catalog-filters";
  */
 export const PRODUCT_PHOTO_ASPECT_CLASS = "aspect-[3/5]";
 
-/** Michi aros 1, 3, 4 y 5: más acercamiento al producto. */
-const MICHI_AROS_EXTRA_ZOOM = new Set<string>([
+/** Mishi aros 1, 3, 4 y 5: más acercamiento al producto. */
+const MISHI_AROS_EXTRA_ZOOM = new Set<string>([
   "aros-image00026",
   "aros-image00028",
   "aros-image00029",
@@ -21,7 +21,7 @@ export function productImageClassName(
   options: { withCardHover?: boolean; productId?: string } = {},
 ): string {
   const { withCardHover = false, productId } = options;
-  const closer = productId && MICHI_AROS_EXTRA_ZOOM.has(productId);
+  const closer = productId && MISHI_AROS_EXTRA_ZOOM.has(productId);
   const scale = closer ? "scale-[1.34]" : "scale-[1.14]";
   const hover = withCardHover
     ? closer

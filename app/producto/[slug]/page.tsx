@@ -76,7 +76,9 @@ export default async function ProductoPage({ params }: Props) {
               {product.name}
             </h1>
             <p className="mt-4 font-display text-2xl font-semibold text-rose">{formatCLP(product.price)}</p>
-            <p className="mt-6 leading-relaxed text-ink/90">{product.description}</p>
+            <p className="mt-6 whitespace-pre-line leading-relaxed text-ink/90">
+              {product.description}
+            </p>
 
             <ProductInstagramCta productPageUrl={productPageUrl} instagramUrl={product.instagramUrl} />
 

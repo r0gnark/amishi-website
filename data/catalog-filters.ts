@@ -7,7 +7,7 @@ export const CATALOG_FILTER_IDS = [
   "mishi-flor",
   "mishi-kitty",
   "imanes",
-  "michi-aros",
+  "mishi-aros",
   "papeleria",
 ] as const;
 
@@ -44,8 +44,8 @@ export const catalogFilters: CatalogFilterItem[] = [
     image: "/images/catalog-filters/imanes.webp",
   },
   {
-    id: "michi-aros",
-    label: "Michi aros",
+    id: "mishi-aros",
+    label: "Mishi aros",
     image: "/images/catalog-filters/aros.webp",
   },
   {
