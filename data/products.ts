@@ -604,7 +604,15 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-billetes/image00049.jpeg",
     instagramUrl: IG,
-    description: "Sticker tipo billete decorativo con Michi. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+
+Mishi billete
+Papel adhesivo
+Tamaño: 5,5x9,5cm
+
+500 c/u
+3x 1.000
+Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
@@ -613,7 +621,15 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-billetes/image00050.jpeg",
     instagramUrl: IG,
-    description: "Sticker tipo billete decorativo con Michi. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+
+Mishi billete
+Papel adhesivo
+Tamaño: 5,5x9,5cm
+
+500 c/u
+3x 1.000
+Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
@@ -622,7 +638,15 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-billetes/image00051.jpeg",
     instagramUrl: IG,
-    description: "Sticker tipo billete decorativo con Michi. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+
+Mishi billete
+Papel adhesivo
+Tamaño: 5,5x9,5cm
+
+500 c/u
+3x 1.000
+Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
@@ -631,7 +655,15 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-billetes/image00052.jpeg",
     instagramUrl: IG,
-    description: "Sticker tipo billete decorativo con Michi. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+
+Mishi billete
+Papel adhesivo
+Tamaño: 5,5x9,5cm
+
+500 c/u
+3x 1.000
+Se puede mezclar con stickers disponibles en el catálogo web`,
     category: "papeleria",
   },
   {
@@ -640,7 +672,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00037.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
   {
@@ -649,7 +684,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00038.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
   {
@@ -658,7 +696,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00039.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
   {
@@ -667,7 +708,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00040.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
   {
@@ -676,7 +720,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00041.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
   {
@@ -685,7 +732,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00042.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
   {
@@ -694,7 +744,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00043.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
   {
@@ -703,7 +756,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00044.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
   {
@@ -712,7 +768,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00045.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
   {
@@ -721,7 +780,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00046.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
   {
@@ -730,7 +792,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00047.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
   {
@@ -739,7 +804,10 @@ Tamaño: 11x17cm app`,
     price: 400,
     image: "/images/productos/papeleria/stickers-caras/image00048.jpeg",
     instagramUrl: IG,
-    description: "Sticker troquelado con carita de gato. $400 c/u; 3 stickers por $1.000.",
+    description: `Descripción:
+Sticker Mishi troquelado
+Papel adhesivo
+Tamaño: 6x5cm app`,
     category: "papeleria",
   },
 ];
