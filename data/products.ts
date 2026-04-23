@@ -591,7 +591,11 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
     price: 5000,
     image: "/images/productos/papeleria/croqueras/croquera.png",
     instagramUrl: IG,
-    description: "Croquera con ilustración. Papelería Amishi.",
+    description: `Descripción
+
+Croquera tapa dura
+100 hojas blancas
+Tamaño: 11x17cm app`,
     category: "papeleria",
   },
   {
