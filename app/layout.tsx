@@ -76,7 +76,11 @@ export default function RootLayout({
           <main id="contenido-principal" className="flex-1">
             {children}
           </main>
-          <Footer siteName={SITE.name} instagramUrl={SITE.instagramUrl} />
+          <Footer
+            siteName={SITE.name}
+            instagramUrl={SITE.instagramUrl}
+            instagramProfileUrl={SITE.instagramProfileUrl}
+          />
         </AppProviders>
       </body>
     </html>
