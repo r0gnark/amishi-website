@@ -5,9 +5,9 @@
 export const CATALOG_FILTER_IDS = [
   "mishi-frasco",
   "mishi-flor",
-  "mishi-kitty",
-  "imanes",
   "mishi-aros",
+  "imanes",
+  "mishi-kitty",
   "papeleria",
 ] as const;
 
@@ -34,9 +34,9 @@ export const catalogFilters: CatalogFilterItem[] = [
     image: "/images/catalog-filters/mishi-flor.webp",
   },
   {
-    id: "mishi-kitty",
-    label: "Mishi Kitty",
-    image: "/images/catalog-filters/hello-kitty.webp",
+    id: "mishi-aros",
+    label: "Mishi aros",
+    image: "/images/catalog-filters/aros.webp",
   },
   {
     id: "imanes",
@@ -44,9 +44,9 @@ export const catalogFilters: CatalogFilterItem[] = [
     image: "/images/catalog-filters/imanes.webp",
   },
   {
-    id: "mishi-aros",
-    label: "Mishi aros",
-    image: "/images/catalog-filters/aros.webp",
+    id: "mishi-kitty",
+    label: "Mishi Kitty",
+    image: "/images/catalog-filters/hello-kitty.webp",
   },
   {
     id: "papeleria",
