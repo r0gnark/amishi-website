@@ -572,7 +572,7 @@ Tamaño: 11x17cm app`,
   },
   {
     id: "papeleria-stickers-billetes-image00049",
-    name: "Sticker billete decorativo 1",
+    name: "Sticker billete 1",
     price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00049.jpeg",
     instagramUrl: IG,
@@ -585,7 +585,7 @@ Tamaño: 5,5x9,5cm
   },
   {
     id: "papeleria-stickers-billetes-image00050",
-    name: "Sticker billete decorativo 2",
+    name: "Sticker billete 2",
     price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00050.jpeg",
     instagramUrl: IG,
@@ -598,7 +598,7 @@ Tamaño: 5,5x9,5cm
   },
   {
     id: "papeleria-stickers-billetes-image00051",
-    name: "Sticker billete decorativo 3",
+    name: "Sticker billete 3",
     price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00051.jpeg",
     instagramUrl: IG,
@@ -611,7 +611,7 @@ Tamaño: 5,5x9,5cm
   },
   {
     id: "papeleria-stickers-billetes-image00052",
-    name: "Sticker billete decorativo 4",
+    name: "Sticker billete 4",
     price: 500,
     image: "/images/productos/papeleria/stickers-billetes/image00052.jpeg",
     instagramUrl: IG,
