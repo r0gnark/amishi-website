@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ProductImageCarousel } from "@/components/ProductImageCarousel";
 import { ProductInstagramCta } from "@/components/ProductInstagramCta";
-import { getAllProductSlugs, getProductBySlug } from "@/data/products";
+import { getAllProductSlugs, getProductBySlug, getProductImages } from "@/data/products";
 import { formatCLP } from "@/lib/format";
-import { PRODUCT_PHOTO_ASPECT_CLASS, productImageClassName } from "@/lib/product-image";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -58,18 +57,12 @@ export default async function ProductoPage({ params }: Props) {
         </nav>
 
         <div className="mt-8 grid gap-10 md:grid-cols-2 md:items-start">
-          <div
-            className={`relative w-full overflow-hidden rounded-[2rem] border border-rose/15 bg-white shadow-sm ${PRODUCT_PHOTO_ASPECT_CLASS}`}
-          >
-            <Image
-              src={product.image}
-              alt={`Fotografía del producto ${product.name}`}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className={productImageClassName(product.category, { productId: product.id })}
-              priority
-            />
-          </div>
+          <ProductImageCarousel
+            images={getProductImages(product)}
+            productName={product.name}
+            category={product.category}
+            productId={product.id}
+          />
 
           <div className="flex flex-col">
             <h1 className="font-display text-3xl font-semibold text-ink md:text-4xl">
