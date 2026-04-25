@@ -9,11 +9,16 @@ import type { CatalogCategoryId } from "./catalog-filters";
 
 const IG = "https://ig.me/m/amishi.cl";
 
+/** Vista ejemplo con marco blanco; segunda foto en ficha de prints/postales. */
+export const PRINT_MARCO_IMAGE = "/images/productos/papeleria/prints/print_marco.png" as const;
+
 export type Product = {
   id: string;
   name: string;
   price: number;
   image: string;
+  /** Rutas adicionales para galería en ficha (p. ej. mockup con marco). */
+  gallery?: string[];
   instagramUrl: string;
   description: string;
   category: CatalogCategoryId;
@@ -23,7 +28,7 @@ export const products: Product[] = [
   {
     id: "miniaturas-image00005",
     name: "Mishi frasco 1",
-    price: 4000,
+    price: 5000,
     image: "/images/productos/miniaturas/image00005.jpeg",
     instagramUrl: IG,
     description: `Miniatura hecha a mano
@@ -35,7 +40,7 @@ Tamaño: 2x3,5cm app`,
   {
     id: "miniaturas-image00008",
     name: "Mishi frasco 2",
-    price: 4000,
+    price: 5000,
     image: "/images/productos/miniaturas/image00008.jpeg",
     instagramUrl: IG,
     description: `Miniatura hecha a mano
@@ -47,7 +52,7 @@ Tamaño: 2x3,5cm app`,
   {
     id: "miniaturas-image00009",
     name: "Mishi frasco 3",
-    price: 4000,
+    price: 5000,
     image: "/images/productos/miniaturas/image00009.jpeg",
     instagramUrl: IG,
     description: `Miniatura hecha a mano
@@ -59,7 +64,7 @@ Tamaño: 2x3,5cm app`,
   {
     id: "miniaturas-image00013",
     name: "Mishi frasco 4",
-    price: 4000,
+    price: 5000,
     image: "/images/productos/miniaturas/image00013.jpeg",
     instagramUrl: IG,
     description: `Miniatura hecha a mano
@@ -71,7 +76,7 @@ Tamaño: 2x3,5cm app`,
   {
     id: "miniaturas-image00018",
     name: "Mishi frasco 5",
-    price: 4000,
+    price: 5000,
     image: "/images/productos/miniaturas/image00018.jpeg",
     instagramUrl: IG,
     description: `Miniatura hecha a mano
@@ -83,7 +88,7 @@ Tamaño: 2x3,5cm app`,
   {
     id: "miniaturas-image00021",
     name: "Mishi frasco 6",
-    price: 4000,
+    price: 5000,
     image: "/images/productos/miniaturas/image00021.jpeg",
     instagramUrl: IG,
     description: `Miniatura hecha a mano
@@ -95,7 +100,7 @@ Tamaño: 2x3,5cm app`,
   {
     id: "miniaturas-image00022",
     name: "Mishi frasco 7",
-    price: 4000,
+    price: 5000,
     image: "/images/productos/miniaturas/image00022.jpeg",
     instagramUrl: IG,
     description: `Miniatura hecha a mano
@@ -107,7 +112,7 @@ Tamaño: 2x3,5cm app`,
   {
     id: "miniaturas-image00023",
     name: "Mishi frasco 8",
-    price: 4000,
+    price: 5000,
     image: "/images/productos/miniaturas/image00023.jpeg",
     instagramUrl: IG,
     description: `Miniatura hecha a mano
@@ -119,7 +124,7 @@ Tamaño: 2x3,5cm app`,
   {
     id: "miniaturas-image00024",
     name: "Mishi frasco 9",
-    price: 4000,
+    price: 5000,
     image: "/images/productos/miniaturas/image00024.jpeg",
     instagramUrl: IG,
     description: `Miniatura hecha a mano
@@ -131,7 +136,7 @@ Tamaño: 2x3,5cm app`,
   {
     id: "miniaturas-image00025",
     name: "Mishi frasco 10",
-    price: 4000,
+    price: 5000,
     image: "/images/productos/miniaturas/image00025.jpeg",
     instagramUrl: IG,
     description: `Miniatura hecha a mano
@@ -434,15 +439,16 @@ Material pendiente: acero inoxidable`,
   {
     id: "papeleria-prints-image00053",
     name: "Print / postal 1",
-    price: 2000,
+    price: 2500,
     image: "/images/productos/papeleria/prints/image00053.jpeg",
+    gallery: [PRINT_MARCO_IMAGE],
     instagramUrl: IG,
     description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+Se pueden enviar enmarcado con marco blanco por 3.000 extras (preguntar en dm por disponibilidad)
 
 * no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
@@ -450,15 +456,16 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
   {
     id: "papeleria-prints-image00054",
     name: "Print / postal 2",
-    price: 2000,
+    price: 2500,
     image: "/images/productos/papeleria/prints/image00054.jpeg",
+    gallery: [PRINT_MARCO_IMAGE],
     instagramUrl: IG,
     description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+Se pueden enviar enmarcado con marco blanco por 3.000 extras (preguntar en dm por disponibilidad)
 
 * no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
@@ -466,15 +473,16 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
   {
     id: "papeleria-prints-image00055",
     name: "Print / postal 3",
-    price: 2000,
+    price: 2500,
     image: "/images/productos/papeleria/prints/image00055.jpeg",
+    gallery: [PRINT_MARCO_IMAGE],
     instagramUrl: IG,
     description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+Se pueden enviar enmarcado con marco blanco por 3.000 extras (preguntar en dm por disponibilidad)
 
 * no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
@@ -482,15 +490,16 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
   {
     id: "papeleria-prints-image00056",
     name: "Print / postal 4",
-    price: 2000,
+    price: 2500,
     image: "/images/productos/papeleria/prints/image00056.jpeg",
+    gallery: [PRINT_MARCO_IMAGE],
     instagramUrl: IG,
     description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+Se pueden enviar enmarcado con marco blanco por 3.000 extras (preguntar en dm por disponibilidad)
 
 * no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
@@ -498,15 +507,16 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
   {
     id: "papeleria-prints-image00057",
     name: "Print / postal 5",
-    price: 2000,
+    price: 2500,
     image: "/images/productos/papeleria/prints/image00057.jpeg",
+    gallery: [PRINT_MARCO_IMAGE],
     instagramUrl: IG,
     description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+Se pueden enviar enmarcado con marco blanco por 3.000 extras (preguntar en dm por disponibilidad)
 
 * no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
@@ -514,15 +524,16 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
   {
     id: "papeleria-prints-image00058",
     name: "Print / postal 6",
-    price: 2000,
+    price: 2500,
     image: "/images/productos/papeleria/prints/image00058.jpeg",
+    gallery: [PRINT_MARCO_IMAGE],
     instagramUrl: IG,
     description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+Se pueden enviar enmarcado con marco blanco por 3.000 extras (preguntar en dm por disponibilidad)
 
 * no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
@@ -530,15 +541,16 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
   {
     id: "papeleria-prints-image00059",
     name: "Print / postal 7",
-    price: 2000,
+    price: 2500,
     image: "/images/productos/papeleria/prints/image00059.jpeg",
+    gallery: [PRINT_MARCO_IMAGE],
     instagramUrl: IG,
     description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+Se pueden enviar enmarcado con marco blanco por 3.000 extras (preguntar en dm por disponibilidad)
 
 * no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
@@ -546,15 +558,35 @@ Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm po
   {
     id: "papeleria-prints-image00060",
     name: "Print / postal 8",
-    price: 2000,
+    price: 2500,
     image: "/images/productos/papeleria/prints/image00060.jpeg",
+    gallery: [PRINT_MARCO_IMAGE],
     instagramUrl: IG,
     description: `Print/postal ideal para decorar
 Impresión Láser
 Papel couche, 270 grs.
 Tamaño: 10x15cm app
 
-Se pueden enviar enmarcado con marco blanco por 2.500 extras (preguntar en dm por disponibilidad)
+Se pueden enviar enmarcado con marco blanco por 3.000 extras (preguntar en dm por disponibilidad)
+
+* no incluye pedestal que aparece en la fotografía de exposición`,
+    category: "papeleria",
+  },
+  {
+    id: "papeleria-prints-print-nuevo",
+    name: "Print / postal 9",
+    price: 2500,
+    image: "/images/productos/papeleria/prints/print_nuevo.png",
+    gallery: [PRINT_MARCO_IMAGE],
+    instagramUrl: IG,
+    description: `Print/postal ideal para decorar
+Impresión Láser
+Papel couche, 270 grs.
+Tamaño: 10x15cm app
+
+Se pueden enviar enmarcado con marco blanco por 3.000 extras (preguntar en dm por disponibilidad)
+
+Pueden consultar por la disponibilidad de un color similar al de su mishi (preguntar en dm)
 
 * no incluye pedestal que aparece en la fotografía de exposición`,
     category: "papeleria",
@@ -779,6 +811,14 @@ Tamaño: 6x5cm app
     category: "papeleria",
   },
 ];
+
+/** Rutas de imágenes para la ficha: principal y extras de galería. */
+export function getProductImages(product: Product): string[] {
+  if (product.gallery?.length) {
+    return [product.image, ...product.gallery];
+  }
+  return [product.image];
+}
 
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find((p) => p.id === slug);
