@@ -595,6 +595,36 @@
       "instagramUrl": "",
       "description": "",
       "category": "imanes"
+    },
+    {
+      "id": "nuevo-iman-1",
+      "name": "Nuevo Imán",
+      "price": 4000,
+      "image": "/images/test.jpeg",
+      "gallery": null,
+      "instagramUrl": "",
+      "description": "",
+      "category": "imanes"
+    },
+    {
+      "id": "nuevo-iman-2",
+      "name": "Nuevo Imán",
+      "price": 4000,
+      "image": "/images/test.jpeg",
+      "gallery": null,
+      "instagramUrl": "",
+      "description": "",
+      "category": "imanes"
+    },
+    {
+      "id": "nuevo-iman-3",
+      "name": "Nuevo Imán",
+      "price": 4000,
+      "image": "/images/test.jpeg",
+      "gallery": null,
+      "instagramUrl": "",
+      "description": "",
+      "category": "imanes"
     }
   ],
   "siteContent": {

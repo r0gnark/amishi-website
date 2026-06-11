@@ -140,6 +140,31 @@
       "status": "done"
     },
     {
+      "id": 11,
+      "name": "vercel_deployment",
+      "title": "Deploy completo en Vercel (frontend + backend)",
+      "description": "Hacer que el frontend Next.js y el backend FastAPI corran juntos en Vercel. El bloqueador principal es que Vercel tiene filesystem de solo lectura: las escrituras a data/catalog.json se pierden entre invocaciones. La solución es reemplazar backend/storage.py con Supabase (ya integrado en el proyecto) como capa de persistencia, y exponer FastAPI como serverless function de Vercel.",
+      "blocked_by": "Requiere decisión sobre Supabase vs Vercel Blob como storage. Supabase recomendado por estar ya presente en el proyecto.",
+      "acceptance": [
+        "backend/storage.py reemplazado por backend/storage_supabase.py (o equivalente) que lee/escribe en Supabase en lugar de data/catalog.json",
+        "Existe api/index.py que expone el app FastAPI para Vercel serverless functions",
+        "Existe vercel.json que enruta: / y rutas públicas → Next.js, /api/* → función Python",
+        "Variables de entorno documentadas en .env.example: SUPABASE_URL, SUPABASE_KEY, ADMIN_EMAIL, ADMIN_PASSWORD, SECRET_KEY",
+        "El catálogo se inicializa en Supabase ejecutando scripts/seed_supabase.py (equivalente al seed actual)",
+        "npm run build pasa y el build de Vercel completa sin errores",
+        "tests/test_storage_supabase.py cubre read/write con Supabase (usando cliente de test o mock)",
+        "El sitio público y el panel admin funcionan en la URL de Vercel"
+      ],
+      "notes": [
+        "Vercel soporta Python 3.12 via @vercel/python runtime",
+        "FastAPI en Vercel se expone con: from backend.main import app (en api/index.py)",
+        "Vercel Blob es alternativa más simple si no se quiere usar Supabase para el catálogo",
+        "La tabla Supabase para el catálogo puede ser una única fila JSON (jsonb) o tablas normalizadas",
+        "Los archivos estáticos de /public siguen siendo servidos por Next.js normalmente"
+      ],
+      "status": "pending"
+    },
+    {
       "id": 10,
       "name": "admin_site_content",
       "title": "Gestión de contenido del sitio",
