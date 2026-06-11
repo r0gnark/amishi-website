@@ -1,18 +1,33 @@
 "use client";
 
-import { useMemo } from "react";
-import { products } from "@/data/products";
+import { useEffect, useMemo, useState } from "react";
+import type { Product } from "@/data/products";
 import { CatalogFilterCircles } from "./CatalogFilterCircles";
 import { useCatalogFilter } from "./CatalogFilterContext";
 import { ProductCard } from "./ProductCard";
 
 export function ProductGrid() {
   const { filter, setFilter } = useCatalogFilter();
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    fetch("/api/productos")
+      .then((r) => r.json())
+      .then((data) =>
+        setProducts(
+          data.map((p: Product & { instagramUrl?: string; instagram_url?: string }) => ({
+            ...p,
+            instagramUrl: p.instagramUrl ?? p.instagram_url ?? "",
+          }))
+        )
+      )
+      .catch(() => setProducts([]));
+  }, []);
 
   const visible = useMemo(() => {
     if (!filter) return products;
     return products.filter((p) => p.category === filter);
-  }, [filter]);
+  }, [filter, products]);
 
   return (
     <section

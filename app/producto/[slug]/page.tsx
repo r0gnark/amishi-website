@@ -3,23 +3,46 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductImageCarousel } from "@/components/ProductImageCarousel";
 import { ProductInstagramCta } from "@/components/ProductInstagramCta";
-import { getAllProductSlugs, getProductBySlug, getProductImages } from "@/data/products";
 import { formatCLP } from "@/lib/format";
+import type { Product } from "@/data/products";
+import { getProductImages } from "@/data/products";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return getAllProductSlugs().map((slug) => ({ slug }));
+async function fetchProduct(slug: string): Promise<Product | null> {
+  const apiUrl = process.env.API_URL ?? "http://localhost:8001";
+  try {
+    const res = await fetch(`${apiUrl}/api/productos/${slug}`, { cache: "no-store" });
+    if (!res.ok) return null;
+    const p = await res.json();
+    return { ...p, instagramUrl: p.instagramUrl ?? p.instagram_url ?? "" };
+  } catch {
+    return null;
+  }
+}
+
+async function fetchAllSlugs(): Promise<string[]> {
+  const apiUrl = process.env.API_URL ?? "http://localhost:8001";
+  try {
+    const res = await fetch(`${apiUrl}/api/productos`, { cache: "no-store" });
+    const data: Product[] = await res.json();
+    return data.map((p) => p.id);
+  } catch {
+    return [];
+  }
+}
+
+export async function generateStaticParams() {
+  const slugs = await fetchAllSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
-  if (!product) {
-    return { title: "Producto no encontrado" };
-  }
+  const product = await fetchProduct(slug);
+  if (!product) return { title: "Producto no encontrado" };
   return {
     title: product.name,
     description: product.description.slice(0, 160),
@@ -33,10 +56,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductoPage({ params }: Props) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
-  if (!product) {
-    notFound();
-  }
+  const product = await fetchProduct(slug);
+  if (!product) notFound();
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://amishi.cl").replace(/\/$/, "");
   const productPageUrl = `${siteUrl}/producto/${slug}`;

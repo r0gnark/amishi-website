@@ -1,0 +1,157 @@
+{
+  "project": "amishi-website",
+  "description": "Sitio web de catálogo Amishi con backend Python/FastAPI y frontend Next.js/React. Panel de administración para gestionar productos y contenido del sitio. Login básico con JWT para proteger el CMS.",
+  "rules": {
+    "one_feature_at_a_time": true,
+    "require_tests_to_close": true,
+    "valid_status": [
+      "pending",
+      "in_progress",
+      "done",
+      "blocked"
+    ]
+  },
+  "features": [
+    {
+      "id": 1,
+      "name": "catalog_storage",
+      "title": "Capa de almacenamiento del catálogo",
+      "description": "Lectura/escritura atómica del catálogo en un archivo JSON. Crea el archivo si no existe.",
+      "acceptance": [
+        "Existe backend/storage.py con funciones load_catalog() y save_catalog(data)",
+        "save_catalog() es atómico (escritura a archivo temporal + os.replace())",
+        "load_catalog() devuelve estructura vacía válida si el archivo no existe",
+        "El archivo por defecto es data/catalog.json",
+        "tests/test_storage.py cubre los 3 casos anteriores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 2,
+      "name": "catalog_repository",
+      "title": "Repositorio de productos",
+      "description": "Capa de dominio que expone CRUD de productos sobre el almacenamiento JSON, reutilizando el modelo Pydantic Product.",
+      "acceptance": [
+        "Existe backend/repository.py con get_all_products(), get_product_by_slug(slug), create_product(), update_product(slug), delete_product(slug)",
+        "create_product() genera slug único a partir del nombre si no se provee",
+        "update_product() y delete_product() lanzan CatalogNotFoundError si el slug no existe",
+        "Validación mínima: name no vacío, price >= 0, category válida",
+        "tests/test_repository.py cubre CRUD feliz y slug inexistente"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 3,
+      "name": "migrate_static_catalog",
+      "title": "Migrar catálogo estático al JSON",
+      "description": "Poblar data/catalog.json con los productos actuales de data/products.py (o products.ts) y hacer que el sitio público lea del repositorio.",
+      "acceptance": [
+        "Existe script scripts/seed_catalog.py que importa todos los productos al catalog.json",
+        "El endpoint GET /api/productos devuelve los productos del repositorio",
+        "Tras ejecutar el seed, el catálogo tiene al menos tantos productos como la fuente estática",
+        "tests/test_seed.py verifica que el seed produce el número correcto de productos"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 4,
+      "name": "auth_session",
+      "title": "Autenticación básica con JWT",
+      "description": "Login con credenciales en variables de entorno y token JWT en cookie httpOnly. Sin registro de usuarios ni OAuth.",
+      "acceptance": [
+        "Existe backend/services/auth.py con login(email, password), logout() y get_current_user()",
+        "Credenciales leídas de ADMIN_EMAIL y ADMIN_PASSWORD en .env (documentadas en .env.example)",
+        "La sesión usa cookie httpOnly con JWT firmado (SECRET_KEY)",
+        "Existe dependencia FastAPI que protege rutas /api/admin/* y devuelve 401 si no hay token válido",
+        "Credenciales incorrectas devuelven 401 sin revelar cuál campo falló",
+        "tests/test_auth.py cubre login exitoso, credenciales inválidas y token expirado"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 5,
+      "name": "admin_login_ui",
+      "title": "Página de login del panel admin",
+      "description": "Interfaz de acceso al CMS en /admin/login, coherente con el estilo visual de Amishi.",
+      "acceptance": [
+        "Existe app/admin/login/page.tsx con formulario email + contraseña",
+        "POST a /api/auth/login (FastAPI) establece la cookie JWT y redirige a /admin",
+        "Si ya hay sesión activa, /admin/login redirige a /admin",
+        "Errores de credenciales muestran mensaje claro sin stack trace",
+        "npm run build incluye la ruta /admin/login sin errores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 6,
+      "name": "admin_dashboard",
+      "title": "Panel principal del CMS",
+      "description": "Layout protegido en /admin con navegación y resumen del catálogo.",
+      "acceptance": [
+        "Existe app/admin/layout.tsx con barra lateral o cabecera: Productos, Contenido, Cerrar sesión",
+        "app/admin/page.tsx muestra total de productos y acceso rápido a crear producto (datos desde GET /api/productos)",
+        "Rutas /admin/* sin sesión redirigen a /admin/login",
+        "El botón Cerrar sesión llama a POST /api/auth/logout y redirige al login",
+        "npm run build incluye /admin sin errores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 7,
+      "name": "admin_products_list",
+      "title": "Listado de productos en el admin",
+      "description": "Vista tabular de todos los productos con acciones de editar y eliminar.",
+      "acceptance": [
+        "Existe app/admin/productos/page.tsx con tabla: nombre, precio, categoría, slug",
+        "Cada fila enlaza a /admin/productos/[slug]/editar",
+        "Botón Nuevo producto enlaza a /admin/productos/nuevo",
+        "La lista refleja cambios tras crear, editar o eliminar (revalidación o refetch)",
+        "npm run build incluye /admin/productos"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 8,
+      "name": "admin_product_form",
+      "title": "Crear y editar productos",
+      "description": "Formulario del CMS para alta y modificación de productos del catálogo.",
+      "acceptance": [
+        "Existe app/admin/productos/nuevo/page.tsx y app/admin/productos/[slug]/editar/page.tsx",
+        "Campos: nombre, precio (CLP), descripción, categoría (select), URL de imagen principal, galería opcional",
+        "POST /api/admin/productos y PATCH /api/admin/productos/{slug} (FastAPI) persisten los cambios",
+        "Tras guardar, redirige al listado con confirmación visual",
+        "Validación en servidor (Pydantic) rechaza datos inválidos con mensajes claros (422)",
+        "tests/test_admin_productos.py cubre crear, editar y validación fallida"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 9,
+      "name": "admin_product_delete",
+      "title": "Eliminar productos",
+      "description": "Permite borrar un producto del catálogo desde el panel admin con confirmación.",
+      "acceptance": [
+        "El listado incluye acción Eliminar con diálogo de confirmación",
+        "DELETE /api/admin/productos/{slug} (FastAPI) elimina el producto del JSON",
+        "Slug inexistente devuelve 404",
+        "Tras eliminar, el producto deja de aparecer en el sitio público",
+        "tests/test_admin_productos.py cubre eliminación exitosa y slug inexistente"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 10,
+      "name": "admin_site_content",
+      "title": "Gestión de contenido del sitio",
+      "description": "Editar textos visibles del sitio público (sección About y barra de anuncio) desde el CMS.",
+      "acceptance": [
+        "El catálogo JSON incluye sección siteContent: { about, announcementBar }",
+        "Existe app/admin/contenido/page.tsx con formulario para editar ambos textos",
+        "PATCH /api/admin/contenido (FastAPI) persiste los cambios",
+        "components/About.tsx y components/AnnouncementBar.tsx leen siteContent vía GET /api/contenido (con fallback al texto actual)",
+        "tests/test_site_content.py cubre lectura, actualización y fallback"
+      ],
+      "status": "done"
+    }
+  ]
+}
