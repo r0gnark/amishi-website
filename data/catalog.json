@@ -585,20 +585,50 @@
       "instagramUrl": "https://ig.me/m/amishi.cl",
       "description": "Sticker Mishi troquelado\nPapel adhesivo\nTamaño: 6x5cm app\n\n500 c/u 3x 1.000 Se puede mezclar con stickers disponibles en el catálogo web",
       "category": "papeleria"
-    },
-    {
-      "id": "nuevo-iman",
-      "name": "Nuevo Imán",
-      "price": 4000,
-      "image": "/images/test.jpeg",
-      "gallery": null,
-      "instagramUrl": "",
-      "description": "",
-      "category": "imanes"
     }
   ],
   "siteContent": {
     "about": "Texto B",
-    "announcementBar": "Bar A"
-  }
+    "aboutTitle": "Bienvenid@ a Amishi",
+    "aboutImage": "/images/sobre-amishi-vertical.png",
+    "announcementBar": "Esto es una prueba",
+    "siteName": "amishi",
+    "contactLabel": "Contacto",
+    "contactUrl": "https://wa.me/56989913721",
+    "instagramHandle": "@amishi.cl",
+    "instagramProfileUrl": "https://www.instagram.com/amishi.cl/",
+    "footerText": "Diseño, gatos y cerámica hecha con cariño en Chile."
+  },
+  "categories": [
+    {
+      "id": "imanes",
+      "label": "Imanes",
+      "image": "/images/catalog-filters/imanes.webp"
+    },
+    {
+      "id": "mishi-kitty",
+      "label": "Otros",
+      "image": "/images/catalog-filters/hello-kitty.webp"
+    },
+    {
+      "id": "mishi-aros",
+      "label": "Mishi aros",
+      "image": "/images/catalog-filters/aros.webp"
+    },
+    {
+      "id": "mishi-flor",
+      "label": "Mishi Flor",
+      "image": "/images/catalog-filters/mishi-flor.webp"
+    },
+    {
+      "id": "papeleria",
+      "label": "Papelería",
+      "image": "/images/catalog-filters/papeleria.webp"
+    },
+    {
+      "id": "mishi-frasco",
+      "label": "Mishi frasco",
+      "image": "/images/catalog-filters/mishi-frasco.webp"
+    }
+  ]
 }

@@ -12,7 +12,7 @@ type Props = {
 };
 
 async function fetchProduct(slug: string): Promise<Product | null> {
-  const apiUrl = process.env.API_URL ?? "http://localhost:8001";
+  const apiUrl = process.env.API_URL ?? "http://localhost:8000";
   try {
     const res = await fetch(`${apiUrl}/api/productos/${slug}`, { cache: "no-store" });
     if (!res.ok) return null;
@@ -24,7 +24,7 @@ async function fetchProduct(slug: string): Promise<Product | null> {
 }
 
 async function fetchAllSlugs(): Promise<string[]> {
-  const apiUrl = process.env.API_URL ?? "http://localhost:8001";
+  const apiUrl = process.env.API_URL ?? "http://localhost:8000";
   try {
     const res = await fetch(`${apiUrl}/api/productos`, { cache: "no-store" });
     const data: Product[] = await res.json();
@@ -94,10 +94,13 @@ export default async function ProductoPage({ params }: Props) {
               {product.description}
             </p>
 
-            <ProductInstagramCta productPageUrl={productPageUrl} instagramUrl={product.instagramUrl} />
+            <ProductInstagramCta
+              productName={product.name}
+              productPageUrl={productPageUrl}
+            />
 
             <p className="mt-6 text-sm text-ink/65">
-              Precio de referencia. Stock y envío se confirman por Instagram.
+              Precio de referencia. Stock y envío se confirman por WhatsApp.
             </p>
 
             <Link

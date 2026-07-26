@@ -1,15 +1,8 @@
 "use client";
 
 import { useState } from "react";
-
-const CATEGORIES = [
-  "mishi-frasco",
-  "mishi-flor",
-  "mishi-aros",
-  "imanes",
-  "mishi-kitty",
-  "papeleria",
-] as const;
+import { useCategories } from "../CategoryContext";
+import { MediaPicker } from "./MediaPicker";
 
 export type ProductFormValues = {
   name: string;
@@ -27,32 +20,71 @@ type Props = {
   submitLabel: string;
 };
 
+function ImagePreview({ src, label }: { src: string; label: string }) {
+  const [failed, setFailed] = useState(false);
+
+  return (
+    <figure className="overflow-hidden rounded-xl border border-blush bg-cream">
+      <div className="aspect-square">
+        {failed ? (
+          <div className="flex h-full items-center justify-center p-3 text-center text-xs text-rose">
+            No se pudo cargar esta imagen
+          </div>
+        ) : (
+          // Las URLs son administrables y pueden pertenecer a cualquier dominio.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={src}
+            alt={label}
+            className="h-full w-full object-cover"
+            onError={() => setFailed(true)}
+            onLoad={() => setFailed(false)}
+          />
+        )}
+      </div>
+      <figcaption className="truncate border-t border-blush px-2 py-1.5 text-xs text-ink/60">
+        {label}
+      </figcaption>
+    </figure>
+  );
+}
+
 export function ProductForm({ initial = {}, onSubmit, submitLabel }: Props) {
+  const categories = useCategories();
   const [name, setName] = useState(initial.name ?? "");
   const [price, setPrice] = useState(String(initial.price ?? ""));
   const [image, setImage] = useState(initial.image ?? "");
-  const [gallery, setGallery] = useState((initial.gallery ?? []).join("\n"));
+  const [gallery, setGallery] = useState(initial.gallery ?? []);
   const [instagramUrl, setInstagramUrl] = useState(
     initial.instagramUrl ?? "https://ig.me/m/amishi.cl"
   );
   const [description, setDescription] = useState(initial.description ?? "");
-  const [category, setCategory] = useState(initial.category ?? CATEGORIES[0]);
+  const [category, setCategory] = useState(initial.category ?? "");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    if (!image) {
+      setError("Selecciona o sube una imagen principal");
+      return;
+    }
+    const selectedCategory = category || categories[0]?.id;
+    if (!selectedCategory) {
+      setError("Crea una categoría antes de guardar el producto");
+      return;
+    }
     setLoading(true);
     try {
       await onSubmit({
         name,
         price: Number(price),
         image,
-        gallery: gallery.split("\n").map((s) => s.trim()).filter(Boolean),
+        gallery,
         instagramUrl,
         description,
-        category,
+        category: selectedCategory,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado");
@@ -79,29 +111,47 @@ export function ProductForm({ initial = {}, onSubmit, submitLabel }: Props) {
       <div>
         <label htmlFor="category" className={label}>Categoría *</label>
         <select id="category" value={category} onChange={(e) => setCategory(e.target.value)} className={field}>
-          {CATEGORIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
+          <option value="" disabled>Selecciona una categoría</option>
+          {categories.map((item) => (
+            <option key={item.id} value={item.id}>{item.label}</option>
           ))}
         </select>
       </div>
 
       <div>
-        <label htmlFor="image" className={label}>URL imagen principal *</label>
-        <input
-          id="image"
-          required
-          placeholder="/images/productos/categoria/nombre.jpeg"
-          pattern="^(/|https?://).*"
-          title="Debe empezar con / o http(s)://"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
-          className={field}
+        <p className={label}>Imagen principal *</p>
+        <MediaPicker
+          selected={image ? [image] : []}
+          onChange={(urls) => setImage(urls[0] ?? "")}
         />
+        {image && (
+          <div className="mt-3 max-w-48">
+            <ImagePreview
+              key={image}
+              src={image}
+              label="Imagen principal"
+            />
+          </div>
+        )}
       </div>
 
       <div>
-        <label htmlFor="gallery" className={label}>Galería (una URL por línea)</label>
-        <textarea id="gallery" rows={3} value={gallery} onChange={(e) => setGallery(e.target.value)} className={field} />
+        <p className={label}>Galería adicional</p>
+        <p className="mb-2 text-xs text-ink/60">
+          Puedes seleccionar varias fotografías.
+        </p>
+        <MediaPicker selected={gallery} multiple onChange={setGallery} />
+        {gallery.length > 0 && (
+          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {gallery.map((url, index) => (
+              <ImagePreview
+                key={`${url}-${index}`}
+                src={url}
+                label={`Galería ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div>

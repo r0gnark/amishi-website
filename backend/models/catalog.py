@@ -4,14 +4,27 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-VALID_CATEGORIES = {
-    "mishi-frasco",
-    "mishi-flor",
-    "mishi-aros",
-    "imanes",
-    "mishi-kitty",
-    "papeleria",
-}
+class Category(BaseModel):
+    id: str
+    label: str
+    image: str
+
+
+class CategoryCreate(BaseModel):
+    label: str
+    image: str
+
+    @field_validator("label")
+    @classmethod
+    def label_not_empty(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("label must not be empty")
+        return value.strip()
+
+
+class CategoryUpdate(BaseModel):
+    label: str | None = None
+    image: str | None = None
 
 
 class Product(BaseModel):
@@ -57,12 +70,6 @@ class ProductCreate(BaseModel):
             raise ValueError("image must start with '/' or 'http(s)://'")
         return v
 
-    @field_validator("category")
-    @classmethod
-    def category_valid(cls, v: str) -> str:
-        if v not in VALID_CATEGORIES:
-            raise ValueError(f"category must be one of {sorted(VALID_CATEGORIES)}")
-        return v
 
 
 class ProductUpdate(BaseModel):
@@ -95,23 +102,38 @@ class ProductUpdate(BaseModel):
             raise ValueError("image must start with '/' or 'http(s)://'")
         return v
 
-    @field_validator("category")
-    @classmethod
-    def category_valid(cls, v: Optional[str]) -> Optional[str]:
-        if v is not None and v not in VALID_CATEGORIES:
-            raise ValueError(f"category must be one of {sorted(VALID_CATEGORIES)}")
-        return v
 
 
 class SiteContent(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     about: str = ""
+    about_title: str = Field(default="Bienvenid@ a Amishi", alias="aboutTitle")
+    about_image: str = Field(
+        default="/images/sobre-amishi.png",
+        alias="aboutImage",
+    )
     announcement_bar: str = Field(default="", alias="announcementBar")
+    site_name: str = Field(default="amishi", alias="siteName")
+    contact_label: str = Field(default="Contacto", alias="contactLabel")
+    contact_url: str = Field(
+        default="https://ig.me/m/amishi.cl",
+        alias="contactUrl",
+    )
+    instagram_handle: str = Field(default="@amishi.cl", alias="instagramHandle")
+    instagram_profile_url: str = Field(
+        default="https://www.instagram.com/amishi.cl/",
+        alias="instagramProfileUrl",
+    )
+    footer_text: str = Field(
+        default="Diseño, gatos y cerámica hecha con cariño en Chile.",
+        alias="footerText",
+    )
 
 
 class CatalogData(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     products: list[Product] = []
+    categories: list[Category] = []
     site_content: SiteContent = Field(default_factory=SiteContent, alias="siteContent")

@@ -5,9 +5,11 @@ import type { Product } from "@/data/products";
 import { CatalogFilterCircles } from "./CatalogFilterCircles";
 import { useCatalogFilter } from "./CatalogFilterContext";
 import { ProductCard } from "./ProductCard";
+import { useCategories } from "./CategoryContext";
 
 export function ProductGrid() {
   const { filter, setFilter } = useCatalogFilter();
+  const categories = useCategories();
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -50,7 +52,7 @@ export function ProductGrid() {
         </p>
 
         <div className="mt-8 border-b border-rose/10 pb-8 md:mt-10 md:pb-10">
-          <CatalogFilterCircles activeId={filter} onSelect={setFilter} />
+          <CatalogFilterCircles categories={categories} activeId={filter} onSelect={setFilter} />
         </div>
 
         {visible.length === 0 ? (

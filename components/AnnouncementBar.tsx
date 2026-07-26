@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSiteContent } from "./SiteContentContext";
 
-const messages = [
+const fallbackMessages = [
   "Envíos a todo Chile — consulta tiempos por DM",
   "Síguenos en Instagram para novedades y drops",
   "Piezas hechas a mano — ediciones limitadas",
 ];
 
 export function AnnouncementBar() {
+  const { announcementBar } = useSiteContent();
+  const messages = announcementBar ? [announcementBar] : fallbackMessages;
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -16,7 +19,7 @@ export function AnnouncementBar() {
       setIndex((i) => (i + 1) % messages.length);
     }, 5500);
     return () => window.clearInterval(id);
-  }, []);
+  }, [messages.length]);
 
   return (
     <div

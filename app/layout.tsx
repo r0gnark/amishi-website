@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { Fraunces, Nunito } from "next/font/google";
 import "./globals.css";
-import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { AppProviders } from "@/components/AppProviders";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { SITE } from "@/lib/site";
+import { SiteShell } from "@/components/SiteShell";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -66,21 +63,8 @@ export default function RootLayout({
         >
           Ir al contenido principal
         </a>
-        <AnnouncementBar />
         <AppProviders>
-          <Header
-            siteName={SITE.name}
-            instagramUrl={SITE.instagramUrl}
-            instagramProfileUrl={SITE.instagramProfileUrl}
-          />
-          <main id="contenido-principal" className="flex-1">
-            {children}
-          </main>
-          <Footer
-            siteName={SITE.name}
-            instagramUrl={SITE.instagramUrl}
-            instagramProfileUrl={SITE.instagramProfileUrl}
-          />
+          <SiteShell>{children}</SiteShell>
         </AppProviders>
       </body>
     </html>

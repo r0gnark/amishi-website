@@ -1,15 +1,16 @@
 "use client";
 
 import type { CatalogCategoryId } from "@/data/catalog-filters";
-import { catalogFilters } from "@/data/catalog-filters";
+import type { CatalogFilterItem } from "@/data/catalog-filters";
 
 type CatalogFilterCirclesProps = {
+  categories: CatalogFilterItem[];
   /** null = mostrar todos los productos */
   activeId: CatalogCategoryId | null;
   onSelect: (id: CatalogCategoryId | null) => void;
 };
 
-export function CatalogFilterCircles({ activeId, onSelect }: CatalogFilterCirclesProps) {
+export function CatalogFilterCircles({ categories, activeId, onSelect }: CatalogFilterCirclesProps) {
   function handleClick(id: CatalogCategoryId) {
     onSelect(activeId === id ? null : id);
   }
@@ -29,7 +30,7 @@ export function CatalogFilterCircles({ activeId, onSelect }: CatalogFilterCircle
           "
           style={{ WebkitOverflowScrolling: "touch" }}
         >
-          {catalogFilters.map((item, index) => {
+          {categories.map((item, index) => {
             const isActive = activeId === item.id;
             const eager = index < 4;
             return (

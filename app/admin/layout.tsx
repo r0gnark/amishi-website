@@ -6,16 +6,23 @@ import { usePathname, useRouter } from "next/navigation";
 const NAV = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/productos", label: "Productos" },
+  { href: "/admin/categorias", label: "Categorías" },
+  { href: "/admin/imagenes", label: "Imágenes" },
   { href: "/admin/contenido", label: "Contenido" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const isLoginPage = pathname === "/admin/login";
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/admin/login");
+  }
+
+  if (isLoginPage) {
+    return children;
   }
 
   return (

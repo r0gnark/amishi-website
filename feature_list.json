@@ -152,6 +152,166 @@
         "tests/test_site_content.py cubre lectura, actualización y fallback"
       ],
       "status": "done"
+    },
+    {
+      "id": 11,
+      "name": "simplified_local_startup",
+      "title": "Arranque local simplificado",
+      "description": "Preparar y levantar Next.js y FastAPI con comandos únicos, compatibles con Windows y WSL.",
+      "acceptance": [
+        "npm run setup crea un entorno Python aislado e instala las dependencias",
+        "npm run dev:all levanta FastAPI en el puerto 8000 y Next.js en el puerto 3000",
+        "Todos los consumidores locales de la API usan el puerto 8000 por defecto",
+        "README.md documenta el flujo de instalación y arranque simplificado",
+        "pytest, npm test y npm run build terminan sin errores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 12,
+      "name": "admin_image_previews",
+      "title": "Previsualización de imágenes en el administrador",
+      "description": "Mostrar las imágenes existentes y las nuevas URLs mientras se gestionan productos.",
+      "acceptance": [
+        "El listado de productos muestra una miniatura de la imagen principal",
+        "Crear y editar producto muestra una vista previa de la imagen principal",
+        "La galería se previsualiza al escribir o pegar nuevas URLs",
+        "Las imágenes inválidas muestran un estado de error claro",
+        "npm run build termina sin errores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 13,
+      "name": "admin_media_library",
+      "title": "Biblioteca multimedia del administrador",
+      "description": "Permitir ver, seleccionar y subir imágenes sin escribir URLs manualmente.",
+      "acceptance": [
+        "GET /api/admin/media lista las imágenes existentes bajo public/images",
+        "POST /api/admin/media permite subir JPG, PNG o WebP con autenticación",
+        "El formulario de producto usa un selector visual para imagen principal y galería",
+        "Las imágenes nuevas aparecen en la biblioteca inmediatamente",
+        "Los endpoints rechazan archivos inválidos y están cubiertos por tests"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 14,
+      "name": "customizable_site_settings",
+      "title": "Ajustes personalizables del sitio",
+      "description": "Editar desde el administrador los textos de Sobre, contacto, redes y pie de página.",
+      "acceptance": [
+        "El administrador edita título y texto de la sección Sobre",
+        "El administrador edita Instagram, enlace de contacto y texto del pie",
+        "La barra de anuncio usa el contenido administrado",
+        "El sitio público consume los ajustes con valores de respaldo",
+        "Los cambios persisten y están cubiertos por tests"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 15,
+      "name": "fullscreen_admin_login",
+      "title": "Login administrativo a pantalla completa",
+      "description": "Separar visualmente el acceso del sitio público y del panel autenticado.",
+      "acceptance": [
+        "/admin/login no muestra navegación pública ni administrativa",
+        "El formulario ocupa toda la ventana y mantiene el estilo Amishi",
+        "Las rutas autenticadas conservan la navegación del panel",
+        "npm run lint y npm run build terminan sin errores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 16,
+      "name": "admin_categories",
+      "title": "Gestión de categorías del catálogo",
+      "description": "Crear, editar y eliminar categorías con fotografía desde el administrador.",
+      "acceptance": [
+        "El panel muestra categorías con nombre e imagen",
+        "El administrador puede crear y editar categorías",
+        "Solo se eliminan categorías sin productos asociados",
+        "El sitio público y el formulario de productos usan categorías dinámicas",
+        "CRUD y reglas de integridad están cubiertos por tests"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 17,
+      "name": "category_ordering",
+      "title": "Orden manual de categorías",
+      "description": "Permitir definir la posición de las categorías desde el administrador.",
+      "acceptance": [
+        "Cada categoría puede moverse hacia arriba o abajo",
+        "El orden se guarda en el catálogo",
+        "El sitio público respeta el orden configurado",
+        "La API valida que no falten ni se dupliquen categorías"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 18,
+      "name": "remove_test_products",
+      "title": "Eliminar productos de prueba inválidos",
+      "description": "Retirar los cinco registros nuevo-iman que apuntaban a una imagen inexistente.",
+      "acceptance": [
+        "No quedan productos cuyo id comienza con nuevo-iman",
+        "El catálogo contiene 62 productos reales",
+        "Todas las imágenes principales locales existen"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 19,
+      "name": "category_drag_drop",
+      "title": "Ordenar categorías con drag and drop",
+      "description": "Reemplazar controles de posición por arrastre visual.",
+      "acceptance": [
+        "Las tarjetas de categoría son arrastrables",
+        "Soltar una tarjeta cambia y persiste su posición",
+        "La interfaz muestra cuál tarjeta se está moviendo",
+        "El orden público se actualiza inmediatamente"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 20,
+      "name": "admin_media_library",
+      "title": "Biblioteca de imágenes en el administrador",
+      "description": "Agregar un menú independiente para consultar y subir las imágenes del sitio.",
+      "acceptance": [
+        "El menú del administrador incluye Imágenes",
+        "La página muestra todas las imágenes cargadas",
+        "El usuario puede subir una imagen desde la biblioteca",
+        "Las nuevas imágenes aparecen inmediatamente"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 21,
+      "name": "about_image_framing",
+      "title": "Mejorar encuadre de la imagen Sobre Amishi",
+      "description": "Preparar una imagen vertical 4:5 y evitar recortes incorrectos en el componente.",
+      "acceptance": [
+        "La ilustración usa una composición vertical 4:5",
+        "El personaje se muestra completo y con menos espacio vacío",
+        "El fondo se integra con la paleta visual del sitio",
+        "Las futuras imágenes no se deforman ni se recortan"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 22,
+      "name": "whatsapp_contact_origin",
+      "title": "Contacto por WhatsApp con origen",
+      "description": "Enviar las consultas al WhatsApp de Amishi indicando desde dónde se originaron.",
+      "acceptance": [
+        "Los enlaces usan el número +56 9 8991 3721",
+        "La cabecera y el pie identifican su origen",
+        "Las consultas de producto incluyen nombre y enlace de la ficha",
+        "Los mensajes se abren prellenados en WhatsApp"
+      ],
+      "status": "done"
     }
   ]
 }

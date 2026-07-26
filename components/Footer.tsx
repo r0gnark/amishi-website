@@ -1,13 +1,19 @@
+"use client";
+
 import Link from "next/link";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { BrandLogo } from "./BrandLogo";
+import { useSiteContent } from "./SiteContentContext";
 
-type FooterProps = {
-  siteName: string;
-  instagramUrl: string;
-  instagramProfileUrl: string;
-};
-
-export function Footer({ siteName, instagramUrl, instagramProfileUrl }: FooterProps) {
+export function Footer() {
+  const {
+    siteName,
+    contactLabel,
+    contactUrl,
+    instagramHandle,
+    instagramProfileUrl,
+    footerText,
+  } = useSiteContent();
   const year = new Date().getFullYear();
 
   return (
@@ -17,8 +23,7 @@ export function Footer({ siteName, instagramUrl, instagramProfileUrl }: FooterPr
           <div>
             <BrandLogo variant="footer" siteName={siteName} />
             <p className="mt-2 max-w-sm text-sm text-ink/80">
-              Diseño, gatos y cerámica hecha con cariño en Chile. Consultas y pedidos por
-              Instagram.
+              {footerText}
             </p>
             <a
               href={instagramProfileUrl}
@@ -26,7 +31,7 @@ export function Footer({ siteName, instagramUrl, instagramProfileUrl }: FooterPr
               rel="noopener noreferrer"
               className="mt-4 inline-flex text-sm font-medium text-clay underline-offset-4 hover:underline"
             >
-              @amishi.cl en Instagram
+              {instagramHandle} en Instagram
             </a>
           </div>
 
@@ -47,12 +52,15 @@ export function Footer({ siteName, instagramUrl, instagramProfileUrl }: FooterPr
               </li>
               <li>
                 <a
-                  href={instagramUrl}
+                  href={buildWhatsAppUrl({
+                    source: "el pie de página del sitio Amishi",
+                    baseUrl: contactUrl,
+                  })}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-ink hover:text-clay"
                 >
-                  Contacto
+                  {contactLabel}
                 </a>
               </li>
             </ul>

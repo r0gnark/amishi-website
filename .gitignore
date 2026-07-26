@@ -41,7 +41,16 @@ yarn-error.log*
 next-env.d.ts
 
 # python
+.venv/
 __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
+
+# terraform
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+infra/terraform/terraform.tfvars
+infra/.lambda_build/
+infra/lambda_package.zip

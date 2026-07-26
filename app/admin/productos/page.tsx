@@ -8,6 +8,7 @@ type Product = {
   name: string;
   price: number;
   category: string;
+  image: string;
 };
 
 export default function AdminProductosPage() {
@@ -15,15 +16,21 @@ export default function AdminProductosPage() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
 
-  async function loadProducts() {
-    const res = await fetch("/api/productos");
-    const data = await res.json();
-    setProducts(data);
-    setLoading(false);
-  }
-
   useEffect(() => {
-    loadProducts();
+    let cancelled = false;
+
+    fetch("/api/productos")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled) {
+          setProducts(data);
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function handleDelete(id: string, name: string) {
@@ -60,6 +67,7 @@ export default function AdminProductosPage() {
           <table className="w-full text-sm">
             <thead className="bg-cream border-b border-blush">
               <tr>
+                <th className="text-left px-4 py-3 text-ink font-medium">Imagen</th>
                 <th className="text-left px-4 py-3 text-ink font-medium">Nombre</th>
                 <th className="text-left px-4 py-3 text-ink font-medium">Precio</th>
                 <th className="text-left px-4 py-3 text-ink font-medium">Categoría</th>
@@ -70,6 +78,17 @@ export default function AdminProductosPage() {
             <tbody className="divide-y divide-blush">
               {products.map((p) => (
                 <tr key={p.id} className="hover:bg-cream/50 transition-colors">
+                  <td className="px-4 py-3">
+                    <div className="h-14 w-14 overflow-hidden rounded-lg border border-blush bg-cream">
+                      {/* Las imágenes pueden usar rutas locales o dominios externos. */}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  </td>
                   <td className="px-4 py-3 text-ink">{p.name}</td>
                   <td className="px-4 py-3 text-ink">
                     {p.price.toLocaleString("es-CL", { style: "currency", currency: "CLP" })}

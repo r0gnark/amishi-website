@@ -8,15 +8,15 @@
 - **ID:**
 - **Nombre:**
 - **Inicio:**
-- **Estado:** (en progreso / bloqueado / listo para review)
+- **Estado:**
 
 ## Plan breve
 
-
+1.
 
 ## Cambios realizados
 
-
+-
 
 ## Verificación
 
@@ -24,5 +24,3 @@
 - [ ] `./init.sh`
 
 ## Notas / bloqueos
-
-
