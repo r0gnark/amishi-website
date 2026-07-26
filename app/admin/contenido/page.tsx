@@ -6,6 +6,10 @@ import {
   DEFAULT_SITE_CONTENT,
   type SiteContent,
 } from "@/components/SiteContentContext";
+import {
+  whatsappBaseUrlFromNumber,
+  whatsappNumberFromUrl,
+} from "@/lib/whatsapp";
 
 export default function ContenidoPage() {
   const [content, setContent] = useState<SiteContent>(DEFAULT_SITE_CONTENT);
@@ -13,6 +17,9 @@ export default function ContenidoPage() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState(
+    whatsappNumberFromUrl(DEFAULT_SITE_CONTENT.contactUrl),
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -20,7 +27,9 @@ export default function ContenidoPage() {
       .then((response) => response.json())
       .then((data) => {
         if (!cancelled) {
-          setContent({ ...DEFAULT_SITE_CONTENT, ...data });
+          const loadedContent = { ...DEFAULT_SITE_CONTENT, ...data };
+          setContent(loadedContent);
+          setWhatsappNumber(whatsappNumberFromUrl(loadedContent.contactUrl));
           setLoading(false);
         }
       })
@@ -48,13 +57,22 @@ export default function ContenidoPage() {
     setError("");
     setSuccess(false);
     setSaving(true);
+    const whatsappUrl = whatsappBaseUrlFromNumber(whatsappNumber);
+    if (!whatsappUrl) {
+      setError("Ingresa un número de WhatsApp válido con código de país.");
+      setSaving(false);
+      return;
+    }
+    const contentToSave = { ...content, contactUrl: whatsappUrl };
     try {
       const response = await fetch("/api/admin/contenido", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(content),
+        body: JSON.stringify(contentToSave),
       });
       if (!response.ok) throw new Error("Error al guardar");
+      setContent(contentToSave);
+      setWhatsappNumber(whatsappNumberFromUrl(whatsappUrl));
       setSuccess(true);
     } catch {
       setError("No se pudieron guardar los ajustes");
@@ -149,16 +167,22 @@ export default function ContenidoPage() {
             />
           </div>
           <div>
-            <label htmlFor="contactUrl" className={label}>
-              Enlace de contacto
+            <label htmlFor="whatsappNumber" className={label}>
+              Número de WhatsApp
             </label>
             <input
-              id="contactUrl"
-              type="url"
-              value={content.contactUrl}
-              onChange={(event) => update("contactUrl", event.target.value)}
+              id="whatsappNumber"
+              type="tel"
+              inputMode="tel"
+              required
+              placeholder="+56 9 8991 3721"
+              value={whatsappNumber}
+              onChange={(event) => setWhatsappNumber(event.target.value)}
               className={field}
             />
+            <p className="mt-1 text-xs text-ink/55">
+              Incluye el código del país. Puedes usar espacios, guiones o el signo +.
+            </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>

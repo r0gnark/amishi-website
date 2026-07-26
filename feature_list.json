@@ -312,6 +312,19 @@
         "Los mensajes se abren prellenados en WhatsApp"
       ],
       "status": "done"
+    },
+    {
+      "id": 23,
+      "name": "admin_whatsapp_number",
+      "title": "Editar número de WhatsApp desde administración",
+      "description": "Permitir cambiar el teléfono de contacto sin escribir una URL técnica.",
+      "acceptance": [
+        "Contenido muestra un campo Número de WhatsApp",
+        "El campo acepta números con +, espacios o guiones",
+        "El valor se valida y normaliza antes de guardar",
+        "Todos los botones públicos usan el nuevo número"
+      ],
+      "status": "done"
     }
   ]
 }
