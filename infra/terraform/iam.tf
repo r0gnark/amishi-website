@@ -22,20 +22,27 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-# Allows Lambda to read and write catalog.json in its S3 bucket
+# Allows Lambda to read and write catalog.json and managed images in its S3 bucket
 resource "aws_iam_role_policy" "lambda_s3" {
   name = "${local.name_prefix}-lambda-s3-policy"
   role = aws_iam_role.lambda.id
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Action = [
-        "s3:GetObject",
-        "s3:PutObject",
-      ]
-      Resource = "${aws_s3_bucket.catalog.arn}/*"
-    }]
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+        ]
+        Resource = "${aws_s3_bucket.catalog.arn}/*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["s3:ListBucket"]
+        Resource = aws_s3_bucket.catalog.arn
+      },
+    ]
   })
 }

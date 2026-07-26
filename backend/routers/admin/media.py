@@ -1,5 +1,6 @@
 """Endpoints protegidos para administrar imágenes del sitio."""
 
+import json
 import os
 import re
 import tempfile
@@ -14,7 +15,9 @@ from backend.services.auth import get_current_user
 router = APIRouter(prefix="/api/admin/media", tags=["admin-media"])
 
 MEDIA_ROOT = Path(__file__).resolve().parents[3] / "public" / "images"
+STATIC_MEDIA_MANIFEST = Path(__file__).resolve().parents[2] / "static_media.json"
 UPLOAD_ROOT = MEDIA_ROOT / "uploads"
+UPLOAD_PREFIX = "uploads/"
 MAX_FILE_SIZE = 10 * 1024 * 1024
 CONTENT_TYPE_EXTENSIONS = {
     "image/jpeg": ".jpg",
@@ -23,21 +26,48 @@ CONTENT_TYPE_EXTENSIONS = {
 }
 
 
+def _s3_client():
+    import boto3
+
+    return boto3.client("s3")
+
+
 def list_media() -> list[dict[str, str]]:
     """Lista las imágenes disponibles para el administrador."""
-    if not MEDIA_ROOT.exists():
-        return []
-
     items = []
-    for path in MEDIA_ROOT.rglob("*"):
-        if path.is_file() and path.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}:
-            relative_path = path.relative_to(MEDIA_ROOT).as_posix()
-            items.append(
-                {
-                    "name": path.name,
-                    "url": f"/images/{relative_path}",
-                }
-            )
+    if MEDIA_ROOT.exists():
+        for path in MEDIA_ROOT.rglob("*"):
+            if path.is_file() and path.suffix.lower() in {
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".webp",
+            }:
+                relative_path = path.relative_to(MEDIA_ROOT).as_posix()
+                items.append(
+                    {
+                        "name": path.name,
+                        "url": f"/images/{relative_path}",
+                    }
+                )
+    elif STATIC_MEDIA_MANIFEST.exists():
+        items.extend(json.loads(STATIC_MEDIA_MANIFEST.read_text(encoding="utf-8")))
+
+    bucket = os.environ.get("S3_BUCKET")
+    if bucket:
+        paginator = _s3_client().get_paginator("list_objects_v2")
+        for page in paginator.paginate(Bucket=bucket, Prefix=UPLOAD_PREFIX):
+            for entry in page.get("Contents", []):
+                key = entry["Key"]
+                if key.endswith("/"):
+                    continue
+                items.append(
+                    {
+                        "name": Path(key).name,
+                        "url": f"/api/media/{key}",
+                    }
+                )
+
     return sorted(items, key=lambda item: item["url"])
 
 
@@ -89,8 +119,23 @@ async def upload_media(
     if not _matches_image_type(content, file.content_type or ""):
         raise HTTPException(status_code=400, detail="El contenido no es una imagen válida")
 
-    UPLOAD_ROOT.mkdir(parents=True, exist_ok=True)
     filename = f"{_safe_stem(file.filename or 'imagen')}-{uuid4().hex[:10]}{extension}"
+    bucket = os.environ.get("S3_BUCKET")
+    if bucket:
+        key = f"{UPLOAD_PREFIX}{filename}"
+        _s3_client().put_object(
+            Bucket=bucket,
+            Key=key,
+            Body=content,
+            ContentType=file.content_type,
+            CacheControl="public, max-age=31536000, immutable",
+        )
+        return {
+            "name": filename,
+            "url": f"/api/media/{key}",
+        }
+
+    UPLOAD_ROOT.mkdir(parents=True, exist_ok=True)
     destination = UPLOAD_ROOT / filename
 
     descriptor, temporary_name = tempfile.mkstemp(

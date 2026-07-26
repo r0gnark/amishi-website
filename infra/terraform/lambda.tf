@@ -13,8 +13,9 @@ resource "aws_lambda_function" "api" {
   runtime = "python3.12"
   role    = aws_iam_role.lambda.arn
 
-  memory_size = 256
-  timeout     = 30
+  memory_size                    = 256
+  timeout                        = 30
+  reserved_concurrent_executions = 2
 
   environment {
     variables = {

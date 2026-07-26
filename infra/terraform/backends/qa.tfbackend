@@ -4,12 +4,11 @@
 # El bucket y la tabla deben crearse manualmente en la cuenta DEV.
 # Ver: infra/README.md — sección "Bootstrap"
 #
-# En CI (GitHub Actions) el profile se ignora — las credenciales vienen
-# de las variables de entorno AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY.
+# En CI las credenciales vienen de AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY.
+# En local usa: $env:AWS_PROFILE="amishi-dev" (PowerShell).
 
 bucket       = "amishi-tfstate-dev"
 key          = "amishi/terraform.tfstate"
 region       = "us-east-1"
 use_lockfile = true
 encrypt      = true
-profile      = "amishi-dev"

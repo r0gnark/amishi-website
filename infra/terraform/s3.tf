@@ -23,3 +23,18 @@ resource "aws_s3_bucket_versioning" "catalog" {
     status = "Enabled"
   }
 }
+
+resource "aws_s3_object" "catalog_seed" {
+  bucket       = aws_s3_bucket.catalog.id
+  key          = "catalog.json"
+  source       = "${path.module}/../../data/catalog.json"
+  source_hash  = filemd5("${path.module}/../../data/catalog.json")
+  content_type = "application/json; charset=utf-8"
+
+  lifecycle {
+    ignore_changes = [
+      source,
+      source_hash,
+    ]
+  }
+}

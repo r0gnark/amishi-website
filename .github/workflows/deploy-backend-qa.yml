@@ -4,6 +4,10 @@ on:
   push:
     branches: [develop]
 
+concurrency:
+  group: deploy-aws-dev
+  cancel-in-progress: false
+
 jobs:
   deploy:
     name: Deploy to AWS Lambda (qa / cuenta dev)
@@ -42,6 +46,8 @@ jobs:
 
       - name: Terraform apply
         working-directory: infra/terraform
+        env:
+          TF_IN_AUTOMATION: "true"
         run: |
           terraform apply -auto-approve \
             -var "environment=qa" \
@@ -49,7 +55,8 @@ jobs:
             -var "admin_password=${{ secrets.ADMIN_PASSWORD_DEV }}" \
             -var "secret_key=${{ secrets.SECRET_KEY_DEV }}" \
             -var "cors_origins=${{ secrets.CORS_ORIGINS_QA }}" \
-            -var "aws_region=${{ secrets.AWS_REGION_DEV }}"
+            -var "aws_region=${{ secrets.AWS_REGION_DEV }}" \
+            -var "monthly_budget_usd=5"
 
       - name: Show API Gateway URL
         working-directory: infra/terraform

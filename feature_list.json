@@ -338,6 +338,20 @@
         "La imagen puede reemplazarse desde Contenido"
       ],
       "status": "done"
+    },
+    {
+      "id": 25,
+      "name": "production_infrastructure",
+      "title": "Infraestructura de producción AWS y Vercel",
+      "description": "Preparar y desplegar el sitio con persistencia, límites de consumo y configuración segura.",
+      "acceptance": [
+        "El catálogo y las imágenes cargadas persisten en S3",
+        "API Gateway y Lambda tienen límites de escalamiento",
+        "Terraform crea y siembra los recursos sin sobrescribir datos administrados",
+        "Vercel se conecta al backend mediante API_URL",
+        "Login, catálogo y carga de imágenes funcionan en producción"
+      ],
+      "status": "in_progress"
     }
   ]
 }

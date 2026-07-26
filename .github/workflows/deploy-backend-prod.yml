@@ -4,14 +4,15 @@ on:
   push:
     branches: [master]
 
+concurrency:
+  group: deploy-aws-prod
+  cancel-in-progress: false
+
 jobs:
   deploy:
     name: Deploy to AWS Lambda (prod / cuenta prod)
     runs-on: ubuntu-latest
-    # El GitHub Environment "production" requiere aprobación manual de un reviewer
-    # antes de ejecutar este job.
-    # Configurar en: Settings > Environments > production > Required reviewers
-    environment: production
+    environment: Production
 
     steps:
       - uses: actions/checkout@v4
@@ -45,6 +46,8 @@ jobs:
 
       - name: Terraform apply
         working-directory: infra/terraform
+        env:
+          TF_IN_AUTOMATION: "true"
         run: |
           terraform apply -auto-approve \
             -var "environment=prod" \
@@ -52,7 +55,8 @@ jobs:
             -var "admin_password=${{ secrets.ADMIN_PASSWORD_PROD }}" \
             -var "secret_key=${{ secrets.SECRET_KEY_PROD }}" \
             -var "cors_origins=${{ secrets.CORS_ORIGINS_PROD }}" \
-            -var "aws_region=${{ secrets.AWS_REGION_PROD }}"
+            -var "aws_region=${{ secrets.AWS_REGION_PROD }}" \
+            -var "monthly_budget_usd=5"
 
       - name: Show API Gateway URL
         working-directory: infra/terraform

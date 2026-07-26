@@ -47,8 +47,9 @@ hacer clic en la consola de AWS para crear recursos, los describes en código y
 Terraform los crea, actualiza o elimina según sea necesario.
 
 El **tfstate** es el archivo donde Terraform guarda el estado actual de los recursos
-que creó. Lo guardamos en S3 (no en el repo) para que tanto tú localmente como
-GitHub Actions lean el mismo estado y no dupliquen recursos.
+que creó. Lo guardamos en S3 con versionado y bloqueo nativo mediante
+`use_lockfile` (no en el repo), para que tanto tú localmente como GitHub Actions
+lean el mismo estado y no dupliquen recursos.
 
 ---
 
@@ -119,31 +120,12 @@ los deploys. **Nunca uses el usuario root ni tus credenciales personales de admi
 Para cada cuenta:
 1. Entra a la consola de AWS → **IAM → Users → Create user**
 2. Nombre sugerido: `amishi-deploy`
-3. En "Permissions", adjunta esta política (cubre lo que necesita Terraform):
+3. En "Permissions", adjunta la política correspondiente a la cuenta:
+   - DEV: `infra/iam/amishi-deploy-policy-dev.json`
+   - PROD: `infra/iam/amishi-deploy-policy-prod.json`
 
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "lambda:CreateFunction", "lambda:UpdateFunctionCode",
-        "lambda:UpdateFunctionConfiguration", "lambda:GetFunction",
-        "lambda:AddPermission", "lambda:RemovePermission",
-        "iam:CreateRole", "iam:AttachRolePolicy", "iam:PutRolePolicy",
-        "iam:GetRole", "iam:PassRole",
-        "s3:CreateBucket", "s3:PutBucketVersioning",
-        "s3:PutPublicAccessBlock", "s3:GetObject", "s3:PutObject",
-        "apigateway:*",
-        "logs:CreateLogGroup", "logs:PutRetentionPolicy",
-        "dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:DeleteItem"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-```
+Estas políticas limitan `iam:PassRole` al rol Lambda de cada cuenta y usan las
+acciones reales de AWS Budgets (`ModifyBudget` y `ViewBudget`).
 
 4. Una vez creado, ve a **Security credentials → Create access key** (tipo: CLI)
 5. Guarda el `Access Key ID` y el `Secret Access Key` — los verás una sola vez
@@ -189,14 +171,13 @@ aws sts get-caller-identity --profile amishi-prod
 ### Paso 3: Crear la infraestructura de estado de Terraform (bootstrap)
 
 Terraform necesita guardar en algún lugar el registro de los recursos que creó
-(llamado "tfstate"). Lo guardamos en S3 con un candado en DynamoDB para evitar
-que dos personas apliquen cambios al mismo tiempo.
+(llamado "tfstate"). Lo guardamos en S3 y activamos el bloqueo nativo del estado.
 
 Estos recursos se crean **una sola vez por cuenta** y nunca los toca Terraform
 (son el fundamento sobre el que trabaja).
 
 > **Por qué los nombres de bucket pueden chocar entre cuentas distintas:**
-> A diferencia de Lambda, DynamoDB o IAM (que son privados a tu cuenta), los nombres
+> A diferencia de Lambda o IAM (que son privados a tu cuenta), los nombres
 > de S3 son globalmente únicos en todo AWS — compartidos entre millones de cuentas
 > del mundo, como dominios de internet. `amishi-tfstate-dev` y `amishi-tfstate-prod`
 > son suficientemente específicos y es muy improbable que ya existan.
@@ -214,15 +195,6 @@ aws s3api put-bucket-versioning \
     --versioning-configuration Status=Enabled \
     --profile amishi-dev
 
-# Crear la tabla de locking (evita conflictos si dos procesos aplican a la vez)
-aws dynamodb create-table \
-    --table-name amishi-tfstate-lock \
-    --attribute-definitions AttributeName=LockID,AttributeType=S \
-    --key-schema AttributeName=LockID,KeyType=HASH \
-    --billing-mode PAY_PER_REQUEST \
-    --region us-east-1 \
-    --profile amishi-dev
-
 echo "Bootstrap DEV listo"
 ```
 
@@ -234,14 +206,6 @@ aws s3 mb s3://amishi-tfstate-prod --region us-east-1 --profile amishi-prod
 aws s3api put-bucket-versioning \
     --bucket amishi-tfstate-prod \
     --versioning-configuration Status=Enabled \
-    --profile amishi-prod
-
-aws dynamodb create-table \
-    --table-name amishi-tfstate-lock \
-    --attribute-definitions AttributeName=LockID,AttributeType=S \
-    --key-schema AttributeName=LockID,KeyType=HASH \
-    --billing-mode PAY_PER_REQUEST \
-    --region us-east-1 \
     --profile amishi-prod
 
 echo "Bootstrap PROD listo"
@@ -375,7 +339,7 @@ A partir de aquí no necesitas correr Terraform manualmente. Cada merge a
 
 Ve a tu repositorio → **Settings → Secrets and variables → Actions → New repository secret**
 
-Crea estos 14 secrets:
+Crea estos 14 secrets dentro de los GitHub Environments `qa` y `Production`:
 
 **Para la cuenta DEV (entorno QA):**
 
@@ -401,18 +365,12 @@ Crea estos 14 secrets:
 | `SECRET_KEY_PROD` | El mismo `secret_key` que pusiste en `terraform.prod.tfvars` |
 | `CORS_ORIGINS_PROD` | URL de tu proyecto Vercel prod (ej: `https://amishi.vercel.app`) |
 
-### Paso 11: Activar aprobación manual para producción
+### Paso 11: Entornos de GitHub
 
-Sin esto, cualquier merge a `master` deployaría a producción inmediatamente.
-Con esto, el pipeline pausa y espera que tú (u otro reviewer) apruebes.
-
-1. Ve a tu repositorio → **Settings → Environments**
-2. Haz clic en **New environment**, nómbralo exactamente `production`
-3. Activa **Required reviewers** y añade tu usuario de GitHub
-4. Guarda
-
-Ahora, cada vez que el workflow de prod llegue al job de deploy, GitHub te
-enviará una notificación por email y el pipeline esperará hasta que apruebes.
+El workflow de `develop` usa el environment `qa` y el de `master` usa
+`Production`. Sin reglas de aprobación, ambos despliegues comienzan
+automáticamente después del merge. Puedes añadir reviewers a `Production` más
+adelante si deseas una aprobación manual.
 
 ### Paso 12: Verificar que el CI funciona
 
@@ -435,13 +393,15 @@ ejecutándose. Debería completar en ~3-4 minutos.
 La URL del output de Terraform (`api_gateway_url`) es la dirección pública de
 tu backend. Vercel la necesita para saber dónde enviar las peticiones del frontend.
 
-1. Entra a [vercel.com](https://vercel.com) → tu proyecto
-2. Ve a **Settings → Environment Variables**
-3. Agrega la variable:
-   - **Key:** `API_URL`
-   - **Value:** la URL del output de Terraform (ej: `https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com`)
-   - **Environment:** selecciona el entorno correspondiente (Preview para QA, Production para prod)
-4. Haz un redeploy del frontend para que Vercel tome la nueva variable
+1. Entra a [vercel.com](https://vercel.com) → tu proyecto.
+2. En **Settings → Environments → Production → Branch Tracking**, selecciona
+   `master`.
+3. En **Settings → Environment Variables**, configura `API_URL`:
+   - Preview, rama `develop`: URL de API Gateway de la cuenta AWS DEV.
+   - Production: URL de API Gateway de la cuenta AWS PROD.
+
+La integración Git de Vercel crea un Preview con cada push a `develop` y un
+deployment de Production con cada push a `master`.
 
 ---
 
@@ -461,9 +421,7 @@ git push origin develop
 git checkout master
 git merge develop
 git push origin master
-# ──► GitHub Actions pausa y te notifica
-# ──► Apruebas en la pestaña Actions de GitHub
-# ──► Se deploya a producción (cuenta PROD)
+# ──► GitHub Actions despliega automáticamente a producción (cuenta PROD)
 ```
 
 ---
@@ -492,4 +450,4 @@ asegúrate de que `requirements.txt` está completo, luego re-aplica con Terrafo
 
 **GitHub Actions falla en `terraform init`**
 Verifica que los secrets `AWS_ACCESS_KEY_ID_DEV` / `AWS_SECRET_ACCESS_KEY_DEV`
-estén configurados correctamente y que el usuario IAM tenga acceso a S3 y DynamoDB.
+estén configurados correctamente y que el usuario IAM tenga acceso a S3.
