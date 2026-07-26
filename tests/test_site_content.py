@@ -35,7 +35,7 @@ async def test_public_contenido_returns_defaults():
     body = response.json()
     assert body["siteName"] == "amishi"
     assert body["contactUrl"] == "https://ig.me/m/amishi.cl"
-    assert body["aboutImage"] == "/images/sobre-amishi.png"
+    assert body["aboutImage"] == "/images/amishi-bienvenida.png"
     assert "about" in body
     assert "announcementBar" in body
 

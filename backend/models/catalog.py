@@ -110,7 +110,7 @@ class SiteContent(BaseModel):
     about: str = ""
     about_title: str = Field(default="Bienvenid@ a Amishi", alias="aboutTitle")
     about_image: str = Field(
-        default="/images/sobre-amishi.png",
+        default="/images/amishi-bienvenida.png",
         alias="aboutImage",
     )
     announcement_bar: str = Field(default="", alias="announcementBar")

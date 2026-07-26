@@ -325,6 +325,19 @@
         "Todos los botones públicos usan el nuevo número"
       ],
       "status": "done"
+    },
+    {
+      "id": 24,
+      "name": "replace_about_image",
+      "title": "Actualizar imagen de bienvenida",
+      "description": "Usar la nueva ilustración entregada y mantenerla administrable desde Contenido.",
+      "acceptance": [
+        "La sección Bienvenid@ usa IMG_2409.png",
+        "La imagen conserva su transparencia y proporción",
+        "El recurso aparece en la biblioteca del administrador",
+        "La imagen puede reemplazarse desde Contenido"
+      ],
+      "status": "done"
     }
   ]
 }

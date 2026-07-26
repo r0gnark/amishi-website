@@ -169,6 +169,19 @@ verdes.
 
 ---
 
+## 2026-07-26 — Feature 24: Actualizar imagen de bienvenida (DONE)
+
+**Implementado:**
+- Incorporada `IMG_2409.png` como `/images/amishi-bienvenida.png`.
+- Contenido persistente y valores de respaldo actualizados al nuevo recurso.
+- Transparencia y resolución original 2361×2361 conservadas.
+- Selector de Contenido y biblioteca administrativa continúan habilitados.
+
+**Verificación:** recurso presente en la biblioteca; Vitest 4/4 y pytest
+51/51 verdes; `npm run lint`, `npm run build` y `./init.sh` verdes.
+
+---
+
 ## 2026-07-26 — Feature 21: Mejorar encuadre de la imagen Sobre Amishi (DONE)
 
 **Implementado:**

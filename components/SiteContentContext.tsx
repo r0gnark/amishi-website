@@ -21,7 +21,7 @@ export const DEFAULT_SITE_CONTENT: SiteContent = {
   aboutTitle: "Bienvenid@ a Amishi",
   about:
     "Un rincón creado para quienes aman los gatos y los pequeños detalles. Aquí todo nace desde el cariño por el diseño y por los mishi.\n\nCada pieza está hecha a mano, con tiempo y dedicación, por eso ninguna es igual a otra.",
-  aboutImage: "/images/sobre-amishi.png",
+  aboutImage: "/images/amishi-bienvenida.png",
   contactLabel: "Contacto",
   contactUrl: "https://wa.me/56989913721",
   instagramHandle: "@amishi.cl",
