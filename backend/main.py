@@ -8,7 +8,7 @@ load_dotenv()
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.routers import auth, categorias, contenido, productos
+from backend.routers import auth, categorias, contenido, media, productos
 from backend.routers.admin import categorias as admin_categorias
 from backend.routers.admin import contenido as admin_contenido
 from backend.routers.admin import media as admin_media
@@ -31,6 +31,7 @@ app.add_middleware(
 app.include_router(productos.router)
 app.include_router(categorias.router)
 app.include_router(contenido.router)
+app.include_router(media.router)
 app.include_router(auth.router)
 app.include_router(admin_productos.router)
 app.include_router(admin_contenido.router)

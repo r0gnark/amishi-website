@@ -48,3 +48,14 @@ variable "cors_origins" {
   type        = string
   default     = ""
 }
+
+variable "monthly_budget_usd" {
+  description = "Monthly AWS cost budget in USD"
+  type        = number
+  default     = 5
+
+  validation {
+    condition     = var.monthly_budget_usd >= 1
+    error_message = "monthly_budget_usd must be at least 1."
+  }
+}

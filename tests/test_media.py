@@ -1,13 +1,14 @@
 """Tests de la biblioteca multimedia del administrador."""
 
 import os
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from httpx import ASGITransport, AsyncClient
 
 from backend.main import app
 from backend.routers.admin import media
+from backend.routers import media as public_media
 
 ENV = {
     "ADMIN_EMAIL": "admin@test.cl",
@@ -106,3 +107,63 @@ async def test_upload_media_rejects_invalid_content(media_root):
 
     assert response.status_code == 400
     assert not list(media_root.rglob("*"))
+
+
+@pytest.mark.asyncio
+async def test_upload_media_uses_s3_when_bucket_is_configured(media_root):
+    png_content = b"\x89PNG\r\n\x1a\n" + b"production-image"
+    s3_client = MagicMock()
+
+    with (
+        patch.dict(os.environ, {**ENV, "S3_BUCKET": "amishi-catalog"}, clear=True),
+        patch.object(media, "_s3_client", return_value=s3_client),
+    ):
+        async with AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://test",
+        ) as client:
+            await _login(client)
+            response = await client.post(
+                "/api/admin/media",
+                files={"file": ("Nueva foto.png", png_content, "image/png")},
+            )
+
+    assert response.status_code == 201
+    uploaded = response.json()
+    assert uploaded["url"].startswith("/api/media/uploads/nueva-foto-")
+    put_arguments = s3_client.put_object.call_args.kwargs
+    assert put_arguments["Bucket"] == "amishi-catalog"
+    assert put_arguments["Body"] == png_content
+    assert put_arguments["ContentType"] == "image/png"
+    assert not list(media_root.rglob("*"))
+
+
+@pytest.mark.asyncio
+async def test_public_media_serves_local_upload(media_root, monkeypatch):
+    upload = media_root / "uploads" / "mishi.png"
+    upload.parent.mkdir(parents=True)
+    upload.write_bytes(b"\x89PNG\r\n\x1a\n")
+    monkeypatch.setattr(public_media, "MEDIA_ROOT", media_root)
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://test",
+    ) as client:
+        response = await client.get("/api/media/uploads/mishi.png")
+
+    assert response.status_code == 200
+    assert response.content == b"\x89PNG\r\n\x1a\n"
+    assert response.headers["cache-control"] == "public, max-age=31536000, immutable"
+
+
+@pytest.mark.asyncio
+async def test_public_media_rejects_path_traversal(media_root, monkeypatch):
+    monkeypatch.setattr(public_media, "MEDIA_ROOT", media_root)
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://test",
+    ) as client:
+        response = await client.get("/api/media/uploads/../catalog.json")
+
+    assert response.status_code == 404

@@ -26,15 +26,52 @@ pip install \
 echo "==> Copiando código fuente del backend..."
 cp -r "$ROOT_DIR/backend" "$BUILD_DIR/backend"
 
+echo "==> Generando manifiesto de imágenes estáticas..."
+python3 - "$ROOT_DIR/public/images" "$BUILD_DIR/backend/static_media.json" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+destination = Path(sys.argv[2])
+extensions = {".jpg", ".jpeg", ".png", ".webp"}
+items = [
+    {
+        "name": path.name,
+        "url": f"/images/{path.relative_to(root).as_posix()}",
+    }
+    for path in root.rglob("*")
+    if path.is_file() and path.suffix.lower() in extensions
+]
+destination.write_text(
+    json.dumps(sorted(items, key=lambda item: item["url"]), ensure_ascii=False),
+    encoding="utf-8",
+)
+PY
+
 echo "==> Creando $ZIP_FILE..."
 rm -f "$ZIP_FILE"
-cd "$BUILD_DIR"
-zip -r "$ZIP_FILE" . \
-    --exclude "**/__pycache__/*" \
-    --exclude "*.pyc" \
-    --exclude "*.pyo" \
-    --exclude "**/*.dist-info/*" \
-    --exclude "**/*.egg-info/*"
+python3 - "$BUILD_DIR" "$ZIP_FILE" <<'PY'
+import sys
+import zipfile
+from pathlib import Path
+
+root = Path(sys.argv[1])
+destination = Path(sys.argv[2])
+excluded_suffixes = {".pyc", ".pyo"}
+excluded_parts = {"__pycache__"}
+
+with zipfile.ZipFile(destination, "w", zipfile.ZIP_DEFLATED) as archive:
+    for path in root.rglob("*"):
+        relative = path.relative_to(root)
+        if not path.is_file():
+            continue
+        if path.suffix in excluded_suffixes or excluded_parts.intersection(relative.parts):
+            continue
+        if any(part.endswith((".dist-info", ".egg-info")) for part in relative.parts):
+            continue
+        archive.write(path, relative.as_posix())
+PY
 
 ZIP_SIZE=$(du -sh "$ZIP_FILE" | cut -f1)
 echo "==> Listo: $ZIP_FILE ($ZIP_SIZE)"

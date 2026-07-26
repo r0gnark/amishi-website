@@ -17,7 +17,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
   # En CI (GitHub Actions) aws_profile está vacío; las credenciales las inyecta
   # configure-aws-credentials a través de variables de entorno de AWS.
   # En local, el perfil nombrado del ~/.aws/config selecciona la cuenta correcta.
