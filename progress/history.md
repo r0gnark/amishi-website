@@ -156,6 +156,19 @@ verdes.
 
 ---
 
+## 2026-07-26 — Feature 23: Editar número de WhatsApp desde administración (DONE)
+
+**Implementado:**
+- Campo “Número de WhatsApp” en Administración → Contenido.
+- Acepta `+`, espacios y guiones; normaliza al formato requerido por WhatsApp.
+- Mensaje de validación para teléfonos sin código de país o longitud válida.
+- Cabecera, menú móvil, pie y productos consumen el número administrado.
+
+**Verificación:** Vitest 4/4 y pytest 51/51 verdes; `npm run lint`,
+`npm run build` y `./init.sh` verdes.
+
+---
+
 ## 2026-07-26 — Feature 21: Mejorar encuadre de la imagen Sobre Amishi (DONE)
 
 **Implementado:**
