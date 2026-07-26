@@ -38,6 +38,9 @@
   S3 y render público de imagen respondieron correctamente.
 - Plan DEV idempotente sin cambios. PROD quedó sin recursos destructivos
   pendientes; el próximo merge sólo actualizará el código Lambda.
+- El primer workflow posterior al merge falló antes del apply porque CI usaba
+  Terraform 1.6, incompatible con `use_lockfile`; se actualizó a Terraform
+  1.15.8 y se elevó el requisito mínimo a 1.10.
 
 ## Verificación
 
