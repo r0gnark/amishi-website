@@ -37,7 +37,7 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "~1.6"
+          terraform_version: "1.15.8"
 
       # El backend apunta al bucket tfstate de la cuenta PROD
       - name: Terraform init
