@@ -1,0 +1,63 @@
+name: Deploy Backend — QA
+
+on:
+  push:
+    branches: [develop]
+
+concurrency:
+  group: deploy-aws-dev
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to AWS Lambda (qa / cuenta dev)
+    runs-on: ubuntu-latest
+    environment: qa
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # Credenciales de la cuenta DEV (entorno QA)
+      - name: Configure AWS credentials (dev account)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region:            ${{ secrets.AWS_REGION_DEV }}
+
+      - name: Build Lambda package
+        run: bash infra/scripts/build_lambda.sh
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.15.8"
+
+      # El backend apunta al bucket tfstate de la cuenta DEV
+      - name: Terraform init
+        working-directory: infra/terraform
+        run: terraform init -backend-config=backends/qa.tfbackend
+
+      - name: Terraform apply
+        working-directory: infra/terraform
+        env:
+          TF_IN_AUTOMATION: "true"
+        run: |
+          terraform apply -auto-approve \
+            -var "environment=qa" \
+            -var "admin_email=${{ secrets.ADMIN_EMAIL_DEV }}" \
+            -var "admin_password=${{ secrets.ADMIN_PASSWORD_DEV }}" \
+            -var "secret_key=${{ secrets.SECRET_KEY_DEV }}" \
+            -var "cors_origins=${{ secrets.CORS_ORIGINS_QA }}" \
+            -var "aws_region=${{ secrets.AWS_REGION_DEV }}" \
+            -var "monthly_budget_usd=5"
+
+      - name: Show API Gateway URL
+        working-directory: infra/terraform
+        run: terraform output api_gateway_url

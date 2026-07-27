@@ -11,10 +11,10 @@ export const CATALOG_FILTER_IDS = [
   "papeleria",
 ] as const;
 
-export type CatalogCategoryId = (typeof CATALOG_FILTER_IDS)[number];
+export type CatalogCategoryId = string;
 
 export type CatalogFilterItem = {
-  id: CatalogCategoryId;
+  id: string;
   /** Texto bajo el círculo */
   label: string;
   /** Imagen del círculo */

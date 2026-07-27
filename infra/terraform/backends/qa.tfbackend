@@ -1,0 +1,14 @@
+# Backend config para la cuenta DEV (entorno QA).
+# Usar con: terraform init -backend-config=backends/qa.tfbackend
+#
+# El bucket y la tabla deben crearse manualmente en la cuenta DEV.
+# Ver: infra/README.md — sección "Bootstrap"
+#
+# En CI las credenciales vienen de AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY.
+# En local usa: $env:AWS_PROFILE="amishi-dev" (PowerShell).
+
+bucket       = "amishi-tfstate-dev"
+key          = "amishi/terraform.tfstate"
+region       = "us-east-1"
+use_lockfile = true
+encrypt      = true

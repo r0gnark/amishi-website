@@ -1,0 +1,357 @@
+{
+  "project": "amishi-website",
+  "description": "Sitio web de catálogo Amishi con backend Python/FastAPI y frontend Next.js/React. Panel de administración para gestionar productos y contenido del sitio. Login básico con JWT para proteger el CMS.",
+  "rules": {
+    "one_feature_at_a_time": true,
+    "require_tests_to_close": true,
+    "valid_status": [
+      "pending",
+      "in_progress",
+      "done",
+      "blocked"
+    ]
+  },
+  "features": [
+    {
+      "id": 1,
+      "name": "catalog_storage",
+      "title": "Capa de almacenamiento del catálogo",
+      "description": "Lectura/escritura atómica del catálogo en un archivo JSON. Crea el archivo si no existe.",
+      "acceptance": [
+        "Existe backend/storage.py con funciones load_catalog() y save_catalog(data)",
+        "save_catalog() es atómico (escritura a archivo temporal + os.replace())",
+        "load_catalog() devuelve estructura vacía válida si el archivo no existe",
+        "El archivo por defecto es data/catalog.json",
+        "tests/test_storage.py cubre los 3 casos anteriores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 2,
+      "name": "catalog_repository",
+      "title": "Repositorio de productos",
+      "description": "Capa de dominio que expone CRUD de productos sobre el almacenamiento JSON, reutilizando el modelo Pydantic Product.",
+      "acceptance": [
+        "Existe backend/repository.py con get_all_products(), get_product_by_slug(slug), create_product(), update_product(slug), delete_product(slug)",
+        "create_product() genera slug único a partir del nombre si no se provee",
+        "update_product() y delete_product() lanzan CatalogNotFoundError si el slug no existe",
+        "Validación mínima: name no vacío, price >= 0, category válida",
+        "tests/test_repository.py cubre CRUD feliz y slug inexistente"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 3,
+      "name": "migrate_static_catalog",
+      "title": "Migrar catálogo estático al JSON",
+      "description": "Poblar data/catalog.json con los productos actuales de data/products.py (o products.ts) y hacer que el sitio público lea del repositorio.",
+      "acceptance": [
+        "Existe script scripts/seed_catalog.py que importa todos los productos al catalog.json",
+        "El endpoint GET /api/productos devuelve los productos del repositorio",
+        "Tras ejecutar el seed, el catálogo tiene al menos tantos productos como la fuente estática",
+        "tests/test_seed.py verifica que el seed produce el número correcto de productos"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 4,
+      "name": "auth_session",
+      "title": "Autenticación básica con JWT",
+      "description": "Login con credenciales en variables de entorno y token JWT en cookie httpOnly. Sin registro de usuarios ni OAuth.",
+      "acceptance": [
+        "Existe backend/services/auth.py con login(email, password), logout() y get_current_user()",
+        "Credenciales leídas de ADMIN_EMAIL y ADMIN_PASSWORD en .env (documentadas en .env.example)",
+        "La sesión usa cookie httpOnly con JWT firmado (SECRET_KEY)",
+        "Existe dependencia FastAPI que protege rutas /api/admin/* y devuelve 401 si no hay token válido",
+        "Credenciales incorrectas devuelven 401 sin revelar cuál campo falló",
+        "tests/test_auth.py cubre login exitoso, credenciales inválidas y token expirado"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 5,
+      "name": "admin_login_ui",
+      "title": "Página de login del panel admin",
+      "description": "Interfaz de acceso al CMS en /admin/login, coherente con el estilo visual de Amishi.",
+      "acceptance": [
+        "Existe app/admin/login/page.tsx con formulario email + contraseña",
+        "POST a /api/auth/login (FastAPI) establece la cookie JWT y redirige a /admin",
+        "Si ya hay sesión activa, /admin/login redirige a /admin",
+        "Errores de credenciales muestran mensaje claro sin stack trace",
+        "npm run build incluye la ruta /admin/login sin errores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 6,
+      "name": "admin_dashboard",
+      "title": "Panel principal del CMS",
+      "description": "Layout protegido en /admin con navegación y resumen del catálogo.",
+      "acceptance": [
+        "Existe app/admin/layout.tsx con barra lateral o cabecera: Productos, Contenido, Cerrar sesión",
+        "app/admin/page.tsx muestra total de productos y acceso rápido a crear producto (datos desde GET /api/productos)",
+        "Rutas /admin/* sin sesión redirigen a /admin/login",
+        "El botón Cerrar sesión llama a POST /api/auth/logout y redirige al login",
+        "npm run build incluye /admin sin errores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 7,
+      "name": "admin_products_list",
+      "title": "Listado de productos en el admin",
+      "description": "Vista tabular de todos los productos con acciones de editar y eliminar.",
+      "acceptance": [
+        "Existe app/admin/productos/page.tsx con tabla: nombre, precio, categoría, slug",
+        "Cada fila enlaza a /admin/productos/[slug]/editar",
+        "Botón Nuevo producto enlaza a /admin/productos/nuevo",
+        "La lista refleja cambios tras crear, editar o eliminar (revalidación o refetch)",
+        "npm run build incluye /admin/productos"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 8,
+      "name": "admin_product_form",
+      "title": "Crear y editar productos",
+      "description": "Formulario del CMS para alta y modificación de productos del catálogo.",
+      "acceptance": [
+        "Existe app/admin/productos/nuevo/page.tsx y app/admin/productos/[slug]/editar/page.tsx",
+        "Campos: nombre, precio (CLP), descripción, categoría (select), URL de imagen principal, galería opcional",
+        "POST /api/admin/productos y PATCH /api/admin/productos/{slug} (FastAPI) persisten los cambios",
+        "Tras guardar, redirige al listado con confirmación visual",
+        "Validación en servidor (Pydantic) rechaza datos inválidos con mensajes claros (422)",
+        "tests/test_admin_productos.py cubre crear, editar y validación fallida"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 9,
+      "name": "admin_product_delete",
+      "title": "Eliminar productos",
+      "description": "Permite borrar un producto del catálogo desde el panel admin con confirmación.",
+      "acceptance": [
+        "El listado incluye acción Eliminar con diálogo de confirmación",
+        "DELETE /api/admin/productos/{slug} (FastAPI) elimina el producto del JSON",
+        "Slug inexistente devuelve 404",
+        "Tras eliminar, el producto deja de aparecer en el sitio público",
+        "tests/test_admin_productos.py cubre eliminación exitosa y slug inexistente"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 10,
+      "name": "admin_site_content",
+      "title": "Gestión de contenido del sitio",
+      "description": "Editar textos visibles del sitio público (sección About y barra de anuncio) desde el CMS.",
+      "acceptance": [
+        "El catálogo JSON incluye sección siteContent: { about, announcementBar }",
+        "Existe app/admin/contenido/page.tsx con formulario para editar ambos textos",
+        "PATCH /api/admin/contenido (FastAPI) persiste los cambios",
+        "components/About.tsx y components/AnnouncementBar.tsx leen siteContent vía GET /api/contenido (con fallback al texto actual)",
+        "tests/test_site_content.py cubre lectura, actualización y fallback"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 11,
+      "name": "simplified_local_startup",
+      "title": "Arranque local simplificado",
+      "description": "Preparar y levantar Next.js y FastAPI con comandos únicos, compatibles con Windows y WSL.",
+      "acceptance": [
+        "npm run setup crea un entorno Python aislado e instala las dependencias",
+        "npm run dev:all levanta FastAPI en el puerto 8000 y Next.js en el puerto 3000",
+        "Todos los consumidores locales de la API usan el puerto 8000 por defecto",
+        "README.md documenta el flujo de instalación y arranque simplificado",
+        "pytest, npm test y npm run build terminan sin errores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 12,
+      "name": "admin_image_previews",
+      "title": "Previsualización de imágenes en el administrador",
+      "description": "Mostrar las imágenes existentes y las nuevas URLs mientras se gestionan productos.",
+      "acceptance": [
+        "El listado de productos muestra una miniatura de la imagen principal",
+        "Crear y editar producto muestra una vista previa de la imagen principal",
+        "La galería se previsualiza al escribir o pegar nuevas URLs",
+        "Las imágenes inválidas muestran un estado de error claro",
+        "npm run build termina sin errores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 13,
+      "name": "admin_media_library",
+      "title": "Biblioteca multimedia del administrador",
+      "description": "Permitir ver, seleccionar y subir imágenes sin escribir URLs manualmente.",
+      "acceptance": [
+        "GET /api/admin/media lista las imágenes existentes bajo public/images",
+        "POST /api/admin/media permite subir JPG, PNG o WebP con autenticación",
+        "El formulario de producto usa un selector visual para imagen principal y galería",
+        "Las imágenes nuevas aparecen en la biblioteca inmediatamente",
+        "Los endpoints rechazan archivos inválidos y están cubiertos por tests"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 14,
+      "name": "customizable_site_settings",
+      "title": "Ajustes personalizables del sitio",
+      "description": "Editar desde el administrador los textos de Sobre, contacto, redes y pie de página.",
+      "acceptance": [
+        "El administrador edita título y texto de la sección Sobre",
+        "El administrador edita Instagram, enlace de contacto y texto del pie",
+        "La barra de anuncio usa el contenido administrado",
+        "El sitio público consume los ajustes con valores de respaldo",
+        "Los cambios persisten y están cubiertos por tests"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 15,
+      "name": "fullscreen_admin_login",
+      "title": "Login administrativo a pantalla completa",
+      "description": "Separar visualmente el acceso del sitio público y del panel autenticado.",
+      "acceptance": [
+        "/admin/login no muestra navegación pública ni administrativa",
+        "El formulario ocupa toda la ventana y mantiene el estilo Amishi",
+        "Las rutas autenticadas conservan la navegación del panel",
+        "npm run lint y npm run build terminan sin errores"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 16,
+      "name": "admin_categories",
+      "title": "Gestión de categorías del catálogo",
+      "description": "Crear, editar y eliminar categorías con fotografía desde el administrador.",
+      "acceptance": [
+        "El panel muestra categorías con nombre e imagen",
+        "El administrador puede crear y editar categorías",
+        "Solo se eliminan categorías sin productos asociados",
+        "El sitio público y el formulario de productos usan categorías dinámicas",
+        "CRUD y reglas de integridad están cubiertos por tests"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 17,
+      "name": "category_ordering",
+      "title": "Orden manual de categorías",
+      "description": "Permitir definir la posición de las categorías desde el administrador.",
+      "acceptance": [
+        "Cada categoría puede moverse hacia arriba o abajo",
+        "El orden se guarda en el catálogo",
+        "El sitio público respeta el orden configurado",
+        "La API valida que no falten ni se dupliquen categorías"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 18,
+      "name": "remove_test_products",
+      "title": "Eliminar productos de prueba inválidos",
+      "description": "Retirar los cinco registros nuevo-iman que apuntaban a una imagen inexistente.",
+      "acceptance": [
+        "No quedan productos cuyo id comienza con nuevo-iman",
+        "El catálogo contiene 62 productos reales",
+        "Todas las imágenes principales locales existen"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 19,
+      "name": "category_drag_drop",
+      "title": "Ordenar categorías con drag and drop",
+      "description": "Reemplazar controles de posición por arrastre visual.",
+      "acceptance": [
+        "Las tarjetas de categoría son arrastrables",
+        "Soltar una tarjeta cambia y persiste su posición",
+        "La interfaz muestra cuál tarjeta se está moviendo",
+        "El orden público se actualiza inmediatamente"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 20,
+      "name": "admin_media_library",
+      "title": "Biblioteca de imágenes en el administrador",
+      "description": "Agregar un menú independiente para consultar y subir las imágenes del sitio.",
+      "acceptance": [
+        "El menú del administrador incluye Imágenes",
+        "La página muestra todas las imágenes cargadas",
+        "El usuario puede subir una imagen desde la biblioteca",
+        "Las nuevas imágenes aparecen inmediatamente"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 21,
+      "name": "about_image_framing",
+      "title": "Mejorar encuadre de la imagen Sobre Amishi",
+      "description": "Preparar una imagen vertical 4:5 y evitar recortes incorrectos en el componente.",
+      "acceptance": [
+        "La ilustración usa una composición vertical 4:5",
+        "El personaje se muestra completo y con menos espacio vacío",
+        "El fondo se integra con la paleta visual del sitio",
+        "Las futuras imágenes no se deforman ni se recortan"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 22,
+      "name": "whatsapp_contact_origin",
+      "title": "Contacto por WhatsApp con origen",
+      "description": "Enviar las consultas al WhatsApp de Amishi indicando desde dónde se originaron.",
+      "acceptance": [
+        "Los enlaces usan el número +56 9 8991 3721",
+        "La cabecera y el pie identifican su origen",
+        "Las consultas de producto incluyen nombre y enlace de la ficha",
+        "Los mensajes se abren prellenados en WhatsApp"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 23,
+      "name": "admin_whatsapp_number",
+      "title": "Editar número de WhatsApp desde administración",
+      "description": "Permitir cambiar el teléfono de contacto sin escribir una URL técnica.",
+      "acceptance": [
+        "Contenido muestra un campo Número de WhatsApp",
+        "El campo acepta números con +, espacios o guiones",
+        "El valor se valida y normaliza antes de guardar",
+        "Todos los botones públicos usan el nuevo número"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 24,
+      "name": "replace_about_image",
+      "title": "Actualizar imagen de bienvenida",
+      "description": "Usar la nueva ilustración entregada y mantenerla administrable desde Contenido.",
+      "acceptance": [
+        "La sección Bienvenid@ usa IMG_2409.png",
+        "La imagen conserva su transparencia y proporción",
+        "El recurso aparece en la biblioteca del administrador",
+        "La imagen puede reemplazarse desde Contenido"
+      ],
+      "status": "done"
+    },
+    {
+      "id": 25,
+      "name": "production_infrastructure",
+      "title": "Infraestructura de producción AWS y Vercel",
+      "description": "Preparar y desplegar el sitio con persistencia, límites de consumo y configuración segura.",
+      "acceptance": [
+        "El catálogo y las imágenes cargadas persisten en S3",
+        "API Gateway y Lambda tienen límites de escalamiento",
+        "Terraform crea y siembra los recursos sin sobrescribir datos administrados",
+        "Vercel se conecta al backend mediante API_URL",
+        "Login, catálogo y carga de imágenes funcionan en producción"
+      ],
+      "status": "in_progress"
+    }
+  ]
+}

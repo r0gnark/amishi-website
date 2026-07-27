@@ -1,0 +1,14 @@
+# Backend config para la cuenta PROD.
+# Usar con: terraform init -backend-config=backends/prod.tfbackend
+#
+# El bucket y la tabla deben crearse manualmente en la cuenta PROD.
+# Ver: infra/README.md — sección "Bootstrap"
+#
+# En CI las credenciales vienen de AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY.
+# En local usa: $env:AWS_PROFILE="amishi-prod" (PowerShell).
+
+bucket       = "amishi-tfstate-prod"
+key          = "amishi/terraform.tfstate"
+region       = "us-east-1"
+use_lockfile = true
+encrypt      = true

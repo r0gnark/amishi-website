@@ -1,0 +1,63 @@
+name: Deploy Backend — Production
+
+on:
+  push:
+    branches: [master]
+
+concurrency:
+  group: deploy-aws-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to AWS Lambda (prod / cuenta prod)
+    runs-on: ubuntu-latest
+    environment: Production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # Credenciales de la cuenta PROD (completamente separada de la cuenta dev)
+      - name: Configure AWS credentials (prod account)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region:            ${{ secrets.AWS_REGION_PROD }}
+
+      - name: Build Lambda package
+        run: bash infra/scripts/build_lambda.sh
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.15.8"
+
+      # El backend apunta al bucket tfstate de la cuenta PROD
+      - name: Terraform init
+        working-directory: infra/terraform
+        run: terraform init -backend-config=backends/prod.tfbackend
+
+      - name: Terraform apply
+        working-directory: infra/terraform
+        env:
+          TF_IN_AUTOMATION: "true"
+        run: |
+          terraform apply -auto-approve \
+            -var "environment=prod" \
+            -var "admin_email=${{ secrets.ADMIN_EMAIL_PROD }}" \
+            -var "admin_password=${{ secrets.ADMIN_PASSWORD_PROD }}" \
+            -var "secret_key=${{ secrets.SECRET_KEY_PROD }}" \
+            -var "cors_origins=${{ secrets.CORS_ORIGINS_PROD }}" \
+            -var "aws_region=${{ secrets.AWS_REGION_PROD }}" \
+            -var "monthly_budget_usd=5"
+
+      - name: Show API Gateway URL
+        working-directory: infra/terraform
+        run: terraform output api_gateway_url

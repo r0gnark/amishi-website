@@ -9,20 +9,36 @@ Sitio web de vitrina para **Amishi** (diseño, gatos y cerámica), construido co
 
 - Node.js 20+ (recomendado)
 - npm
+- WSL con Ubuntu (en Windows)
 
-## Desarrollo
+## Desarrollo rápido
 
 ```bash
-npm install
-npm run dev
+npm run setup
+npm run dev:all
 ```
 
-Abre [http://localhost:3000](http://localhost:3000).
+El primer comando crea un entorno Python aislado en WSL e instala las
+dependencias. El segundo levanta el sitio y la API juntos:
+
+- Sitio: [http://localhost:3000](http://localhost:3000)
+- API y documentación: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+En PowerShell con la ejecución de scripts restringida, usa:
+
+```powershell
+npm.cmd run setup
+npm.cmd run dev:all
+```
+
+Detén ambos servidores con `Ctrl+C`.
 
 ## Scripts
 
 | Comando       | Descripción              |
 | ------------- | ------------------------ |
+| `npm run setup` | Crea `.venv` e instala las dependencias del backend |
+| `npm run dev:all` | Levanta Next.js y FastAPI juntos |
 | `npm run dev` | Servidor de desarrollo   |
 | `npm run build` | Compilación de producción |
 | `npm run start` | Servidor tras `build`    |

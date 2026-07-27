@@ -3,16 +3,12 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
-import { catalogFilters, type CatalogCategoryId } from "@/data/catalog-filters";
+import type { CatalogCategoryId } from "@/data/catalog-filters";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { BrandLogo } from "./BrandLogo";
+import { useCategories } from "./CategoryContext";
 import { useCatalogFilter } from "./CatalogFilterContext";
-
-type HeaderProps = {
-  siteName: string;
-  instagramUrl: string;
-  /** Perfil público (ícono IG en cabecera). */
-  instagramProfileUrl: string;
-};
+import { useSiteContent } from "./SiteContentContext";
 
 function scrollToCatalogSmooth() {
   requestAnimationFrame(() => {
@@ -20,7 +16,14 @@ function scrollToCatalogSmooth() {
   });
 }
 
-export function Header({ siteName, instagramUrl, instagramProfileUrl }: HeaderProps) {
+export function Header() {
+  const {
+    siteName,
+    contactLabel,
+    contactUrl,
+    instagramProfileUrl,
+  } = useSiteContent();
+  const catalogFilters = useCategories();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -72,12 +75,15 @@ export function Header({ siteName, instagramUrl, instagramProfileUrl }: HeaderPr
             Sobre
           </Link>
           <a
-            href={instagramUrl}
+            href={buildWhatsAppUrl({
+              source: "el contacto de la cabecera del sitio Amishi",
+              baseUrl: contactUrl,
+            })}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-medium text-ink/90 transition hover:text-clay"
           >
-            Contacto
+            {contactLabel}
           </a>
         </nav>
 
@@ -158,13 +164,16 @@ export function Header({ siteName, instagramUrl, instagramProfileUrl }: HeaderPr
             </li>
             <li>
               <a
-                href={instagramUrl}
+                href={buildWhatsAppUrl({
+                  source: "el menú móvil del sitio Amishi",
+                  baseUrl: contactUrl,
+                })}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block rounded-lg px-2 py-2.5 text-base font-medium text-ink hover:bg-blush/50"
                 onClick={() => setOpen(false)}
               >
-                Contacto
+                {contactLabel}
               </a>
             </li>
           </ul>
