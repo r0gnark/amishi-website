@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.routers import auth, categorias, contenido, media, productos
 from backend.routers.admin import categorias as admin_categorias
 from backend.routers.admin import contenido as admin_contenido
+from backend.routers.admin import cuenta as admin_cuenta
 from backend.routers.admin import media as admin_media
 from backend.routers.admin import productos as admin_productos
 
@@ -35,6 +36,7 @@ app.include_router(media.router)
 app.include_router(auth.router)
 app.include_router(admin_productos.router)
 app.include_router(admin_contenido.router)
+app.include_router(admin_cuenta.router)
 app.include_router(admin_media.router)
 app.include_router(admin_categorias.router)
 

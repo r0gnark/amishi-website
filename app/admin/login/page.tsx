@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import PasswordInput from "@/components/admin/PasswordInput";
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -53,20 +55,13 @@ export default function LoginPage() {
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-ink mb-1">
-              Contraseña
-            </label>
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-blush px-3 py-2 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-rose"
-            />
-          </div>
+          <PasswordInput
+            id="password"
+            label="Contraseña"
+            autoComplete="current-password"
+            value={password}
+            onChange={setPassword}
+          />
 
           {error && (
             <p className="text-sm text-clay" role="alert">
