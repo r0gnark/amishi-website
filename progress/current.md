@@ -41,6 +41,8 @@
 - El primer workflow posterior al merge falló antes del apply porque CI usaba
   Terraform 1.6, incompatible con `use_lockfile`; se actualizó a Terraform
   1.15.8 y se elevó el requisito mínimo a 1.10.
+- El deploy de producción ahora espera el resultado exitoso de `Test Backend`
+  en `master` y hace checkout del SHA exacto que fue probado.
 
 ## Verificación
 
@@ -52,5 +54,4 @@
 
 ## Notas / bloqueos
 
-- Vercel requiere cambiar manualmente Branch Tracking de Production a `master`;
-  la API pública no permite modificar ese campo y el navegador no tiene sesión.
+- Sin bloqueos activos.
