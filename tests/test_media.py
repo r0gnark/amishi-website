@@ -113,10 +113,15 @@ async def test_upload_media_rejects_invalid_content(media_root):
 async def test_upload_media_uses_s3_when_bucket_is_configured(media_root):
     png_content = b"\x89PNG\r\n\x1a\n" + b"production-image"
     s3_client = MagicMock()
+    missing_auth = Exception("missing auth")
+    missing_auth.response = {"Error": {"Code": "NoSuchKey"}}
+    auth_s3_client = MagicMock()
+    auth_s3_client.get_object.side_effect = missing_auth
 
     with (
         patch.dict(os.environ, {**ENV, "S3_BUCKET": "amishi-catalog"}, clear=True),
         patch.object(media, "_s3_client", return_value=s3_client),
+        patch("backend.services.auth._s3_client", return_value=auth_s3_client),
     ):
         async with AsyncClient(
             transport=ASGITransport(app=app),

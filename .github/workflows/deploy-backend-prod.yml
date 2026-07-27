@@ -1,7 +1,9 @@
 name: Deploy Backend — Production
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Test Backend"]
+    types: [completed]
     branches: [master]
 
 concurrency:
@@ -11,11 +13,16 @@ concurrency:
 jobs:
   deploy:
     name: Deploy to AWS Lambda (prod / cuenta prod)
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
     environment: Production
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
