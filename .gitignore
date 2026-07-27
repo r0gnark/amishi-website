@@ -55,5 +55,6 @@ infra/terraform/terraform.tfvars
 infra/terraform/terraform.*.tfvars
 infra/.lambda_build/
 infra/lambda_package.zip
+data/auth.json
 
 .vercel

@@ -156,6 +156,36 @@ verdes.
 
 ---
 
+## 2026-07-27 — Feature 25: Infraestructura de producción AWS y Vercel (DONE)
+
+**Implementado:**
+- Catálogo e imágenes administradas persistentes en buckets S3 separados.
+- AWS DEV y PROD desplegados con API Gateway, Lambda y estados Terraform aislados.
+- Rate limit, concurrencia reservada y presupuesto mensual de USD 5 por cuenta.
+- Vercel conectado a `develop` como Preview y `master` como Production.
+- Deploy de producción condicionado al resultado exitoso de los tests.
+
+**Verificación:** 54 tests backend y 4 frontend verdes; lint y build verdes;
+smoke tests reales de login, catálogo, biblioteca y carga de imágenes; workflows
+DEV y PROD completados correctamente; producción devuelve 62 productos.
+
+---
+
+## 2026-07-27 — Feature 26: Cambio seguro de contraseña administrativa (DONE)
+
+**Implementado:**
+- Nueva pantalla `Admin → Seguridad` para cambiar la contraseña.
+- Validación de contraseña actual, confirmación visual y mínimo de 12 caracteres.
+- Hash PBKDF2-SHA256 con sal; nunca se persiste la contraseña en texto plano.
+- Persistencia atómica local y objeto privado `auth.json` en S3.
+- Invalidación de todas las sesiones anteriores después del cambio.
+- Controles accesibles de ojo para mostrar u ocultar las contraseñas.
+
+**Verificación:** pytest 60/60 y Vitest 4/4 verdes; lint, build, Terraform
+validate y `./init.sh` verdes.
+
+---
+
 ## 2026-07-26 — Feature 23: Editar número de WhatsApp desde administración (DONE)
 
 **Implementado:**

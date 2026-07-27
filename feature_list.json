@@ -351,7 +351,22 @@
         "Vercel se conecta al backend mediante API_URL",
         "Login, catálogo y carga de imágenes funcionan en producción"
       ],
-      "status": "in_progress"
+      "status": "done"
+    },
+    {
+      "id": 26,
+      "name": "admin_change_password",
+      "title": "Cambio seguro de contraseña administrativa",
+      "description": "Permitir al administrador cambiar su contraseña persistente y mostrar u ocultar los campos de contraseña.",
+      "acceptance": [
+        "El login permite mostrar u ocultar la contraseña con un control accesible",
+        "El panel incluye una pantalla protegida para cambiar la contraseña",
+        "El cambio exige la contraseña actual y confirmación de la nueva",
+        "La nueva contraseña se guarda como hash con sal y persiste en S3",
+        "Las sesiones anteriores quedan invalidadas tras el cambio",
+        "Los flujos están cubiertos por tests de servicio y API"
+      ],
+      "status": "done"
     }
   ]
 }
