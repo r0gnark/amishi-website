@@ -25,3 +25,25 @@ jobs:
 
       - name: Run tests
         run: pytest --tb=short -q
+
+  terraform:
+    name: terraform test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.15.8"
+          terraform_wrapper: false
+
+      # Sin credenciales AWS: los tests usan un provider simulado
+      - name: Validate and test infrastructure
+        working-directory: infra/terraform
+        run: |
+          terraform fmt -check -recursive
+          terraform init -backend=false -input=false
+          terraform validate
+          terraform test

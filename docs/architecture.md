@@ -52,6 +52,23 @@ admin      ─→  Next.js app/admin/             (UI protegida)
                               └─→  repository  ─→  storage  ─→  data/catalog.json
 ```
 
+### En producción (AWS + Vercel)
+
+```
+visitante ─→ Vercel (Next.js) ─→ API_URL (HTTPS)
+                                    │
+                                    └─→ Caddy :443  ─→  uvicorn 127.0.0.1:8000  ─→  S3
+                                        (t4g.nano siempre encendida, systemd)
+```
+
+- El backend corre en una instancia `t4g.nano` ARM siempre encendida, no en
+  funciones serverless: evita los arranques en frío.
+- `storage.py`, `services/auth.py` y las imágenes subidas usan S3 cuando
+  `S3_BUCKET` está definida. El disco de la instancia no es fuente de verdad.
+- Los secretos llegan desde SSM Parameter Store; no viven en el repo ni en la
+  instancia fuera de `/etc/amishi/api.env` (solo root).
+- Detalle de infraestructura y despliegue en `infra/README.md`.
+
 ## Modelo de datos
 
 El archivo `data/catalog.json` contiene:
