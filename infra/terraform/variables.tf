@@ -49,10 +49,33 @@ variable "cors_origins" {
   default     = ""
 }
 
+variable "api_domain" {
+  description = "Public hostname for the API (e.g. api.amishi.cl). Leave empty to use <elastic-ip>.sslip.io until DNS is configured."
+  type        = string
+  default     = ""
+}
+
+variable "api_instance_type" {
+  description = "EC2 instance type for the always-on API. Must be an ARM (Graviton) type."
+  type        = string
+  default     = "t4g.nano"
+
+  validation {
+    condition     = can(regex("^t4g\\.", var.api_instance_type))
+    error_message = "api_instance_type must be a t4g (ARM) type; the deploy installs arm64 binaries."
+  }
+}
+
+variable "legacy_lambda_enabled" {
+  description = "Keep the old Lambda + API Gateway backend alive while Vercel still points to it. Set to false after switching API_URL to the EC2 backend."
+  type        = bool
+  default     = true
+}
+
 variable "monthly_budget_usd" {
   description = "Monthly AWS cost budget in USD"
   type        = number
-  default     = 5
+  default     = 10
 
   validation {
     condition     = var.monthly_budget_usd >= 1

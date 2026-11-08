@@ -367,6 +367,21 @@
         "Los flujos están cubiertos por tests de servicio y API"
       ],
       "status": "done"
+    },
+    {
+      "id": 27,
+      "name": "always_on_ec2_backend",
+      "title": "Backend siempre encendido en t4g.nano",
+      "description": "Mover FastAPI de Lambda/API Gateway a una instancia ARM t4g.nano con uvicorn, Caddy y systemd para eliminar los arranques en frío. El frontend sigue en Vercel y el catálogo en S3.",
+      "acceptance": [
+        "Terraform crea una instancia t4g.nano ARM con Elastic IP, security group 80/443 sin SSH e instance profile con acceso a S3 y SSM",
+        "Uvicorn escucha solo en 127.0.0.1:8000 y Caddy publica la API por HTTPS",
+        "El catálogo, las imágenes subidas y la contraseña siguen persistiendo en S3",
+        "Los workflows de QA y producción despliegan el backend por S3 + SSM, sin SSH",
+        "Lambda y API Gateway conviven con la instancia hasta el cambio de API_URL y se eliminan con legacy_lambda_enabled=false",
+        "pytest y ./init.sh terminan sin errores"
+      ],
+      "status": "in_progress"
     }
   ]
 }

@@ -1,7 +1,8 @@
 # Infraestructura AWS — Amishi Backend
 
 Este documento te guía desde cero hasta tener el backend FastAPI corriendo en AWS,
-con deploys automáticos por entorno. Está pensado para ejecutarse en orden, una sola vez.
+con deploys automáticos por entorno. Si vienes del backend en Lambda, ve directo a
+[Migración desde Lambda](#migración-desde-lambda-sin-cortar-el-sitio).
 
 ---
 
@@ -10,34 +11,51 @@ con deploys automáticos por entorno. Está pensado para ejecutarse en orden, un
 ```
 Tu código (repo GitHub)
         │
-        ├─► merge a develop ──► GitHub Actions ──► Lambda QA  (cuenta AWS DEV)
+        ├─► merge a develop ──► GitHub Actions ──► EC2 QA   (cuenta AWS DEV)
         │
-        └─► merge a master  ──► GitHub Actions ──► Lambda PROD (cuenta AWS PROD)
-                                      │
-                               (pausa para aprobar)
+        └─► merge a master  ──► GitHub Actions ──► EC2 PROD (cuenta AWS PROD)
 ```
 
-El frontend vive en **Vercel** y llama al backend a través de la URL que expone
-**API Gateway**. API Gateway es básicamente una puerta de entrada pública que
-recibe las peticiones HTTP y las pasa a tu función **Lambda** (donde corre FastAPI).
-Los datos del catálogo se guardan en **S3** (en lugar del filesystem local).
+El frontend vive en **Vercel** y llama al backend a través de `API_URL`. El backend
+es FastAPI corriendo en una instancia **EC2 `t4g.nano`** (ARM, 512 MB) que está
+siempre encendida:
 
-### Por qué dos cuentas AWS y no dos entornos en una cuenta
+```
+visitante ─► Vercel ─► https://API_URL ─► Caddy :443 ─► uvicorn 127.0.0.1:8000 ─► S3
+```
 
-Tener cuentas separadas significa aislamiento total: un error en QA, una mala
-configuración de permisos, o un script que borra recursos por error, nunca puede
-afectar producción. Es la práctica estándar en equipos que manejan datos reales.
+- **Caddy** termina HTTPS y obtiene el certificado de Let's Encrypt solo.
+- **uvicorn** solo escucha en `127.0.0.1`; no es accesible desde internet.
+- **systemd** mantiene ambos procesos vivos y los reinicia si se caen.
+- El catálogo (`catalog.json`), las imágenes subidas y el hash de la contraseña se
+  guardan en **S3**. El disco de la instancia no es fuente de verdad: si la
+  instancia se recrea, los datos siguen ahí.
+- Los secretos (`ADMIN_PASSWORD`, `SECRET_KEY`…) se guardan en **SSM Parameter
+  Store** como `SecureString` y la instancia los lee en cada deploy.
+- No hay puerto 22 abierto. Los deploys usan **SSM Run Command**: GitHub Actions
+  sube un zip a S3 y le pide a la instancia que lo instale.
 
-### Por qué Lambda y no EC2
+### Por qué una instancia y no Lambda
 
-| | Lambda | EC2 (t4g.nano) |
-|---|---|---|
-| Costo con poco tráfico | ~$0/mes | ~$3.5/mes (aunque no haya visitas) |
-| Mantenimiento del servidor | Ninguno | Parches, actualizaciones, SSH |
-| Escala automáticamente | Sí | No |
-| Tiempo de arranque | ~200ms en frío | Siempre encendido |
+Lambda se apaga cuando no hay visitas. La siguiente visita espera a que Python,
+FastAPI y boto3 arranquen (1–4 s con 256 MB), y con poco tráfico eso pasa casi
+siempre: la navegación se sentía cortada. Una instancia chica siempre encendida
+responde en milisegundos.
 
-Para un catálogo de productos con tráfico moderado, Lambda es la opción correcta.
+### Costo mensual por cuenta (us-east-1)
+
+| Recurso | USD/mes |
+|---|---|
+| EC2 `t4g.nano` (créditos de CPU en modo `standard`, sin cargos sorpresa) | ~3.07 |
+| Disco gp3 de 8 GB | ~0.64 |
+| IPv4 pública (Elastic IP; AWS cobra todas las IPv4 públicas desde 2024) | ~3.65 |
+| S3, SSM Parameter Store (estándar) y Run Command | ~0 |
+| **Total** | **~7.40** |
+
+QA y producción son cuentas separadas, así que el total es ~USD 15/mes con ambas
+encendidas. El presupuesto de alerta (`monthly_budget_usd`) está en USD 10 por
+cuenta. Si una cuenta todavía tiene la capa gratuita de 12 meses, la IPv4
+pública es gratis.
 
 ### Qué es Terraform y por qué lo usamos
 
@@ -51,25 +69,34 @@ que creó. Lo guardamos en S3 con versionado y bloqueo nativo mediante
 `use_lockfile` (no en el repo), para que tanto tú localmente como GitHub Actions
 lean el mismo estado y no dupliquen recursos.
 
+### Archivos de esta carpeta
+
+| Archivo | Para qué |
+|---|---|
+| `terraform/ec2.tf` | Instancia, Elastic IP, security group y parámetros SSM |
+| `terraform/iam.tf` | Rol de la instancia (S3 + SSM) |
+| `terraform/lambda.tf`, `terraform/api_gateway.tf` | Backend antiguo, solo mientras dura la migración |
+| `terraform/tests/` | `terraform test` con provider simulado (sin credenciales) |
+| `systemd/` | Unidades de uvicorn y Caddy, y el `Caddyfile` |
+| `scripts/deploy_backend.sh` | Empaqueta el backend, lo sube a S3 y lo instala vía SSM |
+| `scripts/server_install.sh` | Corre en la instancia: prepara swap, Python 3.12, Caddy y reinicia |
+| `iam/` | Políticas del usuario `amishi-deploy` de cada cuenta |
+
 ---
 
 ## Prerequisitos
 
-Antes de empezar, asegúrate de tener instalado:
-
 ```bash
-# AWS CLI
-aws --version        # necesitas >= 2.x
-
-# Terraform
-terraform --version  # necesitas >= 1.6
-
-# Python (para los tests y build del Lambda)
-python3 --version    # necesitas >= 3.12
+aws --version        # AWS CLI >= 2.x
+terraform --version  # Terraform >= 1.10
+python3 --version    # Python >= 3.12
 ```
 
 Si no tienes el AWS CLI: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 Si no tienes Terraform: https://developer.hashicorp.com/terraform/install
+
+La configuración asume la región `us-east-1` y que cada cuenta conserva su **VPC
+por defecto** (todas las cuentas AWS la traen).
 
 ---
 
@@ -78,7 +105,6 @@ Si no tienes Terraform: https://developer.hashicorp.com/terraform/install
 ### Crear la rama `develop`
 
 Los workflows de GitHub Actions se disparan en push a `develop` (QA) y `master` (prod).
-Si `develop` no existe, el pipeline de QA nunca se activa.
 
 ```bash
 git checkout master
@@ -89,365 +115,310 @@ git push origin develop
 
 ### Proteger las ramas en GitHub
 
-Ve a **Settings → Branches → Add branch ruleset** y configura:
+Ve a **Settings → Branches → Add branch ruleset** y en `develop` y `master`:
 
-**Rama `develop`:**
 - Require a pull request before merging
-- Require status checks → selecciona el check `pytest` (del workflow `test-backend.yml`)
-
-**Rama `master`:**
-- Require a pull request before merging
-- Require status checks → selecciona el check `pytest`
-
-Esto garantiza que ningún código llegue a QA ni a prod sin pasar los tests.
-
-El flujo de trabajo queda así:
+- Require status checks → `pytest` y `terraform test` (workflow `test-backend.yml`)
 
 ```
 feature/xxx ──► PR a develop ──► tests pasan ──► merge ──► deploy QA automático
-develop     ──► PR a master  ──► tests pasan ──► merge ──► deploy PROD (con aprobación manual)
+develop     ──► PR a master  ──► tests pasan ──► merge ──► deploy PROD automático
 ```
 
 ---
 
-## FASE 1 — Configurar tu máquina (una sola vez)
+## FASE 1 — Configurar tu máquina y las cuentas (una sola vez)
 
-### Paso 1: Obtener las credenciales de cada cuenta AWS
+### Paso 1: Usuario IAM de deploy en cada cuenta
 
-En cada una de tus dos cuentas AWS necesitas crear un usuario IAM dedicado para
-los deploys. **Nunca uses el usuario root ni tus credenciales personales de admin.**
+En cada cuenta AWS crea un usuario IAM dedicado para los deploys. **Nunca uses el
+usuario root ni tus credenciales personales de admin.**
 
-Para cada cuenta:
-1. Entra a la consola de AWS → **IAM → Users → Create user**
-2. Nombre sugerido: `amishi-deploy`
-3. En "Permissions", adjunta la política correspondiente a la cuenta:
+1. Consola AWS → **IAM → Policies → Create policy → JSON**, pega el archivo de la
+   cuenta y guárdala como `amishi-deploy-policy`:
    - DEV: `infra/iam/amishi-deploy-policy-dev.json`
    - PROD: `infra/iam/amishi-deploy-policy-prod.json`
 
-Estas políticas limitan `iam:PassRole` al rol Lambda de cada cuenta y usan las
-acciones reales de AWS Budgets (`ModifyBudget` y `ViewBudget`).
+   Tiene que ser una política administrada: como política *inline* no cabe
+   (AWS limita las inline de un usuario a 2.048 caracteres).
+2. **IAM → Users → Create user**, nombre `amishi-deploy`, y en permisos
+   **Attach policies directly** → `amishi-deploy-policy`.
+3. **Security credentials → Create access key** (tipo CLI) y guarda ambas claves.
 
-4. Una vez creado, ve a **Security credentials → Create access key** (tipo: CLI)
-5. Guarda el `Access Key ID` y el `Secret Access Key` — los verás una sola vez
+Las políticas permiten crear la instancia (`ec2:*` limitado a `us-east-1`), pasar
+solo el rol `amishi[-qa]-api-role` a EC2, administrar los parámetros
+`/amishi[-qa]/*` y ejecutar comandos SSM en las instancias de la cuenta.
 
-Haz esto **en ambas cuentas** antes de continuar.
+> **Si el usuario ya existía (backend en Lambda):** reemplaza su política por la
+> versión actual de `infra/iam/` en **ambas** cuentas antes del próximo deploy.
+> Si en IAM → Users → `amishi-deploy` → Permissions la política aparece como
+> *Customer managed*: ábrela → Edit → pestaña JSON → pega el archivo completo →
+> Save. Si aparece como *Customer inline*, crea la política administrada del
+> paso 1, adjúntala al usuario y recién entonces borra la inline. Sin esto,
+> Terraform falla al crear la instancia con `UnauthorizedOperation`.
 
----
-
-### Paso 2: Configurar perfiles AWS locales
-
-Un perfil nombrado es simplemente un alias que guarda las credenciales de una
-cuenta. Así puedes tener dos cuentas en tu máquina sin mezclarlas.
-
-```bash
-# Configura el perfil para la cuenta DEV
-aws configure --profile amishi-dev
-```
-
-El CLI te pedirá:
-```
-AWS Access Key ID:     <pega el Access Key de la cuenta DEV>
-AWS Secret Access Key: <pega el Secret Key de la cuenta DEV>
-Default region name:   us-east-1
-Default output format: json
-```
+### Paso 2: Perfiles AWS locales
 
 ```bash
-# Repite para la cuenta PROD
-aws configure --profile amishi-prod
-```
+aws configure --profile amishi-dev    # claves de la cuenta DEV, región us-east-1
+aws configure --profile amishi-prod   # claves de la cuenta PROD, región us-east-1
 
-Verifica que cada perfil apunta a la cuenta correcta:
-```bash
 aws sts get-caller-identity --profile amishi-dev
-# Deberías ver el Account ID de tu cuenta DEV
-
 aws sts get-caller-identity --profile amishi-prod
-# Deberías ver el Account ID de tu cuenta PROD
 ```
 
----
+### Paso 3: Bucket del tfstate (bootstrap)
 
-### Paso 3: Crear la infraestructura de estado de Terraform (bootstrap)
-
-Terraform necesita guardar en algún lugar el registro de los recursos que creó
-(llamado "tfstate"). Lo guardamos en S3 y activamos el bloqueo nativo del estado.
-
-Estos recursos se crean **una sola vez por cuenta** y nunca los toca Terraform
-(son el fundamento sobre el que trabaja).
-
-> **Por qué los nombres de bucket pueden chocar entre cuentas distintas:**
-> A diferencia de Lambda o IAM (que son privados a tu cuenta), los nombres
-> de S3 son globalmente únicos en todo AWS — compartidos entre millones de cuentas
-> del mundo, como dominios de internet. `amishi-tfstate-dev` y `amishi-tfstate-prod`
-> son suficientemente específicos y es muy improbable que ya existan.
-> Si aún así recibes `BucketAlreadyExists`, añade un sufijo cualquiera (ej: `amishi-tfstate-dev-2025`).
+Una vez por cuenta. Los nombres de S3 son globales: si recibes
+`BucketAlreadyExists`, añade un sufijo y actualiza `terraform/backends/*.tfbackend`.
 
 ```bash
-# ── CUENTA DEV ─────────────────────────────────────────────────────────────
-
-# Crear el bucket que guardará el tfstate
 aws s3 mb s3://amishi-tfstate-dev --region us-east-1 --profile amishi-dev
-
-# Activar versionado (permite recuperar estados anteriores si algo sale mal)
-aws s3api put-bucket-versioning \
-    --bucket amishi-tfstate-dev \
-    --versioning-configuration Status=Enabled \
-    --profile amishi-dev
-
-echo "Bootstrap DEV listo"
-```
-
-```bash
-# ── CUENTA PROD ────────────────────────────────────────────────────────────
+aws s3api put-bucket-versioning --bucket amishi-tfstate-dev \
+    --versioning-configuration Status=Enabled --profile amishi-dev
 
 aws s3 mb s3://amishi-tfstate-prod --region us-east-1 --profile amishi-prod
-
-aws s3api put-bucket-versioning \
-    --bucket amishi-tfstate-prod \
-    --versioning-configuration Status=Enabled \
-    --profile amishi-prod
-
-echo "Bootstrap PROD listo"
+aws s3api put-bucket-versioning --bucket amishi-tfstate-prod \
+    --versioning-configuration Status=Enabled --profile amishi-prod
 ```
-
-> Los comandos usan `--profile` explícito en lugar de `export AWS_PROFILE`
-> para evitar confusiones si hay otras variables de entorno activas.
 
 ---
 
 ## FASE 2 — Primer deploy local (QA)
 
-Hacer el primer deploy desde tu máquina te permite verificar que todo funciona
-antes de configurar el CI. Solo necesitas hacerlo una vez; después todo corre
-desde GitHub Actions.
+Hacerlo una vez desde tu máquina confirma que todo funciona antes de depender del CI.
 
-### Paso 4: Preparar las variables de entorno de Terraform
+### Paso 4: Variables de Terraform
 
 ```bash
-# Desde la raíz del repositorio
 cp infra/terraform/terraform.tfvars.example infra/terraform/terraform.qa.tfvars
 ```
 
-Edita `terraform.qa.tfvars` con los valores reales para QA:
+Edita `terraform.qa.tfvars` (está en `.gitignore`):
 
 ```hcl
 aws_region   = "us-east-1"
 project_name = "amishi"
 environment  = "qa"
-aws_profile  = "amishi-dev"   # el perfil que configuraste en el paso 2
+aws_profile  = "amishi-dev"
 
 admin_email    = "admin@amishi.cl"
 admin_password = "una-contrasena-de-prueba"
+secret_key     = "salida de: python3 -c \"import secrets; print(secrets.token_hex(32))\""
+cors_origins   = "https://amishi-qa.vercel.app"
 
-# Genera un secreto con: python3 -c "import secrets; print(secrets.token_hex(32))"
-secret_key = "pega-aqui-el-secreto-generado"
+# Vacío = https://<ip-con-guiones>.sslip.io (funciona sin configurar DNS)
+api_domain = ""
 
-# Deja vacío por ahora; lo actualizarás con la URL de Vercel QA después
-cors_origins = ""
+# false si es una cuenta nueva sin backend Lambda que conservar
+legacy_lambda_enabled = false
 ```
 
-### Paso 5: Construir el paquete Lambda
+Con `legacy_lambda_enabled = true` necesitas antes `bash infra/scripts/build_lambda.sh`.
 
-Este script empaqueta el código del backend junto con sus dependencias Python
-en un archivo `.zip` que AWS Lambda puede ejecutar.
-
-```bash
-bash infra/scripts/build_lambda.sh
-# Output esperado: "==> Listo: infra/lambda_package.zip (X.XM)"
-```
-
-### Paso 6: Inicializar Terraform para QA
+### Paso 5: Crear la infraestructura
 
 ```bash
 cd infra/terraform
-
-# Conecta Terraform con el tfstate en la cuenta DEV
-# Esto descarga los plugins de AWS y lee el estado actual (vacío la primera vez)
 terraform init -backend-config=backends/qa.tfbackend
-```
-
-### Paso 7: Ver qué va a crear Terraform (plan)
-
-```bash
-terraform plan -var-file=terraform.qa.tfvars
-```
-
-Terraform imprimirá una lista de recursos que va a crear. En el primer deploy
-deberías ver algo como `Plan: 12 to add, 0 to change, 0 to destroy`. Revisa que
-los nombres de los recursos incluyan el sufijo `-qa`.
-
-### Paso 8: Aplicar (crear la infraestructura)
-
-```bash
+terraform plan  -var-file=terraform.qa.tfvars
 terraform apply -var-file=terraform.qa.tfvars
+cd ../..
 ```
 
-Terraform pedirá confirmación. Escribe `yes`. El proceso tarda 1-2 minutos.
-
-Al terminar verás:
+Al terminar verás, entre otros:
 
 ```
-Outputs:
-api_gateway_url    = "https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com"
-lambda_function_name = "amishi-qa-api"
-s3_bucket_name    = "amishi-qa-catalog"
+api_url         = "https://3-91-10-20.sslip.io"
+api_public_ip   = "3.91.10.20"
+api_instance_id = "i-0abc..."
 ```
 
-**Guarda la `api_gateway_url`** — la necesitas para conectar Vercel.
-
-### Paso 9: Verificar que el backend responde
+### Paso 6: Instalar el backend en la instancia
 
 ```bash
-curl https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/api/productos
-# Debería responder: {"products": []}
+AWS_PROFILE=amishi-dev AWS_REGION=us-east-1 bash infra/scripts/deploy_backend.sh
+```
+
+El primer deploy tarda 3–5 minutos (instala swap, Python 3.12 y Caddy); los
+siguientes, alrededor de un minuto. Si algo falla, el script muestra la salida de
+la instancia y, si había una versión anterior, la deja corriendo.
+
+### Paso 7: Verificar
+
+```bash
+curl https://3-91-10-20.sslip.io/api/productos
 ```
 
 ---
 
 ## FASE 3 — Primer deploy local (producción)
 
-Repite los pasos 4-8 para producción. La diferencia clave es el perfil AWS y
-el archivo de backend.
+Igual que la fase 2 con `terraform.prod.tfvars` (`environment = "prod"`,
+`aws_profile = "amishi-prod"`, credenciales reales):
 
 ```bash
-# Crear variables para prod
-cp infra/terraform/terraform.tfvars.example infra/terraform/terraform.prod.tfvars
-# Editar: environment=prod, aws_profile=amishi-prod, credenciales reales
-
-# Empaquetar (si no lo hiciste ya)
-bash infra/scripts/build_lambda.sh
-
 cd infra/terraform
-
-# -reconfigure es necesario al cambiar de cuenta para que Terraform
-# no intente reutilizar el backend de QA
 terraform init -backend-config=backends/prod.tfbackend -reconfigure
-
-terraform plan  -var-file=terraform.prod.tfvars
 terraform apply -var-file=terraform.prod.tfvars
+cd ../..
+AWS_PROFILE=amishi-prod AWS_REGION=us-east-1 bash infra/scripts/deploy_backend.sh
 ```
+
+`-reconfigure` evita que Terraform reutilice el backend de QA al cambiar de cuenta.
 
 ---
 
 ## FASE 4 — Automatizar con GitHub Actions
 
-A partir de aquí no necesitas correr Terraform manualmente. Cada merge a
-`develop` o `master` lanza el pipeline automáticamente.
+Cada merge a `develop` o `master` ejecuta: `terraform apply` → `deploy_backend.sh`
+(zip a S3 + SSM) → verificación de `API_URL/api/productos`.
 
-### Paso 10: Configurar los secrets en GitHub
+### Paso 8: Secrets
 
-Ve a tu repositorio → **Settings → Secrets and variables → Actions → New repository secret**
+**Settings → Environments** → entornos `qa` y `Production` → **Environment secrets**:
 
-Crea estos 14 secrets dentro de los GitHub Environments `qa` y `Production`:
+| Secret (qa) | Secret (Production) | Valor |
+|---|---|---|
+| `AWS_ACCESS_KEY_ID_DEV` | `AWS_ACCESS_KEY_ID_PROD` | Access key de `amishi-deploy` |
+| `AWS_SECRET_ACCESS_KEY_DEV` | `AWS_SECRET_ACCESS_KEY_PROD` | Secret correspondiente |
+| `AWS_REGION_DEV` | `AWS_REGION_PROD` | `us-east-1` |
+| `ADMIN_EMAIL_DEV` | `ADMIN_EMAIL_PROD` | Email del admin |
+| `ADMIN_PASSWORD_DEV` | `ADMIN_PASSWORD_PROD` | Contraseña inicial del admin |
+| `SECRET_KEY_DEV` | `SECRET_KEY_PROD` | Mismo valor que en el tfvars |
+| `CORS_ORIGINS_QA` | `CORS_ORIGINS_PROD` | URL de Vercel del entorno |
 
-**Para la cuenta DEV (entorno QA):**
+### Paso 9: Variables (opcionales)
 
-| Secret | Valor |
-|---|---|
-| `AWS_ACCESS_KEY_ID_DEV` | Access Key del usuario `amishi-deploy` de la cuenta DEV |
-| `AWS_SECRET_ACCESS_KEY_DEV` | Secret correspondiente |
-| `AWS_REGION_DEV` | `us-east-1` (o la región que uses) |
-| `ADMIN_EMAIL_DEV` | Email del admin para QA |
-| `ADMIN_PASSWORD_DEV` | Contraseña del admin para QA |
-| `SECRET_KEY_DEV` | El mismo `secret_key` que pusiste en `terraform.qa.tfvars` |
-| `CORS_ORIGINS_QA` | URL de tu proyecto Vercel QA (ej: `https://amishi-qa.vercel.app`) |
+En los mismos entornos → **Environment variables**:
 
-**Para la cuenta PROD:**
-
-| Secret | Valor |
-|---|---|
-| `AWS_ACCESS_KEY_ID_PROD` | Access Key del usuario `amishi-deploy` de la cuenta PROD |
-| `AWS_SECRET_ACCESS_KEY_PROD` | Secret correspondiente |
-| `AWS_REGION_PROD` | `us-east-1` |
-| `ADMIN_EMAIL_PROD` | Email del admin real |
-| `ADMIN_PASSWORD_PROD` | Contraseña del admin real (usa una segura) |
-| `SECRET_KEY_PROD` | El mismo `secret_key` que pusiste en `terraform.prod.tfvars` |
-| `CORS_ORIGINS_PROD` | URL de tu proyecto Vercel prod (ej: `https://amishi.vercel.app`) |
-
-### Paso 11: Entornos de GitHub
-
-El workflow de `develop` usa el environment `qa` y el de `master` usa
-`Production`. Sin reglas de aprobación, ambos despliegues comienzan
-automáticamente después del merge. Puedes añadir reviewers a `Production` más
-adelante si deseas una aprobación manual.
-
-### Paso 12: Verificar que el CI funciona
-
-```bash
-# Haz un cambio pequeño (ej. un comentario en backend/main.py) y pushea a develop
-git checkout develop
-git commit --allow-empty -m "test: verificar pipeline QA"
-git push origin develop
-```
-
-Ve a tu repositorio → **Actions** y verás el workflow `Deploy Backend — QA`
-ejecutándose. Debería completar en ~3-4 minutos.
+| Variable | Valor | Efecto |
+|---|---|---|
+| `API_DOMAIN` | ej. `api.amishi.cl` | Dominio propio para la API. Vacío = `sslip.io` |
+| `LEGACY_LAMBDA_ENABLED` | `false` | Destruye Lambda y API Gateway (ver migración) |
 
 ---
 
-## FASE 5 — Conectar el frontend Vercel con el backend AWS
+## FASE 5 — Conectar Vercel
 
-### Paso 13: Configurar API_URL en Vercel
+En Vercel → **Settings → Environment Variables** → `API_URL`:
 
-La URL del output de Terraform (`api_gateway_url`) es la dirección pública de
-tu backend. Vercel la necesita para saber dónde enviar las peticiones del frontend.
+- Preview (rama `develop`): `api_url` de la cuenta DEV.
+- Production: `api_url` de la cuenta PROD.
 
-1. Entra a [vercel.com](https://vercel.com) → tu proyecto.
-2. En **Settings → Environments → Production → Branch Tracking**, selecciona
-   `master`.
-3. En **Settings → Environment Variables**, configura `API_URL`:
-   - Preview, rama `develop`: URL de API Gateway de la cuenta AWS DEV.
-   - Production: URL de API Gateway de la cuenta AWS PROD.
+**Después de cambiar `API_URL` hay que redesplegar** (Deployments → último deploy →
+Redeploy): `next.config.ts` lee `API_URL` al compilar para los rewrites de `/api/*`.
 
-La integración Git de Vercel crea un Preview con cada push a `develop` y un
-deployment de Production con cada push a `master`.
+### Dominio propio (opcional)
+
+`sslip.io` funciona sin DNS, pero un dominio propio es más estable:
+
+1. En el DNS de `amishi.cl`, crea un registro **A** `api` → `api_public_ip`.
+2. Define la variable `API_DOMAIN=api.amishi.cl` en el entorno de GitHub.
+3. Haz merge para redesplegar: Caddy pide el certificado para el nuevo dominio.
+4. Cambia `API_URL` en Vercel a `https://api.amishi.cl` y redespliega.
+
+---
+
+## Migración desde Lambda (sin cortar el sitio)
+
+Mientras Vercel apunte a API Gateway, Lambda debe seguir existiendo. Por eso
+`legacy_lambda_enabled` vale `true` por defecto y los recursos antiguos conviven
+con la instancia. Por entorno (primero QA, después producción):
+
+1. **Actualiza la política IAM** de `amishi-deploy` (paso 1). Sin esto el deploy falla.
+2. **Haz merge** a `develop` (o `master`). El workflow crea la instancia junto a
+   Lambda, instala el backend y muestra `API_URL para Vercel: https://…`.
+   El sitio sigue funcionando con Lambda.
+3. **Prueba la API nueva:** `curl https://…/api/productos` debe devolver el catálogo.
+   Los datos son los mismos: ambos backends leen el mismo bucket.
+4. **Cambia `API_URL` en Vercel** a esa URL y **redespliega**. Desde aquí el sitio usa
+   la instancia: se acaban los arranques en frío.
+5. **Prueba el sitio y el admin** (login, editar un producto, subir una imagen).
+6. **Apaga Lambda:** define `LEGACY_LAMBDA_ENABLED=false` en el entorno de GitHub y
+   vuelve a ejecutar el workflow (Actions → Deploy Backend → Re-run). Terraform
+   destruye Lambda, API Gateway y su rol.
+
+**Rollback:** hasta el paso 6, basta con volver `API_URL` de Vercel a la URL de API
+Gateway (`terraform output api_gateway_url`) y redesplegar.
+
+### Limpieza final (cuando QA y producción ya corren sin Lambda)
+
+Cuando ambos entornos tienen `LEGACY_LAMBDA_ENABLED=false` aplicado, borra en un
+mismo PR:
+
+- `infra/terraform/lambda.tf` y `infra/terraform/api_gateway.tf` (incluidos sus bloques `moved`)
+- los outputs `api_gateway_url` y `lambda_function_name` de `outputs.tf`
+- la variable `legacy_lambda_enabled`, el paso "Build legacy Lambda package" y el
+  `-var legacy_lambda_enabled` de ambos workflows
+- `infra/scripts/build_lambda.sh` y sus entradas en `.gitignore`
+- `mangum` de `requirements.txt` y el bloque `handler = Mangum(app)` de `backend/main.py`
+- las sentencias `LambdaDeployment`, `ApiGatewayDeployment`, `PassOnlyAmishiRoleToLambda`,
+  `CloudWatchLogs` y el ARN `*-lambda-role` de las políticas en `infra/iam/`
 
 ---
 
 ## Operación del día a día
 
-Una vez configurado todo, el flujo normal es:
-
 ```
-# Desarrollar y probar en local
 git checkout develop
 git commit -m "feat: nueva funcionalidad"
-git push origin develop
-# ──► GitHub Actions despliega automáticamente a QA (cuenta DEV)
-# ──► Verificas en https://amishi-qa.vercel.app
+git push origin develop        # ──► deploy automático a QA
+# verificar en Vercel Preview
 
-# Cuando QA está validado, mergeas a master
 git checkout master
 git merge develop
-git push origin master
-# ──► GitHub Actions despliega automáticamente a producción (cuenta PROD)
+git push origin master         # ──► deploy automático a producción
+```
+
+### Ver logs o entrar a la instancia
+
+No hay SSH. Con el [plugin de Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html):
+
+```bash
+aws ssm start-session --target <api_instance_id> --profile amishi-prod
+
+sudo journalctl -u amishi-api -n 100 --no-pager   # logs de FastAPI
+sudo journalctl -u caddy -n 100 --no-pager        # logs de HTTPS
+sudo systemctl restart amishi-api
+```
+
+Para eso el usuario que abre la sesión necesita `ssm:StartSession`; el usuario
+`amishi-deploy` no lo tiene a propósito. Usa tu usuario administrador.
+
+### Probar la infraestructura sin AWS
+
+```bash
+cd infra/terraform
+terraform init -backend=false
+terraform test
 ```
 
 ---
 
 ## Troubleshooting
 
-**`Error: S3 bucket already exists`**
-El nombre `amishi-tfstate` ya está tomado globalmente. Cambia el nombre en
-`backends/qa.tfbackend` y `backends/prod.tfbackend` (ej: `amishi-tfstate-2025`).
+**`UnauthorizedOperation` o `AccessDenied` en `terraform apply`**
+La política de `amishi-deploy` no está actualizada. Ver paso 1.
+
+**`La instancia no se registró en SSM tras 10 minutos`**
+La instancia necesita salida a internet para hablar con SSM. Revisa que esté en la
+VPC por defecto con IP pública y que el rol `amishi[-qa]-api-role` tenga
+`AmazonSSMManagedInstanceCore`.
+
+**El deploy dice `API OK` pero la URL pública no responde**
+Caddy no pudo obtener el certificado. Casi siempre es el DNS: el registro A de
+`API_DOMAIN` todavía no apunta a `api_public_ip`, o no ha propagado. Revisa
+`journalctl -u caddy`.
+
+**El sitio muestra el catálogo vacío después de cambiar `API_URL`**
+Vercel no se redesplegó, o `CORS_ORIGINS` no incluye la URL de Vercel.
 
 **`Error: Backend configuration changed`**
-Ocurre al cambiar entre la cuenta DEV y PROD sin `-reconfigure`. Solución:
+Cambiaste de cuenta sin `-reconfigure`:
 ```bash
 terraform init -backend-config=backends/qa.tfbackend -reconfigure
 ```
 
-**El Lambda devuelve 502 Bad Gateway**
-Suele ser un error en el código Python. Revisa los logs en CloudWatch:
-```bash
-aws logs tail /aws/lambda/amishi-qa-api --follow --profile amishi-dev
-```
-
-**`ModuleNotFoundError` en Lambda**
-El zip no incluye las dependencias. Vuelve a ejecutar `build_lambda.sh` y
-asegúrate de que `requirements.txt` está completo, luego re-aplica con Terraform.
-
 **GitHub Actions falla en `terraform init`**
-Verifica que los secrets `AWS_ACCESS_KEY_ID_DEV` / `AWS_SECRET_ACCESS_KEY_DEV`
-estén configurados correctamente y que el usuario IAM tenga acceso a S3.
+Verifica los secrets `AWS_ACCESS_KEY_ID_*` / `AWS_SECRET_ACCESS_KEY_*` del entorno.

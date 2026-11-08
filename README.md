@@ -64,6 +64,10 @@ Crea un archivo `.env.local` a partir de [`.env.example`](.env.example) para la 
 
 Compatible con [Vercel](https://vercel.com) u otro hosting Node. Define `NEXT_PUBLIC_SITE_URL` con la URL definitiva (ej. `https://tudominio.cl`).
 
+El backend FastAPI corre en AWS en una instancia `t4g.nano` siempre encendida
+(uvicorn + Caddy), con el catálogo en S3. Vercel lo alcanza mediante `API_URL`.
+Guía completa en [`infra/README.md`](infra/README.md).
+
 ## Notas
 
 - Las imágenes de producto usan **placeholders** (`picsum.photos`) marcados con comentarios `TODO` para reemplazo.

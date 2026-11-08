@@ -53,6 +53,23 @@ uvicorn backend.main:app --reload
 # Sitio público: npm run dev → http://localhost:3000
 ```
 
+### Nivel 5 — Infraestructura (obligatorio si se toca `infra/`)
+
+Terraform se prueba sin credenciales AWS con un provider simulado:
+
+```bash
+cd infra/terraform
+terraform fmt -check -recursive
+terraform init -backend=false
+terraform validate
+terraform test
+```
+
+Los cambios en `infra/systemd/` o `infra/scripts/server_install.sh` se
+prueban además en un contenedor `amazonlinux:2023` con systemd antes de
+desplegar. `tests/test_server_config.py` verifica que systemd, Caddy y el
+health check apunten a la misma app y puerto.
+
 ## Anti-patrones (no hacer)
 
 - "He añadido la ruta, debería funcionar." → falta `pytest` verde.
