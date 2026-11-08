@@ -377,7 +377,7 @@
         "Terraform crea una instancia t4g.nano ARM con Elastic IP, security group 80/443 sin SSH e instance profile con acceso a S3 y SSM",
         "Uvicorn escucha solo en 127.0.0.1:8000 y Caddy publica la API por HTTPS",
         "El catálogo, las imágenes subidas y la contraseña siguen persistiendo en S3",
-        "Los workflows de QA y producción despliegan el backend por S3 + SSM, sin SSH",
+        "El workflow de producción despliega el backend por S3 + SSM, sin SSH; develop solo ejecuta tests y no crea infraestructura AWS",
         "Lambda y API Gateway conviven con la instancia hasta el cambio de API_URL y se eliminan con legacy_lambda_enabled=false",
         "pytest y ./init.sh terminan sin errores"
       ],

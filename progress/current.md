@@ -32,7 +32,9 @@
 - `infra/scripts/server_install.sh`: swap, Python 3.12, Caddy 2.11.9 (SHA-512
   verificado), release con venv propia, health check y rollback automático.
 - `infra/scripts/deploy_backend.sh`: bundle, S3, SSM Run Command y verificación.
-- Workflows QA/prod: deploy por SSM; variables `API_DOMAIN` y `LEGACY_LAMBDA_ENABLED`.
+- Workflow de producción: deploy por SSM; variables `API_DOMAIN` y `LEGACY_LAMBDA_ENABLED`.
+- `develop` ya no despliega a la cuenta DEV (`deploy-backend-qa.yml` eliminado).
+  La baja de esa cuenta está en `infra/README.md` → "Dar de baja la cuenta DEV".
 - `test-backend.yml`: job `terraform test` (fmt, validate, test con provider simulado).
 - Políticas IAM de `amishi-deploy` ampliadas (EC2, instance profile, SSM).
 - Docs: `infra/README.md` reescrito, `architecture.md`, `verification.md`, README.
