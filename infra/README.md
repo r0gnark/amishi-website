@@ -134,10 +134,15 @@ develop     ──► PR a master  ──► tests pasan ──► merge ──�
 En cada cuenta AWS crea un usuario IAM dedicado para los deploys. **Nunca uses el
 usuario root ni tus credenciales personales de admin.**
 
-1. Consola AWS → **IAM → Users → Create user**, nombre `amishi-deploy`.
-2. Adjunta la política de la cuenta como política inline:
+1. Consola AWS → **IAM → Policies → Create policy → JSON**, pega el archivo de la
+   cuenta y guárdala como `amishi-deploy-policy`:
    - DEV: `infra/iam/amishi-deploy-policy-dev.json`
    - PROD: `infra/iam/amishi-deploy-policy-prod.json`
+
+   Tiene que ser una política administrada: como política *inline* no cabe
+   (AWS limita las inline de un usuario a 2.048 caracteres).
+2. **IAM → Users → Create user**, nombre `amishi-deploy`, y en permisos
+   **Attach policies directly** → `amishi-deploy-policy`.
 3. **Security credentials → Create access key** (tipo CLI) y guarda ambas claves.
 
 Las políticas permiten crear la instancia (`ec2:*` limitado a `us-east-1`), pasar
@@ -146,9 +151,11 @@ solo el rol `amishi[-qa]-api-role` a EC2, administrar los parámetros
 
 > **Si el usuario ya existía (backend en Lambda):** reemplaza su política por la
 > versión actual de `infra/iam/` en **ambas** cuentas antes del próximo deploy.
-> Consola → IAM → Users → `amishi-deploy` → Permissions → editar la política →
-> pestaña JSON → pegar el archivo completo → Save. Sin esto, Terraform falla al
-> crear la instancia con `UnauthorizedOperation`.
+> Si en IAM → Users → `amishi-deploy` → Permissions la política aparece como
+> *Customer managed*: ábrela → Edit → pestaña JSON → pega el archivo completo →
+> Save. Si aparece como *Customer inline*, crea la política administrada del
+> paso 1, adjúntala al usuario y recién entonces borra la inline. Sin esto,
+> Terraform falla al crear la instancia con `UnauthorizedOperation`.
 
 ### Paso 2: Perfiles AWS locales
 

@@ -3,6 +3,9 @@
 import re
 from pathlib import Path
 
+import pytest
+from httpx import ASGITransport, AsyncClient
+
 from backend.main import app
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,10 +45,16 @@ def test_caddy_proxies_to_the_uvicorn_port():
     assert f"reverse_proxy 127.0.0.1:{_uvicorn_port()}" in CADDYFILE
 
 
-def test_install_health_check_targets_an_existing_route():
+@pytest.mark.asyncio
+async def test_install_health_check_targets_an_existing_route():
     match = re.search(r"http://127\.0\.0\.1:(\d+)(/api/[\w/-]+)", INSTALL_SCRIPT)
     assert match, "server_install.sh no tiene health check local"
     port, path = match.groups()
-    routes = {route.path for route in app.routes}
     assert port == _uvicorn_port()
-    assert path in routes
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
+        response = await client.get(path)
+
+    assert response.status_code == 200
