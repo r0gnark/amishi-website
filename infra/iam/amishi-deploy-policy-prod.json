@@ -20,7 +20,18 @@
       "Resource": "*"
     },
     {
-      "Sid": "LambdaExecutionRoles",
+      "Sid": "ApiInstanceDeployment",
+      "Effect": "Allow",
+      "Action": "ec2:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "ExecutionRoles",
       "Effect": "Allow",
       "Action": [
         "iam:AttachRolePolicy",
@@ -31,6 +42,7 @@
         "iam:GetRole",
         "iam:GetRolePolicy",
         "iam:ListAttachedRolePolicies",
+        "iam:ListInstanceProfilesForRole",
         "iam:ListRolePolicies",
         "iam:ListRoleTags",
         "iam:PutRolePolicy",
@@ -38,7 +50,24 @@
         "iam:UntagRole",
         "iam:UpdateAssumeRolePolicy"
       ],
-      "Resource": "arn:aws:iam::615299766568:role/amishi-lambda-role"
+      "Resource": [
+        "arn:aws:iam::615299766568:role/amishi-lambda-role",
+        "arn:aws:iam::615299766568:role/amishi-api-role"
+      ]
+    },
+    {
+      "Sid": "ApiInstanceProfile",
+      "Effect": "Allow",
+      "Action": [
+        "iam:AddRoleToInstanceProfile",
+        "iam:CreateInstanceProfile",
+        "iam:DeleteInstanceProfile",
+        "iam:GetInstanceProfile",
+        "iam:RemoveRoleFromInstanceProfile",
+        "iam:TagInstanceProfile",
+        "iam:UntagInstanceProfile"
+      ],
+      "Resource": "arn:aws:iam::615299766568:instance-profile/amishi-api-profile"
     },
     {
       "Sid": "PassOnlyAmishiRoleToLambda",
@@ -50,6 +79,51 @@
           "iam:PassedToService": "lambda.amazonaws.com"
         }
       }
+    },
+    {
+      "Sid": "PassOnlyAmishiRoleToEc2",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::615299766568:role/amishi-api-role",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ec2.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "ApiParameters",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:AddTagsToResource",
+        "ssm:DeleteParameter",
+        "ssm:GetParameter",
+        "ssm:GetParameters",
+        "ssm:ListTagsForResource",
+        "ssm:PutParameter",
+        "ssm:RemoveTagsFromResource"
+      ],
+      "Resource": "arn:aws:ssm:*:615299766568:parameter/amishi/*"
+    },
+    {
+      "Sid": "ApiDeployCommands",
+      "Effect": "Allow",
+      "Action": "ssm:SendCommand",
+      "Resource": [
+        "arn:aws:ssm:*::document/AWS-RunShellScript",
+        "arn:aws:ec2:*:615299766568:instance/*"
+      ]
+    },
+    {
+      "Sid": "ApiDeployStatus",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:DescribeInstanceInformation",
+        "ssm:DescribeParameters",
+        "ssm:GetCommandInvocation",
+        "ssm:ListCommandInvocations"
+      ],
+      "Resource": "*"
     },
     {
       "Sid": "CloudWatchLogs",

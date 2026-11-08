@@ -24,3 +24,11 @@ secret_key = "genera-un-secreto-largo-y-aleatorio"
 
 # Orígenes CORS del frontend Vercel (separados por coma)
 cors_origins = "https://amishi-qa.vercel.app"
+
+# Dominio de la API (registro A apuntando a api_public_ip).
+# Vacío = https://<ip-con-guiones>.sslip.io, sin configurar DNS.
+api_domain = ""
+
+# true mientras Vercel siga apuntando a API Gateway (requiere build_lambda.sh).
+# false en cuentas nuevas o tras cambiar API_URL a la instancia.
+legacy_lambda_enabled = false

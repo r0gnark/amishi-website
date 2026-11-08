@@ -1,0 +1,22 @@
+[Unit]
+Description=Amishi API (FastAPI + uvicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=amishi
+Group=amishi
+WorkingDirectory=/opt/amishi/current
+EnvironmentFile=/etc/amishi/api.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/opt/amishi/current/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8000 --workers 1 --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

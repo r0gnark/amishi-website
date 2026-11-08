@@ -1,12 +1,12 @@
-resource "aws_iam_role" "lambda" {
-  name = "${local.name_prefix}-lambda-role"
+resource "aws_iam_role" "api" {
+  name = "${local.name_prefix}-api-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
       Action    = "sts:AssumeRole"
       Effect    = "Allow"
-      Principal = { Service = "lambda.amazonaws.com" }
+      Principal = { Service = "ec2.amazonaws.com" }
     }]
   })
 
@@ -16,16 +16,17 @@ resource "aws_iam_role" "lambda" {
   }
 }
 
-# Allows Lambda to write logs to CloudWatch
-resource "aws_iam_role_policy_attachment" "lambda_logs" {
-  role       = aws_iam_role.lambda.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+# Lets GitHub Actions deploy through SSM Run Command instead of SSH
+resource "aws_iam_role_policy_attachment" "api_ssm" {
+  role       = aws_iam_role.api.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-# Allows Lambda to read and write catalog.json and managed images in its S3 bucket
-resource "aws_iam_role_policy" "lambda_s3" {
-  name = "${local.name_prefix}-lambda-s3-policy"
-  role = aws_iam_role.lambda.id
+# Catalog, uploaded images, password hash and release bundles live in the bucket;
+# the API settings come from its own SSM parameters.
+resource "aws_iam_role_policy" "api" {
+  name = "${local.name_prefix}-api-policy"
+  role = aws_iam_role.api.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -43,6 +44,24 @@ resource "aws_iam_role_policy" "lambda_s3" {
         Action   = ["s3:ListBucket"]
         Resource = aws_s3_bucket.catalog.arn
       },
+      {
+        Effect = "Allow"
+        Action = ["ssm:GetParameter"]
+        Resource = [
+          aws_ssm_parameter.api_env.arn,
+          aws_ssm_parameter.api_domain.arn,
+        ]
+      },
     ]
   })
+}
+
+resource "aws_iam_instance_profile" "api" {
+  name = "${local.name_prefix}-api-profile"
+  role = aws_iam_role.api.name
+
+  tags = {
+    Project     = var.project_name
+    Environment = local.environment
+  }
 }
