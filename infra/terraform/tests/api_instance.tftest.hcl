@@ -28,15 +28,14 @@ mock_provider "aws" {
 }
 
 variables {
-  environment           = "qa"
-  admin_email           = "admin@amishi.cl"
-  admin_password        = "p\"a$s\\x"
-  secret_key            = "secret"
-  cors_origins          = "https://amishi-qa.vercel.app"
-  legacy_lambda_enabled = false
+  environment    = "prod"
+  admin_email    = "admin@amishi.cl"
+  admin_password = "p\"a$s\\x"
+  secret_key     = "secret"
+  cors_origins   = "https://amishi.vercel.app"
 }
 
-run "api_instance_without_legacy_lambda" {
+run "api_instance" {
   command = apply
 
   assert {
@@ -75,13 +74,8 @@ run "api_instance_without_legacy_lambda" {
   }
 
   assert {
-    condition     = length(aws_lambda_function.api) == 0 && length(aws_apigatewayv2_api.http) == 0
-    error_message = "legacy_lambda_enabled = false must remove Lambda and API Gateway"
-  }
-
-  assert {
-    condition     = output.api_gateway_url == null
-    error_message = "The legacy URL must be empty once Lambda is gone"
+    condition     = aws_ssm_parameter.api_env.name == "/amishi/api/env"
+    error_message = "Production parameters must live under /amishi/api"
   }
 }
 

@@ -1,7 +1,7 @@
 """Persistencia atómica del catálogo en JSON.
 
 Modo de operación:
-- Si la variable de entorno S3_BUCKET está definida → lee/escribe en S3 (producción/QA en AWS).
+- Si la variable de entorno S3_BUCKET está definida → lee/escribe en S3 (producción en AWS).
 - Si no → usa el filesystem local (desarrollo).
 """
 
@@ -41,7 +41,7 @@ def _save_to_disk(data: dict, path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# S3 (AWS Lambda en QA / producción)
+# S3 (instancia EC2 en producción)
 # ---------------------------------------------------------------------------
 
 def _s3_client():

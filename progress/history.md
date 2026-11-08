@@ -270,3 +270,33 @@ principales locales inexistentes; `pytest` 51/51 y `./init.sh` verdes.
 
 **Verificación:** `pytest` 51/51 verde; `npm run lint`, `npm run build` y
 `./init.sh` verdes.
+
+---
+
+## 2026-11-08 — Feature 27: Backend siempre encendido en t4g.nano (DONE)
+
+**Motivo:** Lambda (256 MB, concurrencia 2, 2 req/s) arrancaba en frío con poco
+tráfico y la navegación se sentía cortada.
+
+**Implementado:**
+- `infra/terraform/ec2.tf` / `iam.tf`: instancia `t4g.nano` ARM (Amazon Linux
+  2023), Elastic IP, security group 80/443 sin SSH, rol con S3 + SSM, secretos en
+  SSM Parameter Store (SecureString), créditos de CPU `standard`.
+- `infra/systemd/`: uvicorn en `127.0.0.1:8000` y Caddy con HTTPS automático.
+- `infra/scripts/server_install.sh`: swap, Python 3.12, Caddy 2.11.9 (SHA-512),
+  release con venv propia, health check y rollback automático.
+- `infra/scripts/deploy_backend.sh`: bundle a S3 + SSM Run Command.
+- Una sola cuenta AWS: `master` despliega a producción; `develop` solo corre
+  `pytest` y `terraform test` (`deploy-backend-qa.yml` eliminado). Baja de la
+  cuenta DEV documentada en `infra/README.md`.
+- Migración sin corte: Lambda convivió detrás de `legacy_lambda_enabled` hasta
+  cambiar `API_URL` en Vercel; luego se destruyó (10 recursos en QA y en prod) y
+  se eliminaron `lambda.tf`, `api_gateway.tf`, `build_lambda.sh` y `mangum`.
+
+**Verificación:** `pytest` 65/65, `terraform validate` y `terraform test` verdes;
+simulación en contenedor `amazonlinux:2023` con systemd; deploy real en AWS con
+`/api/productos` respondiendo 62 productos vía `www.amishi.cl`.
+
+**Pendiente:** destruir la instancia de la cuenta DEV si sigue encendida
+(~USD 7.40/mes); proteger las ramas `develop` y `master`; fijar versiones de las
+dependencias Python.

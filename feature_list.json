@@ -378,10 +378,10 @@
         "Uvicorn escucha solo en 127.0.0.1:8000 y Caddy publica la API por HTTPS",
         "El catálogo, las imágenes subidas y la contraseña siguen persistiendo en S3",
         "El workflow de producción despliega el backend por S3 + SSM, sin SSH; develop solo ejecuta tests y no crea infraestructura AWS",
-        "Lambda y API Gateway conviven con la instancia hasta el cambio de API_URL y se eliminan con legacy_lambda_enabled=false",
+        "Lambda y API Gateway se eliminan sin cortar el sitio y su código (lambda.tf, api_gateway.tf, build_lambda.sh, mangum) sale del repositorio",
         "pytest y ./init.sh terminan sin errores"
       ],
-      "status": "in_progress"
+      "status": "done"
     }
   ]
 }

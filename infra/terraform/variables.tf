@@ -66,12 +66,6 @@ variable "api_instance_type" {
   }
 }
 
-variable "legacy_lambda_enabled" {
-  description = "Keep the old Lambda + API Gateway backend alive while Vercel still points to it. Set to false after switching API_URL to the EC2 backend."
-  type        = bool
-  default     = true
-}
-
 variable "monthly_budget_usd" {
   description = "Monthly AWS cost budget in USD"
   type        = number

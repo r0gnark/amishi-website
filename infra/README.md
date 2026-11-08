@@ -1,8 +1,7 @@
 # Infraestructura AWS — Amishi Backend
 
 Este documento te guía desde cero hasta tener el backend FastAPI corriendo en AWS,
-con deploys automáticos por entorno. Si vienes del backend en Lambda, ve directo a
-[Migración desde Lambda](#migración-desde-lambda-sin-cortar-el-sitio).
+con deploys automáticos a producción.
 
 ---
 
@@ -79,7 +78,6 @@ lean el mismo estado y no dupliquen recursos.
 |---|---|
 | `terraform/ec2.tf` | Instancia, Elastic IP, security group y parámetros SSM |
 | `terraform/iam.tf` | Rol de la instancia (S3 + SSM) |
-| `terraform/lambda.tf`, `terraform/api_gateway.tf` | Backend antiguo, solo mientras dura la migración |
 | `terraform/tests/` | `terraform test` con provider simulado (sin credenciales) |
 | `systemd/` | Unidades de uvicorn y Caddy, y el `Caddyfile` |
 | `scripts/deploy_backend.sh` | Empaqueta el backend, lo sube a S3 y lo instala vía SSM |
@@ -155,9 +153,9 @@ Las políticas permiten crear la instancia (`ec2:*` limitado a `us-east-1`), pas
 solo el rol `amishi[-qa]-api-role` a EC2, administrar los parámetros
 `/amishi[-qa]/*` y ejecutar comandos SSM en las instancias de la cuenta.
 
-> **Si el usuario ya existía (backend en Lambda):** reemplaza su política por la
-> versión actual de `infra/iam/amishi-deploy-policy-prod.json` antes del próximo
-> deploy.
+> **Si el usuario ya existía:** reemplaza su política por la versión actual de
+> `infra/iam/amishi-deploy-policy-prod.json`. Ya no incluye permisos de Lambda,
+> API Gateway ni CloudWatch Logs: el backend antiguo fue eliminado.
 > Si en IAM → Users → `amishi-deploy` → Permissions la política aparece como
 > *Customer managed*: ábrela → Edit → pestaña JSON → pega el archivo completo →
 > Save. Si aparece como *Customer inline*, crea la política administrada del
@@ -216,12 +214,7 @@ cors_origins   = "https://amishi.vercel.app"
 
 # Vacío = https://<ip-con-guiones>.sslip.io (funciona sin configurar DNS)
 api_domain = ""
-
-# false si es una cuenta nueva sin backend Lambda que conservar
-legacy_lambda_enabled = false
 ```
-
-Con `legacy_lambda_enabled = true` necesitas antes `bash infra/scripts/build_lambda.sh`.
 
 ### Paso 5: Crear la infraestructura
 
@@ -286,7 +279,6 @@ En el entorno **Production** → **Environment variables**:
 | Variable | Valor | Efecto |
 |---|---|---|
 | `API_DOMAIN` | ej. `api.amishi.cl` | Dominio propio para la API. Vacío = `sslip.io` |
-| `LEGACY_LAMBDA_ENABLED` | `false` | Destruye Lambda y API Gateway (ver migración) |
 
 ---
 
@@ -308,44 +300,6 @@ Redeploy): `next.config.ts` lee `API_URL` al compilar para los rewrites de `/api
 2. Define la variable `API_DOMAIN=api.amishi.cl` en el entorno de GitHub.
 3. Haz merge para redesplegar: Caddy pide el certificado para el nuevo dominio.
 4. Cambia `API_URL` en Vercel a `https://api.amishi.cl` y redespliega.
-
----
-
-## Migración desde Lambda (sin cortar el sitio)
-
-Mientras Vercel apunte a API Gateway, Lambda debe seguir existiendo. Por eso
-`legacy_lambda_enabled` vale `true` por defecto y los recursos antiguos conviven
-con la instancia. Solo en la cuenta de producción:
-
-1. **Actualiza la política IAM** de `amishi-deploy` (paso 1). Sin esto el deploy falla.
-2. **Haz merge** a `master`. El workflow crea la instancia junto a Lambda, instala
-   el backend y muestra `API_URL para Vercel: https://…`. El sitio sigue
-   funcionando con Lambda.
-3. **Prueba la API nueva:** `curl https://…/api/productos` debe devolver el catálogo.
-   Los datos son los mismos: ambos backends leen el mismo bucket.
-4. **Cambia `API_URL` en Vercel** a esa URL y **redespliega**. Desde aquí el sitio usa
-   la instancia: se acaban los arranques en frío.
-5. **Prueba el sitio y el admin** (login, editar un producto, subir una imagen).
-6. **Apaga Lambda:** define `LEGACY_LAMBDA_ENABLED=false` en el entorno de GitHub y
-   vuelve a ejecutar el workflow (Actions → Deploy Backend → Re-run). Terraform
-   destruye Lambda, API Gateway y su rol.
-
-**Rollback:** hasta el paso 6, basta con volver `API_URL` de Vercel a la URL de API
-Gateway (`terraform output api_gateway_url`) y redesplegar.
-
-### Limpieza final (cuando producción ya corre sin Lambda)
-
-Cuando `LEGACY_LAMBDA_ENABLED=false` ya se aplicó en producción, borra en un
-mismo PR:
-
-- `infra/terraform/lambda.tf` y `infra/terraform/api_gateway.tf` (incluidos sus bloques `moved`)
-- los outputs `api_gateway_url` y `lambda_function_name` de `outputs.tf`
-- la variable `legacy_lambda_enabled`, el paso "Build legacy Lambda package" y el
-  `-var legacy_lambda_enabled` del workflow de producción
-- `infra/scripts/build_lambda.sh` y sus entradas en `.gitignore`
-- `mangum` de `requirements.txt` y el bloque `handler = Mangum(app)` de `backend/main.py`
-- las sentencias `LambdaDeployment`, `ApiGatewayDeployment`, `PassOnlyAmishiRoleToLambda`,
-  `CloudWatchLogs` y el ARN `*-lambda-role` de las políticas en `infra/iam/`
 
 ---
 
