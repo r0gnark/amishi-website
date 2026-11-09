@@ -103,9 +103,9 @@ backend/
       productos.py      GET/POST/PATCH/DELETE /api/admin/productos
                         (incluye available y stock)
       contenido.py      PATCH /api/admin/contenido
-    auth.py             POST /api/auth/login, POST /api/auth/logout
+    auth.py             POST /api/auth/login, POST /api/auth/mfa, POST /api/auth/logout
   services/
-    auth.py             login(), logout(), get_session()
+    auth.py             login(), complete_mfa_login(), cambio de contraseña y alta TOTP
 data/
   catalog.json          Estado persistido del catálogo
 app/                    Next.js frontend público

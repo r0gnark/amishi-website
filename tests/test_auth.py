@@ -2,9 +2,11 @@
 
 import json
 import os
+import re
 from datetime import datetime, timedelta, timezone
 from unittest.mock import MagicMock, patch
 
+import pyotp
 import pytest
 from fastapi import HTTPException
 from httpx import ASGITransport, AsyncClient
@@ -20,6 +22,7 @@ from backend.services.auth import (
     login,
     verify_token,
 )
+from backend.services.mail import MailNotConfigured
 
 SECRET = "test-secret-key-for-unit-tests-only"
 EMAIL = "admin@test.cl"
@@ -220,3 +223,254 @@ async def test_change_password_endpoint_changes_credentials_and_logs_out():
 
     assert old_login.status_code == 401
     assert new_login.status_code == 200
+
+
+class FrozenClock(datetime):
+    current = datetime.now(timezone.utc)
+
+    @classmethod
+    def now(cls, tz=None):
+        return cls.current
+
+
+def _unused_code(secret: str, moment: datetime) -> str:
+    totp = pyotp.TOTP(secret)
+    step = int(moment.timestamp() // 30)
+    used = {totp.generate_otp(step + offset) for offset in (-1, 0, 1)}
+    for candidate in range(1_000_000):
+        code = f"{candidate:06d}"
+        if code not in used:
+            return code
+    raise AssertionError("no quedó un código TOTP libre")
+
+
+@pytest.mark.asyncio
+async def test_mfa_setup_requires_authentication():
+    with patch.dict(os.environ, ENV, clear=False):
+        async with AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://test",
+        ) as client:
+            response = await client.post("/api/admin/cuenta/mfa/setup")
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_mfa_setup_confirm_and_two_step_login():
+    new_password = "new-password-123"
+    FrozenClock.current = datetime.now(timezone.utc)
+    with (
+        patch.dict(os.environ, ENV, clear=False),
+        patch("backend.services.auth.datetime", FrozenClock),
+    ):
+        async with AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://test",
+        ) as client:
+            logged_in = await client.post(
+                "/api/auth/login",
+                json={"email": EMAIL, "password": PASSWORD},
+            )
+            assert logged_in.status_code == 200
+            assert COOKIE_NAME in logged_in.cookies
+
+            setup = await client.post("/api/admin/cuenta/mfa/setup")
+            assert setup.status_code == 200
+            secret = setup.json()["secret"]
+            assert secret in setup.json()["otpauth_uri"]
+            assert "<svg" in setup.json()["qr_svg"]
+            stored = open(os.environ["AUTH_PATH"], encoding="utf-8").read()
+            assert secret not in stored
+
+            pending = await client.get("/api/admin/cuenta/mfa")
+            assert pending.json()["totp_enabled"] is False
+
+            wrong = await client.post(
+                "/api/admin/cuenta/mfa/confirm",
+                json={"code": _unused_code(secret, FrozenClock.current)},
+            )
+            assert wrong.status_code == 400
+
+            code = pyotp.TOTP(secret).at(FrozenClock.current)
+            confirmed = await client.post(
+                "/api/admin/cuenta/mfa/confirm",
+                json={"code": code},
+            )
+            assert confirmed.status_code == 200
+            recovery_codes = confirmed.json()["recovery_codes"]
+            assert len(recovery_codes) == 8
+            assert (await client.get("/api/admin/cuenta/mfa")).json()["totp_enabled"] is True
+
+            changed = await client.patch(
+                "/api/admin/cuenta/password",
+                json={"current_password": PASSWORD, "new_password": new_password},
+            )
+            assert changed.status_code == 200
+            assert COOKIE_NAME not in client.cookies
+
+            old_login = await client.post(
+                "/api/auth/login",
+                json={"email": EMAIL, "password": PASSWORD},
+            )
+            assert old_login.status_code == 401
+
+            challenged = await client.post(
+                "/api/auth/login",
+                json={"email": EMAIL, "password": new_password},
+            )
+            assert challenged.status_code == 200
+            assert challenged.json()["mfa_required"] is True
+            assert COOKIE_NAME not in challenged.cookies
+            mfa_token = challenged.json()["mfa_token"]
+
+            replay = await client.post(
+                "/api/auth/mfa",
+                json={"mfa_token": mfa_token, "code": code},
+            )
+            assert replay.status_code == 401
+            blocked = await client.get(
+                "/api/admin/cuenta/mfa",
+                headers={"cookie": f"{COOKIE_NAME}={mfa_token}"},
+            )
+            assert blocked.status_code == 401
+
+            FrozenClock.current = FrozenClock.current + timedelta(seconds=60)
+            fresh_code = pyotp.TOTP(secret).at(FrozenClock.current)
+            accepted = await client.post(
+                "/api/auth/mfa",
+                json={"mfa_token": mfa_token, "code": fresh_code},
+            )
+            assert accepted.status_code == 200
+            assert COOKIE_NAME in accepted.cookies
+
+            client.cookies.clear()
+            second = await client.post(
+                "/api/auth/login",
+                json={"email": EMAIL, "password": new_password},
+            )
+            reused = await client.post(
+                "/api/auth/mfa",
+                json={
+                    "mfa_token": second.json()["mfa_token"],
+                    "code": recovery_codes[0],
+                },
+            )
+            assert reused.status_code == 200
+            client.cookies.clear()
+            spent = await client.post(
+                "/api/auth/login",
+                json={"email": EMAIL, "password": new_password},
+            )
+            spent_code = await client.post(
+                "/api/auth/mfa",
+                json={
+                    "mfa_token": spent.json()["mfa_token"],
+                    "code": recovery_codes[0],
+                },
+            )
+            assert spent_code.status_code == 401
+
+
+def _capture_email(sent: dict):
+    def _send(recipient: str, subject: str, body: str) -> None:
+        sent["recipient"] = recipient
+        sent["subject"] = subject
+        sent["body"] = body
+
+    return _send
+
+
+@pytest.mark.asyncio
+async def test_email_mfa_sends_code_to_login_address_and_rejects_reuse():
+    sent: dict[str, str] = {}
+    FrozenClock.current = datetime.now(timezone.utc)
+    with (
+        patch.dict(os.environ, ENV, clear=False),
+        patch("backend.services.auth.datetime", FrozenClock),
+        patch("backend.services.auth.send_email", side_effect=_capture_email(sent)),
+    ):
+        async with AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://test",
+        ) as client:
+            await client.post(
+                "/api/auth/login",
+                json={"email": EMAIL, "password": PASSWORD},
+            )
+            started = await client.post("/api/admin/cuenta/mfa/email/start")
+            assert started.status_code == 200
+            assert started.json()["masked_email"] == "a***@test.cl"
+            assert sent["recipient"] == EMAIL
+            code = re.search(r"\d{6}", sent["body"]).group()
+            confirmed = await client.post(
+                "/api/admin/cuenta/mfa/email/confirm",
+                json={"code": code},
+            )
+            assert confirmed.status_code == 200
+            assert len(confirmed.json()["recovery_codes"]) == 8
+            status = await client.get("/api/admin/cuenta/mfa")
+            assert status.json()["email_enabled"] is True
+            assert status.json()["totp_enabled"] is False
+
+            client.cookies.clear()
+            FrozenClock.current = FrozenClock.current + timedelta(seconds=61)
+            challenged = await client.post(
+                "/api/auth/login",
+                json={"email": EMAIL, "password": PASSWORD},
+            )
+            assert challenged.status_code == 200
+            assert challenged.json()["mfa_required"] is True
+            assert challenged.json()["methods"] == ["email"]
+            assert COOKIE_NAME not in challenged.cookies
+
+            mailed = await client.post(
+                "/api/auth/mfa/email",
+                json={"mfa_token": challenged.json()["mfa_token"]},
+            )
+            assert mailed.status_code == 200
+            login_code = re.search(r"\d{6}", sent["body"]).group()
+            accepted = await client.post(
+                "/api/auth/mfa",
+                json={
+                    "mfa_token": challenged.json()["mfa_token"],
+                    "code": login_code,
+                },
+            )
+            assert accepted.status_code == 200
+            assert COOKIE_NAME in accepted.cookies
+
+            client.cookies.clear()
+            again = await client.post(
+                "/api/auth/login",
+                json={"email": EMAIL, "password": PASSWORD},
+            )
+            reused = await client.post(
+                "/api/auth/mfa",
+                json={
+                    "mfa_token": again.json()["mfa_token"],
+                    "code": login_code,
+                },
+            )
+            assert reused.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_email_mfa_reports_when_smtp_is_not_configured():
+    with (
+        patch.dict(os.environ, ENV, clear=False),
+        patch(
+            "backend.services.auth.send_email",
+            side_effect=MailNotConfigured(),
+        ),
+    ):
+        async with AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://test",
+        ) as client:
+            await client.post(
+                "/api/auth/login",
+                json={"email": EMAIL, "password": PASSWORD},
+            )
+            response = await client.post("/api/admin/cuenta/mfa/email/start")
+    assert response.status_code == 400
+    assert response.json()["detail"] == "El envío de correo no está configurado"
