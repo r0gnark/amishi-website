@@ -332,3 +332,23 @@ catálogo vivo del bucket.
 **Verificación:** `pytest` 77/77 y `terraform test` 2/2. En el navegador se
 marcaron dos productos como no disponibles y el filtro los mostró solos. La
 prueba usó una copia local del catálogo.
+
+## 2026-11-08 — Feature 30: admin_totp_mfa
+
+**Objetivo:** el admin puede agregar un segundo factor escaneando un QR o
+ingresando la clave en Google Authenticator, y también pedir un código al
+correo con el que entra.
+
+**Implementado:**
+- En Seguridad, el QR y la clave manual usan el formato estándar de la app.
+  El código cambia cada 30 segundos y el servidor comprueba el mismo valor.
+- El correo es opcional: se confirma con un código de prueba y, en el login,
+  el botón «Enviar código» lo manda a ese mismo correo.
+- La cookie de sesión solo se crea después del segundo código. Hay códigos de
+  recuperación de un solo uso.
+- El envío usa SMTP (`SMTP_HOST`, `SMTP_FROM` y el resto en `.env.example`).
+
+**Verificación:** `pytest` 81/81 y `./init.sh` en verde. En el navegador, Seguridad
+muestra el QR, la clave manual y el correo enmascarado. Sin SMTP, el envío
+responde que el correo no está configurado. La prueba de login usó credenciales
+aisladas; `data/auth.json` no se modificó.

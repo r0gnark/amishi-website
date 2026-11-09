@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import MfaSettings from "@/components/admin/MfaSettings";
 import PasswordInput from "@/components/admin/PasswordInput";
 
 export default function SeguridadPage() {
@@ -96,6 +97,8 @@ export default function SeguridadPage() {
           {loading ? "Guardando…" : "Cambiar contraseña"}
         </button>
       </form>
+
+      <MfaSettings />
     </div>
   );
 }

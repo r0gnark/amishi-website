@@ -411,6 +411,22 @@
         "pytest y ./init.sh terminan sin errores"
       ],
       "status": "done"
+    },
+    {
+      "id": 30,
+      "name": "admin_totp_mfa",
+      "title": "MFA del admin con código QR",
+      "description": "El administrador activa un segundo factor desde Seguridad. Puede escanear un QR o ingresar la clave en Google Authenticator, y si lo prefiere también recibir un código en el correo de ingreso.",
+      "acceptance": [
+        "Seguridad permite activar MFA: muestra un QR y la clave manual, pide un código válido de la app y entrega códigos de recuperación una sola vez",
+        "El administrador puede activar, como alternativa, un código enviado al correo de ingreso",
+        "Con MFA activo, POST /api/auth/login no crea la cookie de sesión y exige un segundo paso",
+        "POST /api/auth/mfa acepta el código TOTP, el código del correo o un código de recuperación y solo entonces crea la cookie",
+        "Un código ya usado, un token de desafío o un código incorrecto no abren el panel",
+        "Cambiar la contraseña conserva el MFA activo",
+        "pytest cubre el alta, el login en dos pasos, el rechazo y el código de recuperación"
+      ],
+      "status": "done"
     }
   ]
 }

@@ -89,5 +89,11 @@ deben hacer el resto.
 | `ADMIN_EMAIL`     | Email del único administrador    |
 | `ADMIN_PASSWORD`  | Contraseña del administrador     |
 | `SECRET_KEY`      | Clave para firmar tokens JWT     |
+| `SMTP_HOST`       | Servidor para el código por correo. Vacío = no se envía |
+| `SMTP_PORT`       | Puerto SMTP, por defecto 587     |
+| `SMTP_USER`       | Usuario SMTP, si el servidor lo pide |
+| `SMTP_PASSWORD`   | Contraseña SMTP                   |
+| `SMTP_FROM`       | Remitente. Si falta, se usa `SMTP_USER` |
+| `SMTP_TLS`        | `true` usa STARTTLS               |
 
 Documentar siempre en `.env.example`. Nunca commitear `.env`.
