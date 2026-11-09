@@ -8,18 +8,6 @@
       "Resource": "*"
     },
     {
-      "Sid": "LambdaDeployment",
-      "Effect": "Allow",
-      "Action": "lambda:*",
-      "Resource": "*"
-    },
-    {
-      "Sid": "ApiGatewayDeployment",
-      "Effect": "Allow",
-      "Action": "apigateway:*",
-      "Resource": "*"
-    },
-    {
       "Sid": "ApiInstanceDeployment",
       "Effect": "Allow",
       "Action": "ec2:*",
@@ -50,10 +38,7 @@
         "iam:UntagRole",
         "iam:UpdateAssumeRolePolicy"
       ],
-      "Resource": [
-        "arn:aws:iam::615299766568:role/amishi-lambda-role",
-        "arn:aws:iam::615299766568:role/amishi-api-role"
-      ]
+      "Resource": "arn:aws:iam::615299766568:role/amishi-api-role"
     },
     {
       "Sid": "ApiInstanceProfile",
@@ -68,17 +53,6 @@
         "iam:UntagInstanceProfile"
       ],
       "Resource": "arn:aws:iam::615299766568:instance-profile/amishi-api-profile"
-    },
-    {
-      "Sid": "PassOnlyAmishiRoleToLambda",
-      "Effect": "Allow",
-      "Action": "iam:PassRole",
-      "Resource": "arn:aws:iam::615299766568:role/amishi-lambda-role",
-      "Condition": {
-        "StringEquals": {
-          "iam:PassedToService": "lambda.amazonaws.com"
-        }
-      }
     },
     {
       "Sid": "PassOnlyAmishiRoleToEc2",
@@ -122,21 +96,6 @@
         "ssm:DescribeParameters",
         "ssm:GetCommandInvocation",
         "ssm:ListCommandInvocations"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "CloudWatchLogs",
-      "Effect": "Allow",
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:DeleteLogGroup",
-        "logs:DescribeLogGroups",
-        "logs:ListTagsForResource",
-        "logs:ListTagsLogGroup",
-        "logs:PutRetentionPolicy",
-        "logs:TagResource",
-        "logs:UntagResource"
       ],
       "Resource": "*"
     },

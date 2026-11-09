@@ -27,13 +27,3 @@ output "s3_bucket_name" {
   description = "Name of the S3 bucket used to persist catalog.json, uploads and releases"
   value       = aws_s3_bucket.catalog.bucket
 }
-
-output "api_gateway_url" {
-  description = "Legacy Lambda URL (empty once legacy_lambda_enabled = false)"
-  value       = one(aws_apigatewayv2_stage.default[*].invoke_url)
-}
-
-output "lambda_function_name" {
-  description = "Legacy Lambda function name (empty once legacy_lambda_enabled = false)"
-  value       = one(aws_lambda_function.api[*].function_name)
-}

@@ -1,8 +1,7 @@
 # Infraestructura AWS — Amishi Backend
 
 Este documento te guía desde cero hasta tener el backend FastAPI corriendo en AWS,
-con deploys automáticos por entorno. Si vienes del backend en Lambda, ve directo a
-[Migración desde Lambda](#migración-desde-lambda-sin-cortar-el-sitio).
+con deploys automáticos a producción.
 
 ---
 
@@ -11,10 +10,14 @@ con deploys automáticos por entorno. Si vienes del backend en Lambda, ve direct
 ```
 Tu código (repo GitHub)
         │
-        ├─► merge a develop ──► GitHub Actions ──► EC2 QA   (cuenta AWS DEV)
+        ├─► merge a develop ──► GitHub Actions ──► solo tests (pytest + terraform test)
         │
-        └─► merge a master  ──► GitHub Actions ──► EC2 PROD (cuenta AWS PROD)
+        └─► merge a master  ──► GitHub Actions ──► EC2 única (cuenta AWS PROD)
 ```
+
+No hay una segunda instancia para QA. `develop` comprueba el código; el único
+backend de AWS vive en la cuenta de producción y se actualiza al mergear a
+`master`. Así no se paga otra EC2 ni otra IPv4 pública.
 
 El frontend vive en **Vercel** y llama al backend a través de `API_URL`. El backend
 es FastAPI corriendo en una instancia **EC2 `t4g.nano`** (ARM, 512 MB) que está
@@ -52,10 +55,10 @@ responde en milisegundos.
 | S3, SSM Parameter Store (estándar) y Run Command | ~0 |
 | **Total** | **~7.40** |
 
-QA y producción son cuentas separadas, así que el total es ~USD 15/mes con ambas
-encendidas. El presupuesto de alerta (`monthly_budget_usd`) está en USD 10 por
-cuenta. Si una cuenta todavía tiene la capa gratuita de 12 meses, la IPv4
-pública es gratis.
+Hay una sola cuenta encendida (producción), así que el total es ~USD 7.40/mes.
+El presupuesto de alerta (`monthly_budget_usd`) está en USD 10. Si la cuenta
+todavía tiene la capa gratuita de 12 meses, la IPv4 pública es gratis. La cuenta
+DEV no debe tener instancia: ver [Dar de baja la cuenta DEV](#dar-de-baja-la-cuenta-dev-qa).
 
 ### Qué es Terraform y por qué lo usamos
 
@@ -75,7 +78,6 @@ lean el mismo estado y no dupliquen recursos.
 |---|---|
 | `terraform/ec2.tf` | Instancia, Elastic IP, security group y parámetros SSM |
 | `terraform/iam.tf` | Rol de la instancia (S3 + SSM) |
-| `terraform/lambda.tf`, `terraform/api_gateway.tf` | Backend antiguo, solo mientras dura la migración |
 | `terraform/tests/` | `terraform test` con provider simulado (sin credenciales) |
 | `systemd/` | Unidades de uvicorn y Caddy, y el `Caddyfile` |
 | `scripts/deploy_backend.sh` | Empaqueta el backend, lo sube a S3 y lo instala vía SSM |
@@ -104,7 +106,8 @@ por defecto** (todas las cuentas AWS la traen).
 
 ### Crear la rama `develop`
 
-Los workflows de GitHub Actions se disparan en push a `develop` (QA) y `master` (prod).
+En `develop` y en `master` corren los tests. Solo un push a `master` crea o
+actualiza la instancia en AWS.
 
 ```bash
 git checkout master
@@ -121,7 +124,7 @@ Ve a **Settings → Branches → Add branch ruleset** y en `develop` y `master`:
 - Require status checks → `pytest` y `terraform test` (workflow `test-backend.yml`)
 
 ```
-feature/xxx ──► PR a develop ──► tests pasan ──► merge ──► deploy QA automático
+feature/xxx ──► PR a develop ──► tests pasan ──► merge ──► sin cambios en AWS
 develop     ──► PR a master  ──► tests pasan ──► merge ──► deploy PROD automático
 ```
 
@@ -129,15 +132,16 @@ develop     ──► PR a master  ──► tests pasan ──► merge ──�
 
 ## FASE 1 — Configurar tu máquina y las cuentas (una sola vez)
 
-### Paso 1: Usuario IAM de deploy en cada cuenta
+### Paso 1: Usuario IAM de deploy en la cuenta de producción
 
-En cada cuenta AWS crea un usuario IAM dedicado para los deploys. **Nunca uses el
-usuario root ni tus credenciales personales de admin.**
+En la cuenta PROD crea un usuario IAM dedicado para los deploys. **Nunca uses el
+usuario root ni tus credenciales personales de admin.** La cuenta DEV solo hace
+falta si todavía tiene infraestructura vieja que destruir.
 
-1. Consola AWS → **IAM → Policies → Create policy → JSON**, pega el archivo de la
-   cuenta y guárdala como `amishi-deploy-policy`:
-   - DEV: `infra/iam/amishi-deploy-policy-dev.json`
-   - PROD: `infra/iam/amishi-deploy-policy-prod.json`
+1. Consola AWS → **IAM → Policies → Create policy → JSON**, pega
+   `infra/iam/amishi-deploy-policy-prod.json` y guárdala como `amishi-deploy-policy`.
+   (`infra/iam/amishi-deploy-policy-dev.json` queda solo para el `terraform destroy`
+   de la cuenta DEV.)
 
    Tiene que ser una política administrada: como política *inline* no cabe
    (AWS limita las inline de un usuario a 2.048 caracteres).
@@ -149,8 +153,9 @@ Las políticas permiten crear la instancia (`ec2:*` limitado a `us-east-1`), pas
 solo el rol `amishi[-qa]-api-role` a EC2, administrar los parámetros
 `/amishi[-qa]/*` y ejecutar comandos SSM en las instancias de la cuenta.
 
-> **Si el usuario ya existía (backend en Lambda):** reemplaza su política por la
-> versión actual de `infra/iam/` en **ambas** cuentas antes del próximo deploy.
+> **Si el usuario ya existía:** reemplaza su política por la versión actual de
+> `infra/iam/amishi-deploy-policy-prod.json`. Ya no incluye permisos de Lambda,
+> API Gateway ni CloudWatch Logs: el backend antiguo fue eliminado.
 > Si en IAM → Users → `amishi-deploy` → Permissions la política aparece como
 > *Customer managed*: ábrela → Edit → pestaña JSON → pega el archivo completo →
 > Save. Si aparece como *Customer inline*, crea la política administrada del
@@ -160,11 +165,12 @@ solo el rol `amishi[-qa]-api-role` a EC2, administrar los parámetros
 ### Paso 2: Perfiles AWS locales
 
 ```bash
-aws configure --profile amishi-dev    # claves de la cuenta DEV, región us-east-1
 aws configure --profile amishi-prod   # claves de la cuenta PROD, región us-east-1
-
-aws sts get-caller-identity --profile amishi-dev
 aws sts get-caller-identity --profile amishi-prod
+
+# Solo para dar de baja lo que haya quedado en la cuenta DEV:
+aws configure --profile amishi-dev
+aws sts get-caller-identity --profile amishi-dev
 ```
 
 ### Paso 3: Bucket del tfstate (bootstrap)
@@ -173,56 +179,50 @@ Una vez por cuenta. Los nombres de S3 son globales: si recibes
 `BucketAlreadyExists`, añade un sufijo y actualiza `terraform/backends/*.tfbackend`.
 
 ```bash
-aws s3 mb s3://amishi-tfstate-dev --region us-east-1 --profile amishi-dev
-aws s3api put-bucket-versioning --bucket amishi-tfstate-dev \
-    --versioning-configuration Status=Enabled --profile amishi-dev
-
 aws s3 mb s3://amishi-tfstate-prod --region us-east-1 --profile amishi-prod
 aws s3api put-bucket-versioning --bucket amishi-tfstate-prod \
     --versioning-configuration Status=Enabled --profile amishi-prod
 ```
 
+El bucket `amishi-tfstate-dev` solo existe si ya se creó la cuenta DEV. No lo
+borres antes del `terraform destroy` de esa cuenta: ahí está el estado.
+
 ---
 
-## FASE 2 — Primer deploy local (QA)
+## FASE 2 — Primer deploy local (producción)
 
-Hacerlo una vez desde tu máquina confirma que todo funciona antes de depender del CI.
+Una sola vez, en la cuenta PROD, antes de depender del CI.
 
 ### Paso 4: Variables de Terraform
 
 ```bash
-cp infra/terraform/terraform.tfvars.example infra/terraform/terraform.qa.tfvars
+cp infra/terraform/terraform.tfvars.example infra/terraform/terraform.prod.tfvars
 ```
 
-Edita `terraform.qa.tfvars` (está en `.gitignore`):
+Edita `terraform.prod.tfvars` (está en `.gitignore`):
 
 ```hcl
 aws_region   = "us-east-1"
 project_name = "amishi"
-environment  = "qa"
-aws_profile  = "amishi-dev"
+environment  = "prod"
+aws_profile  = "amishi-prod"
 
 admin_email    = "admin@amishi.cl"
-admin_password = "una-contrasena-de-prueba"
+admin_password = "una-contrasena-real"
 secret_key     = "salida de: python3 -c \"import secrets; print(secrets.token_hex(32))\""
-cors_origins   = "https://amishi-qa.vercel.app"
+cors_origins   = "https://amishi.vercel.app"
 
 # Vacío = https://<ip-con-guiones>.sslip.io (funciona sin configurar DNS)
 api_domain = ""
-
-# false si es una cuenta nueva sin backend Lambda que conservar
-legacy_lambda_enabled = false
 ```
-
-Con `legacy_lambda_enabled = true` necesitas antes `bash infra/scripts/build_lambda.sh`.
 
 ### Paso 5: Crear la infraestructura
 
 ```bash
 cd infra/terraform
-terraform init -backend-config=backends/qa.tfbackend
-terraform plan  -var-file=terraform.qa.tfvars
-terraform apply -var-file=terraform.qa.tfvars
+terraform init -backend-config=backends/prod.tfbackend
+terraform plan  -var-file=terraform.prod.tfvars
+terraform apply -var-file=terraform.prod.tfvars
 cd ../..
 ```
 
@@ -237,7 +237,7 @@ api_instance_id = "i-0abc..."
 ### Paso 6: Instalar el backend en la instancia
 
 ```bash
-AWS_PROFILE=amishi-dev AWS_REGION=us-east-1 bash infra/scripts/deploy_backend.sh
+AWS_PROFILE=amishi-prod AWS_REGION=us-east-1 bash infra/scripts/deploy_backend.sh
 ```
 
 El primer deploy tarda 3–5 minutos (instala swap, Python 3.12 y Caddy); los
@@ -252,59 +252,42 @@ curl https://3-91-10-20.sslip.io/api/productos
 
 ---
 
-## FASE 3 — Primer deploy local (producción)
+## FASE 3 — Automatizar con GitHub Actions
 
-Igual que la fase 2 con `terraform.prod.tfvars` (`environment = "prod"`,
-`aws_profile = "amishi-prod"`, credenciales reales):
-
-```bash
-cd infra/terraform
-terraform init -backend-config=backends/prod.tfbackend -reconfigure
-terraform apply -var-file=terraform.prod.tfvars
-cd ../..
-AWS_PROFILE=amishi-prod AWS_REGION=us-east-1 bash infra/scripts/deploy_backend.sh
-```
-
-`-reconfigure` evita que Terraform reutilice el backend de QA al cambiar de cuenta.
-
----
-
-## FASE 4 — Automatizar con GitHub Actions
-
-Cada merge a `develop` o `master` ejecuta: `terraform apply` → `deploy_backend.sh`
-(zip a S3 + SSM) → verificación de `API_URL/api/productos`.
+Un merge a `develop` solo corre tests. Un merge a `master`, cuando `Test Backend`
+termina en verde, ejecuta: `terraform apply` → `deploy_backend.sh` (zip a S3 + SSM)
+→ verificación de `API_URL/api/productos`.
 
 ### Paso 8: Secrets
 
-**Settings → Environments** → entornos `qa` y `Production` → **Environment secrets**:
+**Settings → Environments → Production → Environment secrets**:
 
-| Secret (qa) | Secret (Production) | Valor |
-|---|---|---|
-| `AWS_ACCESS_KEY_ID_DEV` | `AWS_ACCESS_KEY_ID_PROD` | Access key de `amishi-deploy` |
-| `AWS_SECRET_ACCESS_KEY_DEV` | `AWS_SECRET_ACCESS_KEY_PROD` | Secret correspondiente |
-| `AWS_REGION_DEV` | `AWS_REGION_PROD` | `us-east-1` |
-| `ADMIN_EMAIL_DEV` | `ADMIN_EMAIL_PROD` | Email del admin |
-| `ADMIN_PASSWORD_DEV` | `ADMIN_PASSWORD_PROD` | Contraseña inicial del admin |
-| `SECRET_KEY_DEV` | `SECRET_KEY_PROD` | Mismo valor que en el tfvars |
-| `CORS_ORIGINS_QA` | `CORS_ORIGINS_PROD` | URL de Vercel del entorno |
+| Secret | Valor |
+|---|---|
+| `AWS_ACCESS_KEY_ID_PROD` | Access key de `amishi-deploy` en la cuenta PROD |
+| `AWS_SECRET_ACCESS_KEY_PROD` | Secret correspondiente |
+| `AWS_REGION_PROD` | `us-east-1` |
+| `ADMIN_EMAIL_PROD` | Email del admin |
+| `ADMIN_PASSWORD_PROD` | Contraseña inicial del admin |
+| `SECRET_KEY_PROD` | Mismo valor que en el tfvars |
+| `CORS_ORIGINS_PROD` | URL de Vercel de producción (y la de preview, si el preview usa esta API) |
 
 ### Paso 9: Variables (opcionales)
 
-En los mismos entornos → **Environment variables**:
+En el entorno **Production** → **Environment variables**:
 
 | Variable | Valor | Efecto |
 |---|---|---|
 | `API_DOMAIN` | ej. `api.amishi.cl` | Dominio propio para la API. Vacío = `sslip.io` |
-| `LEGACY_LAMBDA_ENABLED` | `false` | Destruye Lambda y API Gateway (ver migración) |
 
 ---
 
-## FASE 5 — Conectar Vercel
+## FASE 4 — Conectar Vercel
 
-En Vercel → **Settings → Environment Variables** → `API_URL`:
-
-- Preview (rama `develop`): `api_url` de la cuenta DEV.
-- Production: `api_url` de la cuenta PROD.
+En Vercel → **Settings → Environment Variables** → `API_URL`, el mismo valor
+(`api_url` de la cuenta PROD) en Preview y en Production. El preview de `develop`
+habla con el mismo backend: un cambio en el admin de un preview escribe el
+catálogo real.
 
 **Después de cambiar `API_URL` hay que redesplegar** (Deployments → último deploy →
 Redeploy): `next.config.ts` lee `API_URL` al compilar para los rewrites de `/api/*`.
@@ -320,41 +303,62 @@ Redeploy): `next.config.ts` lee `API_URL` al compilar para los rewrites de `/api
 
 ---
 
-## Migración desde Lambda (sin cortar el sitio)
+## Dar de baja la cuenta DEV (QA)
 
-Mientras Vercel apunte a API Gateway, Lambda debe seguir existiendo. Por eso
-`legacy_lambda_enabled` vale `true` por defecto y los recursos antiguos conviven
-con la instancia. Por entorno (primero QA, después producción):
+Hazlo cuando esta rama ya esté en `develop`. Si el workflow `Deploy Backend — QA`
+sigue en `develop`, el próximo push vuelve a crear la instancia.
 
-1. **Actualiza la política IAM** de `amishi-deploy` (paso 1). Sin esto el deploy falla.
-2. **Haz merge** a `develop` (o `master`). El workflow crea la instancia junto a
-   Lambda, instala el backend y muestra `API_URL para Vercel: https://…`.
-   El sitio sigue funcionando con Lambda.
-3. **Prueba la API nueva:** `curl https://…/api/productos` debe devolver el catálogo.
-   Los datos son los mismos: ambos backends leen el mismo bucket.
-4. **Cambia `API_URL` en Vercel** a esa URL y **redespliega**. Desde aquí el sitio usa
-   la instancia: se acaban los arranques en frío.
-5. **Prueba el sitio y el admin** (login, editar un producto, subir una imagen).
-6. **Apaga Lambda:** define `LEGACY_LAMBDA_ENABLED=false` en el entorno de GitHub y
-   vuelve a ejecutar el workflow (Actions → Deploy Backend → Re-run). Terraform
-   destruye Lambda, API Gateway y su rol.
+Terraform solo borra lo que está en el estado de `amishi-tfstate-dev`. El bucket
+de catálogo tiene versionado y no se vacía solo: hay que vaciarlo antes, o
+`terraform destroy` se detiene en `BucketNotEmpty`.
 
-**Rollback:** hasta el paso 6, basta con volver `API_URL` de Vercel a la URL de API
-Gateway (`terraform output api_gateway_url`) y redesplegar.
+1. Perfil de la cuenta DEV (el del paso 2) y un `terraform.qa.tfvars` con
+   `environment = "qa"` y `aws_profile = "amishi-dev"`. Los secretos pueden ser
+   los que usaste al crear QA; Terraform los exige para leer la configuración,
+   no para conservar la instancia.
 
-### Limpieza final (cuando QA y producción ya corren sin Lambda)
+2. Vacía el bucket de catálogo (incluye versiones):
 
-Cuando ambos entornos tienen `LEGACY_LAMBDA_ENABLED=false` aplicado, borra en un
-mismo PR:
+```bash
+BUCKET=amishi-qa-catalog
+PROFILE=amishi-dev
 
-- `infra/terraform/lambda.tf` y `infra/terraform/api_gateway.tf` (incluidos sus bloques `moved`)
-- los outputs `api_gateway_url` y `lambda_function_name` de `outputs.tf`
-- la variable `legacy_lambda_enabled`, el paso "Build legacy Lambda package" y el
-  `-var legacy_lambda_enabled` de ambos workflows
-- `infra/scripts/build_lambda.sh` y sus entradas en `.gitignore`
-- `mangum` de `requirements.txt` y el bloque `handler = Mangum(app)` de `backend/main.py`
-- las sentencias `LambdaDeployment`, `ApiGatewayDeployment`, `PassOnlyAmishiRoleToLambda`,
-  `CloudWatchLogs` y el ARN `*-lambda-role` de las políticas en `infra/iam/`
+aws s3api list-object-versions --bucket "$BUCKET" --profile "$PROFILE" \
+  --query '{Objects: Versions[].{Key:Key,VersionId:VersionId}}' --output json \
+  > /tmp/amishi-qa-versions.json
+aws s3api delete-objects --bucket "$BUCKET" --profile "$PROFILE" \
+  --delete file:///tmp/amishi-qa-versions.json
+
+aws s3api list-object-versions --bucket "$BUCKET" --profile "$PROFILE" \
+  --query '{Objects: DeleteMarkers[].{Key:Key,VersionId:VersionId}}' --output json \
+  > /tmp/amishi-qa-markers.json
+aws s3api delete-objects --bucket "$BUCKET" --profile "$PROFILE" \
+  --delete file:///tmp/amishi-qa-markers.json
+```
+
+Si `delete-objects` responde que `Objects` está vacío, ese paso ya no tiene nada
+que borrar. Con más de 1000 versiones, repite el listado.
+
+3. Destruye el resto:
+
+```bash
+cd infra/terraform
+terraform init -backend-config=backends/qa.tfbackend -reconfigure
+terraform plan -destroy -var-file=terraform.qa.tfvars
+terraform destroy -var-file=terraform.qa.tfvars
+```
+
+El plan debe listar la instancia `amishi-qa-api`, su Elastic IP, el security
+group, el rol, el bucket `amishi-qa-catalog`, los parámetros SSM y, si seguían
+en el estado, la Lambda y API Gateway. Si aparece algo de la cuenta PROD
+(`amishi-api` sin el sufijo `-qa`), cancela: el backend de Terraform no es el
+de DEV.
+
+4. En la consola de la cuenta DEV, confirma que no quedan EC2, Elastic IP,
+   Lambda ni API Gateway. El usuario IAM `amishi-deploy` no genera costo.
+   El bucket `amishi-tfstate-dev` tampoco, salvo el almacenamiento del estado:
+   bórralo solo después del destroy, cuando ya no vayas a volver a correr
+   Terraform contra esa cuenta.
 
 ---
 
@@ -363,9 +367,9 @@ mismo PR:
 ```
 git checkout develop
 git commit -m "feat: nueva funcionalidad"
-git push origin develop        # ──► deploy automático a QA
-# verificar en Vercel Preview
+git push origin develop        # ──► solo tests; AWS no cambia
 
+# cuando los tests están verdes y el cambio está listo:
 git checkout master
 git merge develop
 git push origin master         # ──► deploy automático a producción

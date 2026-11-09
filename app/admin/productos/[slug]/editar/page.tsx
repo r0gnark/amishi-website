@@ -13,7 +13,7 @@ export default function EditarProductoPage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/productos/${slug}`)
+    fetch(`/api/admin/productos/${slug}`)
       .then((r) => {
         if (r.status === 404) { setNotFound(true); return null; }
         return r.json();
@@ -50,6 +50,8 @@ export default function EditarProductoPage() {
             instagramUrl: product.instagramUrl,
             description: product.description,
             category: product.category,
+            available: product.available ?? true,
+            stock: product.stock ?? null,
           }}
           onSubmit={handleUpdate}
           submitLabel="Guardar cambios"

@@ -89,6 +89,11 @@ export default async function ProductoPage({ params }: Props) {
             <h1 className="font-display text-3xl font-semibold text-ink md:text-4xl">
               {product.name}
             </h1>
+            {product.available === false && (
+              <p className="mt-4 inline-flex w-fit rounded-full bg-ink px-4 py-1.5 text-sm font-semibold uppercase tracking-wide text-white">
+                No disponible
+              </p>
+            )}
             <p className="mt-4 font-display text-2xl font-semibold text-rose">{formatCLP(product.price)}</p>
             <p className="mt-6 whitespace-pre-line leading-relaxed text-ink/90">
               {product.description}
@@ -100,7 +105,9 @@ export default async function ProductoPage({ params }: Props) {
             />
 
             <p className="mt-6 text-sm text-ink/65">
-              Precio de referencia. Stock y envío se confirman por WhatsApp.
+              {product.available === false
+                ? "Este producto no está disponible por ahora. Puedes consultar por WhatsApp cuándo vuelve."
+                : "Precio de referencia. Envío se confirma por WhatsApp."}
             </p>
 
             <Link

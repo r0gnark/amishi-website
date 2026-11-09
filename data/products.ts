@@ -22,6 +22,8 @@ export type Product = {
   instagramUrl: string;
   description: string;
   category: CatalogCategoryId;
+  /** Falso cuando el administrador marcó el producto como no disponible. */
+  available?: boolean;
 };
 
 export const products: Product[] = [

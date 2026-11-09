@@ -3,10 +3,30 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from backend.models.catalog import Product, ProductCreate, ProductUpdate
-from backend.repository import CatalogNotFoundError, create_product, delete_product, update_product
+from backend.repository import (
+    CatalogNotFoundError,
+    create_product,
+    delete_product,
+    get_all_products,
+    get_product_by_slug,
+    update_product,
+)
 from backend.services.auth import get_current_user
 
 router = APIRouter(prefix="/api/admin/productos", tags=["admin-productos"])
+
+
+@router.get("", response_model=list[Product])
+async def list_products(_user: str = Depends(get_current_user)):
+    return get_all_products()
+
+
+@router.get("/{slug}", response_model=Product)
+async def get_one(slug: str, _user: str = Depends(get_current_user)):
+    try:
+        return get_product_by_slug(slug)
+    except CatalogNotFoundError:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
 
 
 @router.post("", response_model=Product, status_code=201)

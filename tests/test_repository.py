@@ -99,6 +99,54 @@ def test_create_product_validates_invalid_category(tmp_path):
 
 # ── update_product ───────────────────────────────────────────────────────────
 
+def test_legacy_product_is_available_and_has_no_stock(tmp_path):
+    path = tmp_path / "catalog.json"
+    path.write_text(
+        """
+        {
+          "products": [{
+            "id": "viejo",
+            "name": "Producto viejo",
+            "price": 1000,
+            "image": "/images/test.jpeg",
+            "instagramUrl": "",
+            "description": "",
+            "category": "imanes"
+          }]
+        }
+        """,
+        encoding="utf-8",
+    )
+    product = get_product_by_slug("viejo", path)
+    assert product.available is True
+    assert product.stock is None
+
+
+def test_create_product_persists_availability_and_stock(tmp_path):
+    path = tmp_path / "catalog.json"
+    created = create_product(
+        _new_product(name="Agotado", available=False, stock=2),
+        path,
+    )
+    stored = get_product_by_slug(created.id, path)
+    assert stored.available is False
+    assert stored.stock == 2
+
+
+def test_update_product_can_clear_stock(tmp_path):
+    path = tmp_path / "catalog.json"
+    created = create_product(_new_product(name="Con stock", stock=4), path)
+    updated = update_product(created.id, ProductUpdate(stock=None), path)
+    assert updated.stock is None
+    assert get_product_by_slug(created.id, path).stock is None
+
+
+def test_update_product_rejects_negative_stock(tmp_path):
+    path = tmp_path / "catalog.json"
+    with pytest.raises(Exception):
+        ProductUpdate(stock=-1)
+
+
 def test_update_product_happy_path(tmp_path):
     path = tmp_path / "catalog.json"
     created = create_product(_new_product(name="Original", price=1000), path)

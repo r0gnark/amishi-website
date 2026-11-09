@@ -1,19 +1,17 @@
 # Copia este archivo a terraform.tfvars y completa los valores reales.
 # NUNCA hagas commit de terraform.tfvars — contiene secretos.
 #
-# Copia para QA:   cp terraform.tfvars.example terraform.qa.tfvars
 # Copia para prod: cp terraform.tfvars.example terraform.prod.tfvars
+# terraform.qa.tfvars solo sirve para destruir la cuenta DEV, si todavía existe.
 
 aws_region   = "us-east-1"
 project_name = "amishi"
 
-# "qa" para la cuenta dev, "prod" para la cuenta prod
-environment = "qa"
+# La instancia viva es siempre "prod". "qa" solo para terraform destroy en DEV.
+environment = "prod"
 
-# Perfil AWS local (el que corresponde a la cuenta de este entorno).
-# Dejar vacío en CI — las credenciales las inyecta GitHub Actions.
-# En local: configura los perfiles con `aws configure --profile amishi-dev`
-aws_profile = "amishi-dev"   # o "amishi-prod" para prod
+# Perfil AWS local. Dejar vacío en CI: GitHub Actions inyecta las credenciales.
+aws_profile = "amishi-prod"
 
 # CMS credentials
 admin_email    = "admin@amishi.cl"
@@ -23,12 +21,8 @@ admin_password = "cambiar-en-produccion"
 secret_key = "genera-un-secreto-largo-y-aleatorio"
 
 # Orígenes CORS del frontend Vercel (separados por coma)
-cors_origins = "https://amishi-qa.vercel.app"
+cors_origins = "https://amishi.vercel.app"
 
 # Dominio de la API (registro A apuntando a api_public_ip).
 # Vacío = https://<ip-con-guiones>.sslip.io, sin configurar DNS.
 api_domain = ""
-
-# true mientras Vercel siga apuntando a API Gateway (requiere build_lambda.sh).
-# false en cuentas nuevas o tras cambiar API_URL a la instancia.
-legacy_lambda_enabled = false

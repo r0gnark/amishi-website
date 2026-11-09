@@ -10,6 +10,7 @@ type ProductCardProps = {
 
 export function ProductCard({ product }: ProductCardProps) {
   const detailHref = `/producto/${product.id}`;
+  const unavailable = product.available === false;
 
   return (
     <article className="group flex flex-col">
@@ -27,6 +28,11 @@ export function ProductCard({ product }: ProductCardProps) {
             productId: product.id,
           })}
         />
+        {unavailable && (
+          <span className="absolute inset-x-3 bottom-3 rounded-full bg-ink/85 px-3 py-1.5 text-center text-[11px] font-semibold uppercase tracking-wide text-white">
+            No disponible
+          </span>
+        )}
       </Link>
       <div className="px-1 pt-4 text-center">
         <h3 className="font-display text-lg font-semibold leading-snug text-ink">

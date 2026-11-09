@@ -10,8 +10,8 @@ terraform {
 
   # Backend parcial: el resto de la configuración se provee con -backend-config.
   #
-  # Local (dev account):  AWS_PROFILE=amishi-dev  terraform init -backend-config=backends/qa.tfbackend
-  # Local (prod account): AWS_PROFILE=amishi-prod terraform init -backend-config=backends/prod.tfbackend
+  # Producción:            AWS_PROFILE=amishi-prod terraform init -backend-config=backends/prod.tfbackend
+  # Baja de la cuenta DEV: AWS_PROFILE=amishi-dev  terraform init -backend-config=backends/qa.tfbackend
   # CI: las credenciales vienen de variables de entorno (configure-aws-credentials action)
   backend "s3" {}
 }
