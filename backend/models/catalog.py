@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 class Category(BaseModel):
     id: str
@@ -126,6 +126,63 @@ class ProductUpdate(BaseModel):
             raise ValueError("stock must be >= 0")
         return value
 
+
+class ProductBulkUpdate(BaseModel):
+    """Cambios compartidos por varios productos. Solo los campos enviados se aplican."""
+
+    ids: list[str]
+    available: Optional[bool] = None
+    category: Optional[str] = None
+    price: Optional[int] = None
+    stock: Optional[int] = None
+
+    @field_validator("ids")
+    @classmethod
+    def ids_not_empty(cls, value: list[str]) -> list[str]:
+        cleaned = [item.strip() for item in value if item.strip()]
+        if not cleaned:
+            raise ValueError("ids must not be empty")
+        return cleaned
+
+    @field_validator("price")
+    @classmethod
+    def price_non_negative(cls, value: Optional[int]) -> Optional[int]:
+        if value is not None and value < 0:
+            raise ValueError("price must be >= 0")
+        return value
+
+    @field_validator("stock")
+    @classmethod
+    def stock_non_negative(cls, value: Optional[int]) -> Optional[int]:
+        if value is not None and value < 0:
+            raise ValueError("stock must be >= 0")
+        return value
+
+    @model_validator(mode="after")
+    def at_least_one_change(self) -> "ProductBulkUpdate":
+        has_change = any(
+            (
+                "available" in self.model_fields_set and self.available is not None,
+                "category" in self.model_fields_set and self.category is not None,
+                "price" in self.model_fields_set and self.price is not None,
+                "stock" in self.model_fields_set,
+            )
+        )
+        if not has_change:
+            raise ValueError("at least one field to update")
+        return self
+
+    def as_update(self) -> ProductUpdate:
+        payload: dict[str, object] = {}
+        if "available" in self.model_fields_set and self.available is not None:
+            payload["available"] = self.available
+        if "category" in self.model_fields_set and self.category is not None:
+            payload["category"] = self.category
+        if "price" in self.model_fields_set and self.price is not None:
+            payload["price"] = self.price
+        if "stock" in self.model_fields_set:
+            payload["stock"] = self.stock
+        return ProductUpdate.model_validate(payload)
 
 
 class SiteContent(BaseModel):

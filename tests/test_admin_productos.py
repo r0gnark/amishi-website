@@ -156,6 +156,86 @@ async def test_admin_product_list_requires_auth_and_includes_stock():
 
 
 @pytest.mark.asyncio
+async def test_bulk_update_requires_auth_and_applies_availability():
+    with patch.dict(os.environ, ENV):
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            anonymous = await client.post(
+                "/api/admin/productos/masivo",
+                json={"ids": ["x"], "available": False},
+            )
+            await client.post(
+                "/api/auth/login",
+                json={"email": ENV["ADMIN_EMAIL"], "password": ENV["ADMIN_PASSWORD"]},
+            )
+            first = await client.post("/api/admin/productos", json={
+                "name": "Pieza A",
+                "price": 1000,
+                "image": "/images/test.jpeg",
+                "category": "imanes",
+            })
+            second = await client.post("/api/admin/productos", json={
+                "name": "Pieza B",
+                "price": 2000,
+                "image": "/images/test.jpeg",
+                "category": "imanes",
+            })
+            untouched = await client.post("/api/admin/productos", json={
+                "name": "Pieza C",
+                "price": 3000,
+                "image": "/images/test.jpeg",
+                "category": "imanes",
+            })
+            bulk = await client.post("/api/admin/productos/masivo", json={
+                "ids": [first.json()["id"], second.json()["id"]],
+                "available": False,
+            })
+            listing = await client.get("/api/admin/productos")
+
+    assert anonymous.status_code == 401
+    assert bulk.status_code == 200
+    assert [item["available"] for item in bulk.json()] == [False, False]
+    by_id = {item["id"]: item for item in listing.json()}
+    assert by_id[untouched.json()["id"]]["available"] is True
+    assert by_id[first.json()["id"]]["available"] is False
+
+
+@pytest.mark.asyncio
+async def test_bulk_update_missing_product_changes_nothing():
+    with patch.dict(os.environ, ENV):
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            await client.post(
+                "/api/auth/login",
+                json={"email": ENV["ADMIN_EMAIL"], "password": ENV["ADMIN_PASSWORD"]},
+            )
+            created = await client.post("/api/admin/productos", json={
+                "name": "Pieza intacta",
+                "price": 1000,
+                "image": "/images/test.jpeg",
+                "category": "imanes",
+            })
+            missing = await client.post("/api/admin/productos/masivo", json={
+                "ids": [created.json()["id"], "no-existe"],
+                "available": False,
+            })
+            stored = await client.get(f"/api/admin/productos/{created.json()['id']}")
+
+    assert missing.status_code == 404
+    assert stored.json()["available"] is True
+
+
+@pytest.mark.asyncio
+async def test_bulk_update_without_changes_returns_422():
+    with patch.dict(os.environ, ENV):
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            await client.post(
+                "/api/auth/login",
+                json={"email": ENV["ADMIN_EMAIL"], "password": ENV["ADMIN_PASSWORD"]},
+            )
+            resp = await client.post("/api/admin/productos/masivo", json={"ids": ["algo"]})
+    assert resp.status_code == 422
+
+
+@pytest.mark.asyncio
 async def test_negative_stock_returns_422():
     with patch.dict(os.environ, ENV):
         async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:

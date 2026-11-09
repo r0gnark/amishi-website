@@ -397,6 +397,20 @@
         "Tests cubren alta, edición, stock negativo y la omisión del stock en la API pública"
       ],
       "status": "done"
+    },
+    {
+      "id": 29,
+      "name": "bulk_product_edit_and_persistent_catalog",
+      "title": "Edición masiva y catálogo persistente en S3",
+      "description": "El administrador selecciona varios productos y cambia disponibilidad, categoría, precio o stock de una vez. El listado muestra cuáles están no disponibles. Un deploy no vuelve a subir el catalog.json del repositorio sobre el contenido vivo del bucket.",
+      "acceptance": [
+        "El listado admin permite marcar varios productos y aplicar cambios en un solo paso",
+        "Un producto no disponible se distingue en el listado del administrador",
+        "La API masiva exige sesión, no guarda nada si falta un producto y deja intactos los no seleccionados",
+        "terraform apply no actualiza el objeto catalog.json ya creado en el bucket",
+        "pytest y ./init.sh terminan sin errores"
+      ],
+      "status": "done"
     }
   ]
 }

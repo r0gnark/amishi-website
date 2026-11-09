@@ -54,10 +54,10 @@ resource "aws_s3_object" "catalog_seed" {
   source_hash  = filemd5("${path.module}/../../data/catalog.json")
   content_type = "application/json; charset=utf-8"
 
+  # El archivo del repo solo crea el objeto la primera vez. Después el CMS
+  # escribe título, productos y el resto del catálogo en este mismo objeto.
+  # Ignorar etag/source evita que cada terraform apply lo pise con el repo.
   lifecycle {
-    ignore_changes = [
-      source,
-      source_hash,
-    ]
+    ignore_changes = all
   }
 }
