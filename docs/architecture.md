@@ -98,8 +98,10 @@ backend/
     auth.py             Modelos de sesión y credenciales
   routers/
     productos.py        GET /api/productos, GET /api/productos/{slug}
+                        (sin el stock interno)
     admin/
-      productos.py      POST/PATCH/DELETE /api/admin/productos
+      productos.py      GET/POST/PATCH/DELETE /api/admin/productos
+                        (incluye available y stock)
       contenido.py      PATCH /api/admin/contenido
     auth.py             POST /api/auth/login, POST /api/auth/logout
   services/

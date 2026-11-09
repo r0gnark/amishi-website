@@ -12,6 +12,8 @@ export type ProductFormValues = {
   instagramUrl: string;
   description: string;
   category: string;
+  available: boolean;
+  stock: number | null;
 };
 
 type Props = {
@@ -60,6 +62,10 @@ export function ProductForm({ initial = {}, onSubmit, submitLabel }: Props) {
   );
   const [description, setDescription] = useState(initial.description ?? "");
   const [category, setCategory] = useState(initial.category ?? "");
+  const [available, setAvailable] = useState(initial.available ?? true);
+  const [stock, setStock] = useState(
+    initial.stock === undefined || initial.stock === null ? "" : String(initial.stock)
+  );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -75,6 +81,11 @@ export function ProductForm({ initial = {}, onSubmit, submitLabel }: Props) {
       setError("Crea una categoría antes de guardar el producto");
       return;
     }
+    const parsedStock = stock.trim() === "" ? null : Number(stock);
+    if (parsedStock !== null && (!Number.isInteger(parsedStock) || parsedStock < 0)) {
+      setError("El stock debe ser un número entero igual o mayor a 0");
+      return;
+    }
     setLoading(true);
     try {
       await onSubmit({
@@ -85,6 +96,8 @@ export function ProductForm({ initial = {}, onSubmit, submitLabel }: Props) {
         instagramUrl,
         description,
         category: selectedCategory,
+        available,
+        stock: parsedStock,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado");
@@ -106,6 +119,41 @@ export function ProductForm({ initial = {}, onSubmit, submitLabel }: Props) {
       <div>
         <label htmlFor="price" className={label}>Precio (CLP) *</label>
         <input id="price" type="number" min={0} required value={price} onChange={(e) => setPrice(e.target.value)} className={field} />
+      </div>
+
+      <div className="rounded-xl border border-blush bg-cream/60 p-4">
+        <label className="flex items-start gap-3 text-sm text-ink">
+          <input
+            type="checkbox"
+            className="mt-0.5 h-4 w-4 accent-clay"
+            checked={available}
+            onChange={(e) => setAvailable(e.target.checked)}
+          />
+          <span>
+            <span className="font-medium">Disponible para la venta</span>
+            <span className="mt-1 block text-xs text-ink/60">
+              Si lo desactivas, el producto sigue en el catálogo y se muestra como No disponible.
+            </span>
+          </span>
+        </label>
+      </div>
+
+      <div>
+        <label htmlFor="stock" className={label}>Stock interno</label>
+        <input
+          id="stock"
+          type="number"
+          min={0}
+          step={1}
+          inputMode="numeric"
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+          placeholder="Sin registrar"
+          className={field}
+        />
+        <p className="mt-1 text-xs text-ink/60">
+          Unidades que quedan. Solo se ve en este panel, nunca en el sitio público.
+        </p>
       </div>
 
       <div>

@@ -27,7 +27,9 @@ class CategoryUpdate(BaseModel):
     image: str | None = None
 
 
-class Product(BaseModel):
+class PublicProduct(BaseModel):
+    """Producto visible en el sitio. No incluye el stock interno."""
+
     model_config = ConfigDict(populate_by_name=True)
 
     id: str
@@ -38,6 +40,11 @@ class Product(BaseModel):
     instagram_url: str = Field(alias="instagramUrl")
     description: str
     category: str
+    available: bool = True
+
+
+class Product(PublicProduct):
+    stock: Optional[int] = None
 
 
 class ProductCreate(BaseModel):
@@ -48,6 +55,8 @@ class ProductCreate(BaseModel):
     instagram_url: str = Field(alias="instagramUrl", default="")
     description: str = ""
     category: str
+    available: bool = True
+    stock: Optional[int] = None
 
     @field_validator("name")
     @classmethod
@@ -70,6 +79,12 @@ class ProductCreate(BaseModel):
             raise ValueError("image must start with '/' or 'http(s)://'")
         return v
 
+    @field_validator("stock")
+    @classmethod
+    def stock_non_negative(cls, value: Optional[int]) -> Optional[int]:
+        if value is not None and value < 0:
+            raise ValueError("stock must be >= 0")
+        return value
 
 
 class ProductUpdate(BaseModel):
@@ -80,6 +95,8 @@ class ProductUpdate(BaseModel):
     instagram_url: Optional[str] = Field(default=None, alias="instagramUrl")
     description: Optional[str] = None
     category: Optional[str] = None
+    available: Optional[bool] = None
+    stock: Optional[int] = None
 
     @field_validator("name")
     @classmethod
@@ -101,6 +118,13 @@ class ProductUpdate(BaseModel):
         if v is not None and not (v.startswith("/") or v.startswith("http://") or v.startswith("https://")):
             raise ValueError("image must start with '/' or 'http(s)://'")
         return v
+
+    @field_validator("stock")
+    @classmethod
+    def stock_non_negative(cls, value: Optional[int]) -> Optional[int]:
+        if value is not None and value < 0:
+            raise ValueError("stock must be >= 0")
+        return value
 
 
 

@@ -382,6 +382,21 @@
         "pytest y ./init.sh terminan sin errores"
       ],
       "status": "done"
+    },
+    {
+      "id": 28,
+      "name": "product_availability_and_internal_stock",
+      "title": "Disponibilidad pública y stock interno",
+      "description": "El administrador puede marcar un producto como no disponible y registrar cuántas unidades quedan. El sitio muestra No disponible; el stock no se publica.",
+      "acceptance": [
+        "El formulario de producto permite desactivar la disponibilidad y guardar un stock entero mayor o igual a cero",
+        "Un producto desactivado sigue visible en el catálogo y en su ficha con la etiqueta No disponible",
+        "El listado del administrador muestra disponibilidad y stock",
+        "GET /api/productos no incluye el campo stock",
+        "Los productos antiguos siguen disponibles y sin stock registrado",
+        "Tests cubren alta, edición, stock negativo y la omisión del stock en la API pública"
+      ],
+      "status": "done"
     }
   ]
 }

@@ -9,6 +9,8 @@ type Product = {
   price: number;
   category: string;
   image: string;
+  available?: boolean;
+  stock?: number | null;
 };
 
 export default function AdminProductosPage() {
@@ -19,13 +21,19 @@ export default function AdminProductosPage() {
   useEffect(() => {
     let cancelled = false;
 
-    fetch("/api/productos")
-      .then((res) => res.json())
+    fetch("/api/admin/productos")
+      .then((res) => {
+        if (!res.ok) throw new Error("No se pudo cargar el catálogo");
+        return res.json();
+      })
       .then((data) => {
         if (!cancelled) {
           setProducts(data);
           setLoading(false);
         }
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
       });
 
     return () => {
@@ -63,7 +71,7 @@ export default function AdminProductosPage() {
       {loading ? (
         <p className="text-sm text-clay">Cargando…</p>
       ) : (
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
           <table className="w-full text-sm">
             <thead className="bg-cream border-b border-blush">
               <tr>
@@ -71,6 +79,8 @@ export default function AdminProductosPage() {
                 <th className="text-left px-4 py-3 text-ink font-medium">Nombre</th>
                 <th className="text-left px-4 py-3 text-ink font-medium">Precio</th>
                 <th className="text-left px-4 py-3 text-ink font-medium">Categoría</th>
+                <th className="text-left px-4 py-3 text-ink font-medium">Estado</th>
+                <th className="text-left px-4 py-3 text-ink font-medium">Stock</th>
                 <th className="text-left px-4 py-3 text-ink font-medium">Slug</th>
                 <th className="px-4 py-3" />
               </tr>
@@ -94,6 +104,20 @@ export default function AdminProductosPage() {
                     {p.price.toLocaleString("es-CL", { style: "currency", currency: "CLP" })}
                   </td>
                   <td className="px-4 py-3 text-clay">{p.category}</td>
+                  <td className="px-4 py-3">
+                    {p.available === false ? (
+                      <span className="rounded-full bg-ink/10 px-2.5 py-1 text-xs font-medium text-ink">
+                        No disponible
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-cream px-2.5 py-1 text-xs font-medium text-clay">
+                        Disponible
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-ink">
+                    {p.stock === null || p.stock === undefined ? "—" : p.stock}
+                  </td>
                   <td className="px-4 py-3 text-ink/50 font-mono text-xs">{p.id}</td>
                   <td className="px-4 py-3 flex gap-3 justify-end">
                     <Link

@@ -300,3 +300,19 @@ simulación en contenedor `amazonlinux:2023` con systemd; deploy real en AWS con
 **Pendiente:** destruir la instancia de la cuenta DEV si sigue encendida
 (~USD 7.40/mes); proteger las ramas `develop` y `master`; fijar versiones de las
 dependencias Python.
+
+## 2026-11-08 — Feature 28: product_availability_and_internal_stock
+
+**Objetivo:** el administrador puede marcar un producto como no disponible y
+anotar cuántas unidades quedan. El sitio muestra «No disponible»; el stock no
+sale del panel.
+
+**Implementado:**
+- `available` y `stock` en el modelo, el formulario y el listado admin.
+- La API pública devuelve `available` y omite `stock`.
+- Tarjeta y ficha muestran «No disponible» cuando el producto está desactivado.
+- Los productos antiguos siguen disponibles y sin stock registrado.
+
+**Verificación:** `pytest` 72/72. En el navegador, la ficha y el catálogo
+muestran «No disponible», y el panel lista el stock `2` de ese producto. La
+prueba se hizo sobre una copia del catálogo; `data/catalog.json` no cambió.

@@ -147,6 +147,8 @@ def create_product(product: ProductCreate, path: Path | None = None) -> Product:
         instagramUrl=product.instagram_url,
         description=product.description,
         category=product.category,
+        available=product.available,
+        stock=product.stock,
     )
     data["products"].append(new_product.model_dump(by_alias=True))
     save_catalog(data, path)
@@ -164,6 +166,8 @@ def update_product(
     for i, p in enumerate(data["products"]):
         if p["id"] == slug:
             patch = updates.model_dump(exclude_none=True, by_alias=True)
+            if "stock" in updates.model_fields_set:
+                patch["stock"] = updates.stock
             data["products"][i] = {**p, **patch}
             save_catalog(data, path)
             return Product.model_validate(data["products"][i])
