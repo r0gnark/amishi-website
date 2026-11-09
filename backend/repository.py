@@ -174,6 +174,38 @@ def update_product(
     raise CatalogNotFoundError(f"Product not found: {slug}")
 
 
+def update_products(
+    slugs: list[str], updates: ProductUpdate, path: Path | None = None
+) -> list[Product]:
+    wanted = list(dict.fromkeys(slugs))
+    if not wanted:
+        raise CatalogError("No products selected")
+    patch = updates.model_dump(exclude_none=True, by_alias=True)
+    if "stock" in updates.model_fields_set:
+        patch["stock"] = updates.stock
+    if not patch:
+        raise CatalogError("No changes")
+    data = load_catalog(path)
+    if updates.category is not None and updates.category not in {
+        item.id for item in get_categories(path)
+    }:
+        raise CatalogNotFoundError(f"Category not found: {updates.category}")
+    index = {
+        product["id"]: position
+        for position, product in enumerate(data["products"])
+    }
+    missing = [slug for slug in wanted if slug not in index]
+    if missing:
+        raise CatalogNotFoundError(f"Product not found: {missing[0]}")
+    updated: list[Product] = []
+    for slug in wanted:
+        position = index[slug]
+        data["products"][position] = {**data["products"][position], **patch}
+        updated.append(Product.model_validate(data["products"][position]))
+    save_catalog(data, path)
+    return updated
+
+
 def delete_product(slug: str, path: Path | None = None) -> None:
     data = load_catalog(path)
     original_len = len(data["products"])

@@ -10,6 +10,7 @@ from backend.repository import (
     get_all_products,
     get_product_by_slug,
     update_product,
+    update_products,
 )
 
 
@@ -153,6 +154,33 @@ def test_update_product_happy_path(tmp_path):
     updated = update_product(created.id, ProductUpdate(price=2000), path)
     assert updated.price == 2000
     assert updated.name == "Original"
+
+
+def test_update_products_changes_only_the_selection(tmp_path):
+    path = tmp_path / "catalog.json"
+    first = create_product(_new_product(name="Uno", price=1000), path)
+    second = create_product(_new_product(name="Dos", price=1000), path)
+    third = create_product(_new_product(name="Tres", price=1000), path)
+
+    updated = update_products(
+        [first.id, second.id],
+        ProductUpdate(available=False, price=2500),
+        path,
+    )
+
+    assert [item.id for item in updated] == [first.id, second.id]
+    assert all(item.available is False and item.price == 2500 for item in updated)
+    stored = {item.id: item for item in get_all_products(path)}
+    assert stored[third.id].available is True
+    assert stored[third.id].price == 1000
+
+
+def test_update_products_missing_id_keeps_catalog(tmp_path):
+    path = tmp_path / "catalog.json"
+    created = create_product(_new_product(name="Solo"), path)
+    with pytest.raises(CatalogNotFoundError):
+        update_products([created.id, "no-existe"], ProductUpdate(available=False), path)
+    assert get_product_by_slug(created.id, path).available is True
 
 
 def test_update_product_raises_not_found(tmp_path):

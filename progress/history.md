@@ -316,3 +316,19 @@ sale del panel.
 **Verificación:** `pytest` 72/72. En el navegador, la ficha y el catálogo
 muestran «No disponible», y el panel lista el stock `2` de ese producto. La
 prueba se hizo sobre una copia del catálogo; `data/catalog.json` no cambió.
+
+## 2026-11-08 — Feature 29: bulk_product_edit_and_persistent_catalog
+
+**Objetivo:** editar varios productos a la vez y que el deploy deje quieto el
+catálogo vivo del bucket.
+
+**Implementado:**
+- Checkboxes en el listado admin y acción masiva de disponibilidad, categoría,
+  precio y stock (`POST /api/admin/productos/masivo`).
+- Los no disponibles se marcan en la fila, con un conteo y un filtro.
+- `aws_s3_object.catalog_seed` ignora todos los cambios después de crearse, así
+  `terraform apply` no vuelve a subir el `catalog.json` del repositorio.
+
+**Verificación:** `pytest` 77/77 y `terraform test` 2/2. En el navegador se
+marcaron dos productos como no disponibles y el filtro los mostró solos. La
+prueba usó una copia local del catálogo.

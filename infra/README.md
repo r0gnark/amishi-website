@@ -33,6 +33,9 @@ visitante ─► Vercel ─► https://API_URL ─► Caddy :443 ─► uvicorn 
 - El catálogo (`catalog.json`), las imágenes subidas y el hash de la contraseña se
   guardan en **S3**. El disco de la instancia no es fuente de verdad: si la
   instancia se recrea, los datos siguen ahí.
+- `catalog.json` del repositorio solo se sube al crear el bucket. Cada
+  `terraform apply` deja intacto el título, los productos y el resto del
+  contenido que el administrador ya guardó en S3.
 - Los secretos (`ADMIN_PASSWORD`, `SECRET_KEY`…) se guardan en **SSM Parameter
   Store** como `SecureString` y la instancia los lee en cada deploy.
 - No hay puerto 22 abierto. Los deploys usan **SSM Run Command**: GitHub Actions
